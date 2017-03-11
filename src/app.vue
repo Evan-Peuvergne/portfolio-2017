@@ -19,4 +19,7 @@
     </div>
 
   </template>
+
+
+  <style lang="stylus" src="./shared/shared.styl"></style>
   
