@@ -6,6 +6,7 @@
 
     /* Dependencies */
 
+    import $ from 'jquery';
     import _ from 'lodash';
 
     import Stage from './stage.js';
@@ -51,6 +52,12 @@
       // Launch
       this.stage.launch(this.current);
 
+      $(window).on('keydown', _.bind(function (e) {
+        switch(e.keyCode) {
+          case 37: this.stage.previous(); break;
+          case 39: this.stage.next(); break;
+        }
+      }, this));
     };
 
 
@@ -77,6 +84,7 @@
       left: 0
       width: 100%
       height: 100%
+      shape-rendering: geometricPrecision;
 
   </style>
   

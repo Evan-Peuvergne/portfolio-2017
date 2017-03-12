@@ -6,7 +6,9 @@
 
 
 	import _ from 'lodash';
+    
     import SVG from 'svg.js';
+    import SVGFilter from 'svg.filter.js';
 
     import { TweenMax } from 'gsap';
     import Morph from '../../../shared/libs/MorphSVGPlugin.js';
@@ -45,16 +47,24 @@
     		this.content = content;
 
     		// Structure
+    		this.letter = this.canvas.path();
     		this.backgrounds = this.canvas.group();
 
-    		this.mask = this.canvas.clip();
+    		this.mask = this.canvas.clip().add(this.letter);
     		this.backgrounds.clipWith(this.mask);
+
+    		this.letter.filter(function (f) {
+    			var blur = f.offset(0, 0).gaussianBlur(20);
+    			f.blend(f.source, blur);
+    			this.size('200%', '200%').move('-50%', '-50%');
+    			console.log('coucou');
+    		});
 
     		// Content
     		this.projects = [];
     		_.each(content, _.bind(function (c, i) {
     			this.projects.push(this.initProject(c));
-    			this.backgrounds.add(this.projects[i].background);
+    			this.projects[i].background.addTo(this.backgrounds).back();
     		}, this));
 
     	}
@@ -85,15 +95,45 @@
 
     	// Launch
     	
-    	launch (starter = 0){
+    	launch (starter = 0) {
 
     		// Properties
-    		this.current = 0;
+    		this.current = starter;
 
     		// Draw
-    		// ...
+    		this.letter.attr({ d: this.projects[this.current].letter.attr('d') });
 
     	}
+
+
+    	// Transition
+    	
+    	go (index) {
+
+    		// Properties
+    		this.current = index;
+
+    		// Morph
+    		TweenMax.to(this.letter.node, 0.75, {
+    			morphSVG: this.projects[index].letter.node,
+    			ease: Elastic.easeOut.config(1, 1),
+    		});
+
+    		// Background
+    		TweenMax.set(this.projects[index].background.node, { opacity: 0, scale: 2, transformOrigin: '50% 50%' });
+    		this.projects[index].background.front();
+
+    		TweenMax.to(this.projects[index].background.node, 0.5, {
+    			opacity: 1,
+    			scale: 1,
+    			ease: Power4.easeOut,
+    		});
+
+    	}
+
+    	previous () { var i = this.current-1; this.go((i >= 0) ? i : this.projects.length-1); }
+    	
+    	next () { this.go((this.current+1)%this.projects.length); }
 
     }
 
