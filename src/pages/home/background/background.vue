@@ -7,14 +7,10 @@
     /* Dependencies */
 
     import _ from 'lodash';
-    import SVG from 'svg.js';
 
-    import { TweenMax } from 'gsap';
-    import Morph from '../../shared/libs/MorphSVGPlugin.js';
+    import Stage from './stage.js';
 
-    import S from '../../shared/helpers/sizes.js';
-
-    import Projects from './projects.json';
+    import Projects from '../projects.json';
 
 
     
@@ -37,7 +33,7 @@
 
     component.watch = {
       current: function (val) {
-        
+        console.log('coucou');
       }
     }
 
@@ -47,21 +43,13 @@
     component.mounted = function () {
 
       // Stage
-      this.stage = SVG(this.$el);
-      this.stage.size(window.innerWidth, window.innerHeight);
+      this.stage = new Stage({
+        element: this.$el,
+      });
+      this.stage.init(Projects);
 
-      // Letters
-      this.letters = [];
-
-      _.each(Projects, _.bind(function (p, i) 
-      {
-        var letter = this.stage.path(p.letter.path);
-        this.stage.defs().put(letter);
-        letter.size(null, S.window.h*p.letter.size);
-        letter.x(S.window.w*0.5 - letter.width()*(1-p.letter.offset.x) - 25);
-        letter.y(S.window.h*0.5 - letter.height()*(0.5-p.letter.offset.y));
-        this.letters.push(letter);
-      }, this));
+      // Launch
+      this.stage.launch(this.current);
 
     };
 

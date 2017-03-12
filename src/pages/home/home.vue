@@ -11,7 +11,7 @@
 
   <script>
 
-    import Background from './background.vue';
+    import Background from './background/background.vue';
     
     export default {
       name: 'home',
@@ -20,10 +20,7 @@
       },
       mounted: function () {
         
-        var that = this;
-        setTimeout(function () {
-          that.item = 3;
-        }, 3000);
+        
 
       },
       components: {
