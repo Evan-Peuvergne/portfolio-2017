@@ -16,8 +16,9 @@
   /* Dependencies */
 
   import Vue from 'vue';
-  import App from './app.vue';
   import Router from 'vue-router';
+
+  import App from './app.vue';
 
   import { routes } from './routes.js';
 
