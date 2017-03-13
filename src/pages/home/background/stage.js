@@ -61,7 +61,7 @@
             this.shadow = this.canvas.use(this.letter);
             this.shadow.after(this.backgrounds);
             this.shadow.filter(function (f) {
-                var b = f.offset(0, 0).gaussianBlur(20);
+                var b = f.offset(0, 0).gaussianBlur(10);
                 f.blend(f.source, b);
                 this.size('200%', '200%').move('-50%', '-50%');
             });
@@ -120,6 +120,20 @@
 
     		// Letter
     		this.letter.attr({ d: this.projects[this.current].letter.attr('d') });
+            // this.letter.opacity(0);
+
+            this.distortion = this.util.interpret(this.letter.node);
+            this.util.render();
+            $(this.distortion._renderer.elem).css({ opacity: 0 });
+            this.distortion._renderer.elem = this.letter.node;
+
+            this.util.bind('update', (f) => {
+                _.each(this.distortion.vertices, (v, i) => {
+                    v.x += Math.cos(f*.7 + i*100) * 0.65;
+                    v.y += -Math.sin(f*.7 + i*100) * 0.65;
+                });
+            });
+            this.util.play();
 
             // Shadow
             this.shadow.fill(this.content[this.current].shadow.color);
