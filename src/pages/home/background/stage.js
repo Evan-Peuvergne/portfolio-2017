@@ -4,11 +4,12 @@
 	
 	/* Dependencies */
 
-
+    import $ from 'jquery';
 	import _ from 'lodash';
     
     import SVG from 'svg.js';
     import SVGFilter from 'svg.filter.js';
+    import Two from 'imports-loader?this=>window,fix=>module.exports=0!two.js/build/two.js';
 
     import { TweenMax } from 'gsap';
     import Morph from '../../../shared/libs/MorphSVGPlugin.js';
@@ -33,6 +34,10 @@
     		this.canvas = SVG(this.element);
     		this.canvas.size(S.window.w, S.window.h);
 
+            this.util = new Two({ width: S.window.w, height: S.window.h, });
+            this.util.renderer.domElement = this.element;
+            this.util.renderer.defs = this.canvas.defs().node;
+
     		// Return
     		return this;
 
@@ -48,17 +53,18 @@
 
     		// Structure
     		this.letter = this.canvas.path();
-    		this.backgrounds = this.canvas.group();
 
+    		this.backgrounds = this.canvas.group();
     		this.mask = this.canvas.clip().add(this.letter);
     		this.backgrounds.clipWith(this.mask);
 
-    		this.letter.filter(function (f) {
-    			var blur = f.offset(0, 0).gaussianBlur(20);
-    			f.blend(f.source, blur);
-    			this.size('200%', '200%').move('-50%', '-50%');
-    			console.log('coucou');
-    		});
+            this.shadow = this.canvas.use(this.letter);
+            this.shadow.after(this.backgrounds);
+            this.shadow.filter(function (f) {
+                var b = f.offset(0, 0).gaussianBlur(20);
+                f.blend(f.source, b);
+                this.size('200%', '200%').move('-50%', '-50%');
+            });
 
     		// Content
     		this.projects = [];
@@ -81,6 +87,17 @@
     		project.letter.size(null, S.window.h*content.letter.size);
     		project.letter.x(S.window.w*0.5 - project.letter.width()*(1-content.letter.offset.x) - 25);
     		project.letter.y(S.window.h*0.5 - project.letter.height()*(0.5-content.letter.offset.y));
+            var letterBox = project.letter.bbox();
+
+            // Shade
+            project.shade = this.canvas.text(content.glyph);
+            project.shade.font({ family: 'Gotham Bold', size: S.window.h*0.8 });
+            project.shade.opacity(0);
+
+            var size = project.shade.bbox();
+            $(project.shade.node).css({ transformOrigin: letterBox.cx + 'px ' + letterBox.cy + 'px' });
+            project.shade.x(project.letter.x() + project.letter.width()*0.5 - size.w*0.5);
+            project.shade.y(project.letter.y() + project.letter.height()*0.5 - size.h*0.5);
 
     		// Background
     		project.background = this.canvas.image(content.cover.url);
@@ -99,10 +116,20 @@
 
     		// Properties
     		this.current = starter;
+            this.prev = null;
 
-    		// Draw
+    		// Letter
     		this.letter.attr({ d: this.projects[this.current].letter.attr('d') });
 
+            // Shadow
+            this.shadow.fill(this.content[this.current].shadow.color);
+            this.shadow.opacity(this.content[this.current].shadow.opacity);
+
+            // Shade
+            this.projects[this.current].shade.opacity(0.02);
+
+            // Background
+            this.projects[this.current].background.front();
     	}
 
 
@@ -111,13 +138,33 @@
     	go (index) {
 
     		// Properties
+            this.prev = this.current;
     		this.current = index;
 
     		// Morph
-    		TweenMax.to(this.letter.node, 0.75, {
+    		TweenMax.to(this.letter.node, 0.4, {
     			morphSVG: this.projects[index].letter.node,
-    			ease: Elastic.easeOut.config(1, 1),
+    			// ease: Elastic.easeOut.config(1, 1),
+                ease: Power3.easeOut,
     		});
+
+            // Background
+            TweenMax.to(this.shadow.node, 0.5, {
+                fill: this.content[this.current].shadow.color,
+                opacity: this.content[this.current].shadow.opacity
+            });
+
+            // Shade
+            TweenMax.to(this.projects[this.prev].shade.node, 0.5, { 
+                opacity: 0 
+            });
+            
+            TweenMax.set(this.projects[this.current].shade.node, { opacity: 0, scale: 0.5 });
+            TweenMax.to(this.projects[this.current].shade.node, 0.5, {
+                opacity: 0.02, 
+                scale: 1,
+                ease: Power3.easeOut,
+            });
 
     		// Background
     		TweenMax.set(this.projects[index].background.node, { opacity: 0, scale: 2, transformOrigin: '50% 50%' });

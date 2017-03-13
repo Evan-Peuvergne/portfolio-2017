@@ -8,6 +8,10 @@
   		"size": 0.4,
   		"offset": { "x": -0.25, "y": 0 }
   	},
+    "shadow": {
+      "color": "#f3602c",
+      "opacity": 0.4 
+    },
   	"cover": {
   		"url": "assets/images/projects/jaiye_cover.png"
   	}
@@ -21,6 +25,10 @@
   		"size": 0.30,
   		"offset": { "x": 0, "y": 0 }
   	},
+    "shadow": {
+      "color": "#97ddf7",
+      "opacity": 0.75
+    },
   	"cover": {
   		"url": "assets/images/projects/nouvelleco_cover.png"
   	}

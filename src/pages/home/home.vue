@@ -16,7 +16,7 @@
     export default {
       name: 'home',
       data: function () {
-        return { item: 0 }
+        return { item: 1 }
       },
       mounted: function () {
         
