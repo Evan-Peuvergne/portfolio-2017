@@ -49,18 +49,18 @@
         element: $(this.$el).find('.background-letterCanvas').get(0),
       });
       this.letter.init(Projects);
-      setTimeout(() => { this.letter.launch(this.current); }, 1000);
+      this.letter.launch(0);
 
       this.tracker = new Tracker({
         element: $(this.$el).find('.background-trackerCanvas').get(0),
       });
 
-      // $(window).on('keydown', _.bind(function (e) {
-      //   switch(e.keyCode) {
-      //     case 37: this.stage.previous(); break;
-      //     case 39: this.stage.next(); break;
-      //   }
-      // }, this));
+      $(window).on('keydown', (e) => {
+        switch(e.keyCode) {
+          case 37: this.letter.previous(); break;
+          case 39: this.letter.next(); break;
+        }
+      });
     };
 
 
