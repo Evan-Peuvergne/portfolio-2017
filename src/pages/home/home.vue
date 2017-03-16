@@ -1,7 +1,5 @@
 
 
-
-
   <template lang="jade">
     
       background(v-bind:current="item")
@@ -16,7 +14,7 @@
     export default {
       name: 'home',
       data: function () {
-        return { item: 1 }
+        return { item: 0 }
       },
       mounted: function () {
         

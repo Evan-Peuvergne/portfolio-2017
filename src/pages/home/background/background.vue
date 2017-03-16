@@ -9,7 +9,8 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import Stage from './stage.js';
+    import Letter from './letter.js';
+    import Tracker from './tracker.js';
 
     import Projects from '../projects.json';
 
@@ -43,21 +44,23 @@
 
     component.mounted = function () {
 
-      // Stage
-      this.stage = new Stage({
-        element: this.$el,
+      // Letter
+      this.letter = new Letter({
+        element: $(this.$el).find('.background-letterCanvas').get(0),
       });
-      this.stage.init(Projects);
+      this.letter.init(Projects);
+      setTimeout(() => { this.letter.launch(this.current); }, 1000);
 
-      // Launch
-      this.stage.launch(this.current);
+      this.tracker = new Tracker({
+        element: $(this.$el).find('.background-trackerCanvas').get(0),
+      });
 
-      $(window).on('keydown', _.bind(function (e) {
-        switch(e.keyCode) {
-          case 37: this.stage.previous(); break;
-          case 39: this.stage.next(); break;
-        }
-      }, this));
+      // $(window).on('keydown', _.bind(function (e) {
+      //   switch(e.keyCode) {
+      //     case 37: this.stage.previous(); break;
+      //     case 39: this.stage.next(); break;
+      //   }
+      // }, this));
     };
 
 
@@ -71,20 +74,23 @@
 
   <template lang="jade">
     
-    svg(width="100%", height="100%")
+    div.home-background
+      canvas.background-letterCanvas
+      canvas.background-trackerCanvas
 
   </template>
 
 
   <style lang="stylus">
     
-    svg
-      position: absolute
-      top: 0
-      left: 0
-      width: 100%
-      height: 100%
-      shape-rendering: geometricPrecision;
+    canvas
+      display block
+      position absolute
+      top: 0 
+      left 0
+      bottom 0
+      right 0
+      // background red
 
   </style>
   

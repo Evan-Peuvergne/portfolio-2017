@@ -91,6 +91,7 @@
 
             // Shade
             project.shade = this.canvas.text(content.glyph);
+            // project.shade.after(this.shadow).after(this.backgrounds);
             project.shade.font({ family: 'Gotham Bold', size: S.window.h*0.8 });
             project.shade.opacity(0);
 
@@ -103,7 +104,7 @@
     		project.background = this.canvas.image(content.cover.url);
     		project.background.size(S.window.w, S.window.h);
     		project.background.attr({ preserveAspectRatio: 'xMidYMid slice' });
-    		
+
   			// Return
     		return project;
 
@@ -122,18 +123,20 @@
     		this.letter.attr({ d: this.projects[this.current].letter.attr('d') });
             // this.letter.opacity(0);
 
-            this.distortion = this.util.interpret(this.letter.node);
-            this.util.render();
-            $(this.distortion._renderer.elem).css({ opacity: 0 });
-            this.distortion._renderer.elem = this.letter.node;
+            // this.distortion = this.util.interpret(this.letter.node);
+            // this.util.render();
+            // $(this.distortion._renderer.elem).remove();
+            // this.distortion._renderer.elem = this.letter.node;
 
-            this.util.bind('update', (f) => {
-                _.each(this.distortion.vertices, (v, i) => {
-                    v.x += Math.cos(f*.7 + i*100) * 0.65;
-                    v.y += -Math.sin(f*.7 + i*100) * 0.65;
-                });
-            });
-            this.util.play();
+            // console.log(this.distortion.vertices.length);
+            // this.util.bind('update', (f) => {
+            //    _.each(this.distortion.vertices, (v, i) => {
+            //        v.x += Math.cos(f*.5 + i) * 0.5;
+            //        v.y += -Math.sin(f*.5 + i) * 0.5;
+                   
+            //    });
+            // });
+            // this.util.play();
 
             // Shadow
             this.shadow.fill(this.content[this.current].shadow.color);
@@ -156,10 +159,10 @@
     		this.current = index;
 
     		// Morph
-    		TweenMax.to(this.letter.node, 0.4, {
+    		TweenMax.to(this.letter.node, 0.5, {
     			morphSVG: this.projects[index].letter.node,
-    			// ease: Elastic.easeOut.config(1, 1),
-                ease: Power3.easeOut,
+    			ease: Elastic.easeOut.config(1, 1),
+                // ease: Power3.easeOut,
     		});
 
             // Background
