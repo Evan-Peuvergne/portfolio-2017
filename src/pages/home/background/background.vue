@@ -35,7 +35,7 @@
 
     component.watch = {
       current: function (val) {
-        console.log('coucou');
+        this.letter.go(val);
       }
     }
 
@@ -46,20 +46,14 @@
 
       // Letter
       this.letter = new Letter({
-        element: $(this.$el).find('.background-letterCanvas').get(0),
+        canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
+        canvasShade: $(this.$el).find('.background-shadeCanvas').get(0),
       });
       this.letter.init(Projects);
-      this.letter.launch(0);
+      this.letter.launch(this.current);
 
       this.tracker = new Tracker({
         element: $(this.$el).find('.background-trackerCanvas').get(0),
-      });
-
-      $(window).on('keydown', (e) => {
-        switch(e.keyCode) {
-          case 37: this.letter.previous(); break;
-          case 39: this.letter.next(); break;
-        }
       });
     };
 
@@ -77,6 +71,7 @@
     div.home-background
       canvas.background-letterCanvas
       canvas.background-trackerCanvas
+      canvas.background-shadeCanvas
 
   </template>
 

@@ -2,22 +2,48 @@
 
 
 
-  /* Dependencies */
+  /**
+  *
+  *   LETTER|JS
+  *   ---------------
+  *   Class managing the home background letter
+  *   pages > home > background > letter.js
+  *
+  */
+  
+
+
+  /*----------  Dependencies  ----------*/
+
+
+
+  // Libs
   
   import _ from 'lodash';
-
   import { TweenMax } from 'gsap';
 
   import Paper from 'paper';
   Paper.install(window);
 
+
+  // Helpers
+
   import S from '../../../shared/helpers/sizes.js';
+  import Ticker from '../../../shared/helpers/ticker.js';
 
 
 
-  /* Class */
+  
+
+
+  /*----------  Class  ----------*/
+
+
+
+  // Definition
 
   class Letter {
+
 
     /**
      * Create a Letter instance
@@ -26,10 +52,16 @@
      */
     constructor (config = {}) {
 
-      this.elem = config.element;
+      this.elems = {
+        letter: config.canvasLetter,
+        shade: config.canvasShade,
+      };
 
-      this.canvas = new Project(this.elem);
-      this.canvas.view.viewSize = new Size(S.window.w, S.window.h);
+      this.canvas = {};
+      _.each(this.elems, (s, n) => {
+        this.canvas[n] = new Project(s);
+        this.canvas[n].view.viewSize = new Size(S.window.w, S.window.h);
+      });
 
       return this;
 
@@ -38,12 +70,15 @@
     /**
      * Inject content in the Letter instance
      * @param  {Array} content The projects content array
-     * @return {Letter} The Letter instance
      */
     init (content = []) {
 
       this.content = content;
       this.projects = [];
+
+      this.is = { moving: false, };
+
+      this.canvas.letter.activate();
 
       this.letter = new CompoundPath();
       this.letter.fillColor = "#000";
@@ -71,6 +106,8 @@
 
       var p = { letter: null, shade: null, cover: null, };
 
+      this.canvas.letter.activate();
+
       p.letter = new CompoundPath(content.letter.path);
       p.letter.visible = false;
       p.letter.fitBounds(new Rectangle({
@@ -80,6 +117,17 @@
       p.letter.position.x = S.window.w*.5 - p.letter.bounds.width*(1-content.letter.offset.x) - 25;
       p.letter.position.y = S.window.h*.5 - p.letter.bounds.height*content.letter.offset.y;
 
+      p.cover = new Raster({ 
+        source: content.cover.url, 
+        position: this.canvas.letter.view.center,
+      });
+      p.cover.onLoad = function () {
+        var ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
+        this.size = new Size(this.size.width*ratio, this.size.height*ratio);
+        this.opacity = 0;
+      };
+
+      this.canvas.shade.activate();
       p.shade = new PointText({
         point: [0, 0],
         content: content.glyph,
@@ -89,16 +137,6 @@
       });
       p.shade.point.x = p.letter.position.x - p.shade.bounds.width * (content.shade.offset.x + .5);
       p.shade.point.y = p.letter.position.y + p.shade.bounds.height * (content.shade.offset.y + .25);
-
-      p.cover = new Raster({ 
-        source: content.cover.url, 
-        position: this.canvas.view.center,
-      });
-      p.cover.onLoad = function () {
-        var ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
-        this.size = new Size(this.size.width*ratio, this.size.height*ratio);
-        this.opacity = 0;
-      };
       
       return p;
 
@@ -123,73 +161,139 @@
 
       this.projects[index].shade.opacity = 0.02;
 
-      this.canvas.view.onFrame = (f) => {
-        _.each(this.letter.children, (c) => {
-          _.each(c.segments, (s, i) => {
-            s.point.x += Math.cos(f.count*.4 + i*2) * .25;
-            s.point.y += -Math.sin(f.count*.4 + i*i) * .25;
-          });
-        })
-      };
-      this.canvas.view.play();
+      new Ticker().tick('letter.animation', (f) => { this._distorsion(f.count); });
 
     }
 
+    
     /**
      * Go to a specific slide with index
      * @param  {Number} index The index of the destination slide
      */
     go (index) {
 
+      if(this.is.moving){ console.log('abort'); return; }
+
       this.prev = this.current;
       this.current = index;
+      this.is.moving = true;
 
-      let from = this.letter.children[this.letter.children.length-1];
-      let to = this.projects[index].letter.children[this.projects[index].letter.children.length-1];
+      var tl = new TimelineMax({ onComplete: () => { console.log('complete'); this.is.moving = false; }, });
 
-      var tl = new TimelineMax({ 
-        onComplete: () => {} 
-      });
-      var e = Elastic.easeOut.config(1, 0.9);
+      tl.add(this._morph(this.projects[this.current]));
 
-      let start = this.content[index].letter.transition.origin;
-      for(var i=0; i<from.segments.length; i++) {
-        let c = (i+start)%from.segments.length;
-        let t = to.segments[c];
-        let s = from.segments[c];
-        tl.to(s.point, .75, { x: t.point.x, y: t.point.y, delay: i*.005, ease: e}, 0);
-        tl.to(s.handleIn, .75, { x: t.handleIn.x, y: t.handleIn.y, delay: i*.005, ease: e}, 0);
-        tl.to(s.handleOut, .75, { x: t.handleOut.x, y: t.handleOut.y, delay: i*.005, ease: e}, 0);
-      }
-
-      TweenMax.to(this.projects[this.prev].cover, .5, { opacity: 0, ease: Power2.easeOut });
-      TweenMax.to(this.projects[this.current].cover, .5, { opacity: 1, ease: Power2.easeOut });
+      tl.to(this.projects[this.prev].cover, .5, { opacity: 0, ease: Power2.easeOut }, 0);
+      tl.to(this.projects[this.current].cover, .5, { opacity: 1, ease: Power2.easeOut }, 0);
 
       var color = new Color(this.content[this.current].shadow.color);
       color.alpha = this.content[this.current].shadow.opacity;
-      TweenMax.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha});
+      tl.to(this.letter, .5, { fillColor: this.content[this.current].shadow.color }, 0);
+      tl.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha}, 0);
 
-      TweenMax.to(this.projects[this.prev].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y-S.window.h*0.2, ease: e });
+      tl.to(this.projects[this.prev].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
       TweenMax.set(this.projects[this.current].shade.point, { y: this.projects[this.prev].shade.point.y+S.window.h*0.2 });
-      TweenMax.to(this.projects[this.current].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y, ease: e });
+      tl.to(this.projects[this.current].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y, ease: Elastic.easeOut.config(1, .9) }, 0);
 
-      TweenMax.to(this.projects[this.prev].shade, 0.5, { opacity: 0 });
-      TweenMax.to(this.projects[this.current].shade, 0.5, { opacity: 0.02 });
+      tl.to(this.projects[this.prev].shade, 0.5, { opacity: 0 }, 0);
+      tl.to(this.projects[this.current].shade, 0.5, { opacity: 0.02 }, 0);
 
     }
 
-    previous () { let i = this.current-1; this.go((i >= 0) ? i : this.projects.length-1); }  
+    _morph (target) {
+
+      var morphs = [];
+
+      let timeline = new TimelineMax();
+      let ease = Elastic.easeOut.config(1, .9);
+
+      morphs.push({
+        from: _.last(this.letter.children),
+        to: _.last(target.letter.children),
+        start: this.content[this.current].letter.transition.origin,
+      });
+
+      if(this.letter.children.length > 1) {
+        
+        let dest = _.cloneDeep(this.letter.children[0]);
+        let x = dest.bounds.x+dest.bounds.width/2;
+        let y = dest.bounds.y+dest.bounds.height/2;
+        
+        _.each(dest.segments, (s, i) => {
+          s.point.x = x; s.point.y = y;
+          s.handleIn.x = 0; s.handleIn.y = 0;
+          s.handleOut.x = 0; s.handleOut.y = 0;
+        });
+
+        morphs.push({
+          from: this.letter.children[0],
+          to: dest,
+          start: 0,
+          callback: () => { this.letter.children.splice(0, 1); }
+        });
+
+      }
+
+      if(target.letter.children.length > 1) {
+
+        let source = _.cloneDeep(target.letter.children[0]);
+        this.letter.children.unshift(source);
+        let x = source.bounds.x+source.bounds.width/2;
+        let y = source.bounds.y+source.bounds.height/2;
+
+        _.each(source.segments, (s, i) => {
+          s.point.x = x; s.point.y = y;
+          s.handleIn.x = 0; s.handleIn.y = 0;
+          s.handleOut.x = 0; s.handleOut.y = 0;
+        });
+
+        morphs.push({
+          from: this.letter.children[0], 
+          to: target.letter.children[0],
+          start: 0
+        })
+
+      }
+
+      _.each(morphs, (m) => {
+
+        let tl = new TimelineMax({ onComplete: () => {
+          if(m.callback) { m.callback(); }
+        }});
+        timeline.add(tl, 0);
+
+        for(var i=0; i<m.from.segments.length; i++) {
+          let c = (i+m.start)%m.from.segments.length;
+          let s = m.from.segments[c], t = m.to.segments[c];
+          tl.to(s.point, .75, { x: t.point.x, y: t.point.y, delay: i*.005, ease: ease }, 0);
+          tl.to(s.handleIn, .75, { x: t.handleIn.x, y: t.handleIn.y, delay: i*.005, ease: ease }, 0);
+          tl.to(s.handleOut, .75, { x: t.handleOut.x, y: t.handleOut.y, delay: i*.005, ease: ease }, 0);
+        }
+
+      });
+
+      return timeline;
+
+    }
+
     
-    next () { this.go((this.current+1)%this.projects.length); }
+    /**
+     * Utility function to distord the current letter
+     * @param  {Number} frame The current frame
+     */
+    _distorsion (frame) {
 
+      _.each(this.letter.children, (c) => {
+        _.each(c.segments, (s, i) => {
+          s.point.x += Math.cos(frame*.4 + i*2) * .25;
+          s.point.y += -Math.sin(frame*.4 + i*i) * .25;
+        });
+      });
 
-    _animate
+    }
 
   }
 
 
-
-
-  /* Export */
+  // Export
 
   export default Letter;
