@@ -13,6 +13,7 @@
     /* Dependencies */
 
     import $ from 'jquery';
+    import { TimelineMax } from 'gsap';
 
     import Background from './background/background.vue';
 
@@ -41,29 +42,38 @@
     // Init
     
     component.mounted = function () {
+
+      // Properties
+      this.is = { navigating: false, };
       
       // Keyboard
       $(window).on('keydown', (e) => {
         switch(e.keyCode) {
-          case 37: _.bind(component.methods.previous, this)(); break;
-          case 39: _.bind(component.methods.next, this)(); break;
+          case 37: _.bind(component.previous, this)(); break;
+          case 39: _.bind(component.next, this)(); break;
         }
       });
 
     }
 
-    // Methods
+    // Navigation
     
-    component.methods = {};
-    
-    component.methods.previous = function () { 
+    component.previous = function () { 
+
+      if(this.is.navigating) { return; }
+      this.is.navigating = true;
+      setTimeout(() => { this.is.navigating = false; }, 1000);
 
       let i = this.item-1; 
       this.item = (i >= 0) ? i : Projects.length-1;
 
     }  
     
-    component.methods.next = function () { 
+    component.next = function () { 
+
+      if(this.is.navigating) { return; }
+      this.is.navigating = true;
+      setTimeout(() => { this.is.navigating = false; }, 1000);
       
       this.item = (this.item+1)%Projects.length;
 

@@ -57,6 +57,12 @@
       });
     };
 
+    component.isMoving = function (){
+
+      return false;
+
+    }
+
 
     
     /* Export */

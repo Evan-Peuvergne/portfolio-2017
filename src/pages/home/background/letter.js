@@ -18,7 +18,7 @@
 
 
   // Libs
-  
+
   import _ from 'lodash';
   import { TweenMax } from 'gsap';
 
@@ -75,8 +75,6 @@
 
       this.content = content;
       this.projects = [];
-
-      this.is = { moving: false, };
 
       this.canvas.letter.activate();
 
@@ -172,13 +170,10 @@
      */
     go (index) {
 
-      if(this.is.moving){ console.log('abort'); return; }
-
       this.prev = this.current;
       this.current = index;
-      this.is.moving = true;
 
-      var tl = new TimelineMax({ onComplete: () => { console.log('complete'); this.is.moving = false; }, });
+      var tl = new TimelineMax({ onComplete: () => {  } });
 
       tl.add(this._morph(this.projects[this.current]));
 
