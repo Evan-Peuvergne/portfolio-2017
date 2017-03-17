@@ -57,12 +57,6 @@
       });
     };
 
-    component.isMoving = function (){
-
-      return false;
-
-    }
-
 
     
     /* Export */
@@ -92,6 +86,12 @@
       bottom 0
       right 0
       // background red
+
+    .background-letterCanvas
+      z-index 100
+
+    .background-shadeCanvas
+      z-index 10;
 
   </style>
   

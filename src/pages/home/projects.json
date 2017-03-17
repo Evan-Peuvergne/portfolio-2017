@@ -9,6 +9,10 @@
   		"offset": { "x": 0, "y": 0 },
       "transition": {
         "origin": 15
+      },
+      "distorsion": {
+        "frequency": 0.4, 
+        "amplitude": 0.25
       }
   	},
     "shadow": {
@@ -34,6 +38,10 @@
   		"offset": { "x": 0.365, "y": 0 },
       "transition": {
         "origin": 30
+      },
+      "distorsion": {
+        "frequency": 0.4, 
+        "amplitude": 0.3
       }
   	},
     "shadow": {
@@ -46,7 +54,7 @@
       "height": 1604
   	},
     "shade": {
-      "offset": { "x": 0, "y": 0.1 }
+      "offset": { "x": 0, "y": -0.025 }
     }
   }
 ]

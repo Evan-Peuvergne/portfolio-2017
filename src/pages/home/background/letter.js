@@ -20,6 +20,7 @@
   // Libs
 
   import _ from 'lodash';
+  import $ from 'jquery';
   import { TweenMax } from 'gsap';
 
   import Paper from 'paper';
@@ -84,6 +85,8 @@
       this.letter.shadowColor = '#000'
       this.letter.shadowBlur = 50;
 
+      this.vertices = [];
+
       this.define = new SymbolDefinition(this.letter);
       this.mask = new SymbolItem(this.define);
       this.shadow = new SymbolItem(this.define);
@@ -135,6 +138,7 @@
       });
       p.shade.point.x = p.letter.position.x - p.shade.bounds.width * (content.shade.offset.x + .5);
       p.shade.point.y = p.letter.position.y + p.shade.bounds.height * (content.shade.offset.y + .25);
+      p.shade.anchor = { x: p.shade.position.x, y: p.shade.position.y };
       
       return p;
 
@@ -150,7 +154,12 @@
       this.current = 0;
       this.prev = null;
 
+      this._isMorphing = false;
+
       this.letter.children = _.cloneDeep(this.projects[index].letter.children);
+      this.letter.anchor = { x: this.letter.position.x, y: this.letter.position.y };
+
+      this.vertices = _.cloneDeep(this.letter.children);
 
       var color = new Color(this.content[index].shadow.color);
       color.alpha = this.content[index].shadow.opacity;
@@ -159,7 +168,19 @@
 
       this.projects[index].shade.opacity = 0.02;
 
-      new Ticker().tick('letter.animation', (f) => { this._distorsion(f.count); });
+      this.mouse = { x: S.window.w*.5, y: S.window.h*.5 };
+      $(window).on('mousemove', (e) => {
+        this.mouse.x = e.clientX;
+        this.mouse.y = e.clientY;
+      });
+      
+      this.canvas.letter.view.onFrame = (f) => {
+        // if(!this._isMorphing){ this._parallax(); }
+        this._parallax();
+        this._distorsion(f.count);
+      };
+
+      this.canvas.letter.view.play();
 
     }
 
@@ -173,6 +194,8 @@
       this.prev = this.current;
       this.current = index;
 
+      this._isMorphing = true;
+
       var tl = new TimelineMax({ onComplete: () => {  } });
 
       tl.add(this._morph(this.projects[this.current]));
@@ -185,12 +208,12 @@
       tl.to(this.letter, .5, { fillColor: this.content[this.current].shadow.color }, 0);
       tl.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha}, 0);
 
-      tl.to(this.projects[this.prev].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
-      TweenMax.set(this.projects[this.current].shade.point, { y: this.projects[this.prev].shade.point.y+S.window.h*0.2 });
-      tl.to(this.projects[this.current].shade.point, 0.5, { y: this.projects[this.prev].shade.point.y, ease: Elastic.easeOut.config(1, .9) }, 0);
+      // tl.to(this.projects[this.prev].shade.position, .5, { y: this.projects[this.prev].shade.position.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
+      // TweenMax.set(this.projects[this.current].shade.point, { y: this.projects[this.current].shade.anchor.y+S.window.h*0.2 });
+      // tl.to(this.projects[this.current].shade.point, .5, { y: this.projects[this.prev].shade.point.y, ease: Elastic.easeOut.config(1, .9) }, 0);
 
-      tl.to(this.projects[this.prev].shade, 0.5, { opacity: 0 }, 0);
-      tl.to(this.projects[this.current].shade, 0.5, { opacity: 0.02 }, 0);
+      tl.to(this.projects[this.prev].shade, .5, { opacity: 0 }, 0);
+      tl.to(this.projects[this.current].shade, .5, { opacity: 0.02 }, 0);
 
     }
 
@@ -198,7 +221,7 @@
 
       var morphs = [];
 
-      let timeline = new TimelineMax();
+      let timeline = new TimelineMax({ onComplete: () => { this._isMorphing = false; } });
       let ease = Elastic.easeOut.config(1, .9);
 
       morphs.push({
@@ -266,6 +289,11 @@
 
       });
 
+      timeline.to(this.letter.anchor, .75, {
+        x: this.projects[this.current].letter.position.x,
+        y: this.projects[this.current].letter.position.y,
+      }, 0);
+
       return timeline;
 
     }
@@ -277,12 +305,37 @@
      */
     _distorsion (frame) {
 
+      let settings = this.content[this.current].letter.distorsion;
+
       _.each(this.letter.children, (c) => {
         _.each(c.segments, (s, i) => {
-          s.point.x += Math.cos(frame*.4 + i*2) * .25;
-          s.point.y += -Math.sin(frame*.4 + i*i) * .25;
+          s.point.x += Math.cos(frame*settings.frequency + i*2) * settings.amplitude;
+          s.point.y += -Math.sin(frame*settings.frequency + i*i) * settings.amplitude;
         });
       });
+
+    }
+
+
+    /**
+     * Utility function to create the parallax effect on letter
+     */
+    _parallax () {
+
+      let x = this.mouse.x/S.window.w - 0.5;
+      let y = this.mouse.y/S.window.h - 0.5;
+
+      var ratio = 30;
+      if(!this._isMorphing) {
+        this.letter.position.x += ((x*ratio + this.letter.anchor.x) - this.letter.position.x)*0.1;
+        this.letter.position.y += ((y*ratio + this.letter.anchor.y) - this.letter.position.y)*0.1;
+      }
+
+      ratio = 75;
+      var anchor = this.projects[0].shade.anchor; 
+      var shade = this.projects[this.current].shade;
+      shade.position.x += ((x*ratio + shade.anchor.x) - shade.position.x)*0.1;
+      shade.position.y += ((y*ratio + shade.anchor.y) - shade.position.y)*0.1;
 
     }
 
