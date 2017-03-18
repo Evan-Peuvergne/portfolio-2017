@@ -55,6 +55,7 @@
 
       this.elems = {
         letter: config.canvasLetter,
+        tracker: config.canvasTracker,
         shade: config.canvasShade,
       };
 
@@ -78,26 +79,39 @@
       this.projects = [];
 
       this.canvas.letter.activate();
-
       this.letter = new CompoundPath();
       this.letter.fillColor = "#000";
       this.letter.strokeWidth = 0;
       this.letter.shadowColor = '#000'
       this.letter.shadowBlur = 50;
 
-      this.vertices = [];
-
       this.define = new SymbolDefinition(this.letter);
       this.mask = new SymbolItem(this.define);
       this.shadow = new SymbolItem(this.define);
 
-      this.container = new Group();
-      this.container.addChild(this.mask);
-      this.container.clipped = true;
+      this.containers = {};
+      this.containers.letter = new Group();
+      this.containers.letter.addChild(this.mask);
+      this.containers.letter.clipped = true;
+
+      this.canvas.tracker.activate();
+      this.containers.tracker = new Group();
+      this.tracker = new Path.Circle({
+        center: [S.window.w/2, S.window.h/2],
+        radius: S.window.h*0.07,
+      });
+      this.tracker.fillColor = '#000';
+      this.tracker.flatten(8);
+      this.tracker.smooth();
+      _.each(this.tracker.segments, (s, i) => {
+        s.origin = new Point(s.point);
+        s.origin.x -= this.tracker.position.x;
+      });
+      this.containers.tracker.addChild(this.tracker);
+      this.containers.tracker.clipped = true;
 
       _.each(this.content, (c, i) => { 
         let p = this._initProject(c, i);
-        this.container.addChild(p.cover);
         this.projects.push(p); 
       });
 
@@ -105,7 +119,7 @@
 
     _initProject (content, index) {
 
-      var p = { letter: null, shade: null, cover: null, };
+      var p = { letter: null, shade: null, cover: [], };
 
       this.canvas.letter.activate();
 
@@ -116,17 +130,20 @@
         size: [ S.window.w, S.window.h*content.letter.size ]
       }));
       p.letter.position.x = S.window.w*.5 - p.letter.bounds.width*(1-content.letter.offset.x) - 25;
-      p.letter.position.y = S.window.h*.5 - p.letter.bounds.height*content.letter.offset.y;
+      p.letter.position.y = S.window.h*.5 - p.letter.bounds.height*content.letter.offset.y;  
 
-      p.cover = new Raster({ 
-        source: content.cover.url, 
-        position: this.canvas.letter.view.center,
+      ['letter', 'tracker'].forEach((c, i) => {
+        this.canvas[c].activate();
+        p.cover[i] = new Raster({
+          source: content.cover.url,
+          position: this.canvas[c].view.center
+        })
+        p.cover[i].onLoad = function () {
+          this.ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
+          this.size = new Size(this.size.width*this.ratio, this.size.height*this.ratio);
+        }
+        this.containers[c].addChild(p.cover[i]);
       });
-      p.cover.onLoad = function () {
-        var ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
-        this.size = new Size(this.size.width*ratio, this.size.height*ratio);
-        this.opacity = 0;
-      };
 
       this.canvas.shade.activate();
       p.shade = new PointText({
@@ -159,8 +176,6 @@
       this.letter.children = _.cloneDeep(this.projects[index].letter.children);
       this.letter.anchor = { x: this.letter.position.x, y: this.letter.position.y };
 
-      this.vertices = _.cloneDeep(this.letter.children);
-
       var color = new Color(this.content[index].shadow.color);
       color.alpha = this.content[index].shadow.opacity;
       this.letter.fillColor = new Color(this.content[index].shadow.color);
@@ -168,19 +183,26 @@
 
       this.projects[index].shade.opacity = 0.02;
 
-      this.mouse = { x: S.window.w*.5, y: S.window.h*.5 };
+      _.each(this.projects, (p, i) => {
+        _.each(p.cover, (c) => {
+          c.opacity = (i == index) ? 1 : 0;
+        });
+      });
+
+      this.mouse = { x: 0, y: 0 };
       $(window).on('mousemove', (e) => {
         this.mouse.x = e.clientX;
         this.mouse.y = e.clientY;
       });
       
       this.canvas.letter.view.onFrame = (f) => {
-        // if(!this._isMorphing){ this._parallax(); }
         this._parallax();
+        this._track();
         this._distorsion(f.count);
       };
 
       this.canvas.letter.view.play();
+      this.canvas.tracker.view.play();
 
     }
 
@@ -208,9 +230,9 @@
       tl.to(this.letter, .5, { fillColor: this.content[this.current].shadow.color }, 0);
       tl.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha}, 0);
 
-      // tl.to(this.projects[this.prev].shade.position, .5, { y: this.projects[this.prev].shade.position.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
-      // TweenMax.set(this.projects[this.current].shade.point, { y: this.projects[this.current].shade.anchor.y+S.window.h*0.2 });
-      // tl.to(this.projects[this.current].shade.point, .5, { y: this.projects[this.prev].shade.point.y, ease: Elastic.easeOut.config(1, .9) }, 0);
+      tl.to(this.projects[this.prev].shade.position, .5, { y: this.projects[this.prev].shade.position.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
+      TweenMax.set(this.projects[this.current].shade.position, { y: this.projects[this.current].shade.anchor.y+S.window.h*0.2 });
+      tl.to(this.projects[this.current].shade.position, .5, { y: this.projects[this.current].shade.anchor.y, ease: Elastic.easeOut.config(1, .9) }, 0);
 
       tl.to(this.projects[this.prev].shade, .5, { opacity: 0 }, 0);
       tl.to(this.projects[this.current].shade, .5, { opacity: 0.02 }, 0);
@@ -336,6 +358,33 @@
       var shade = this.projects[this.current].shade;
       shade.position.x += ((x*ratio + shade.anchor.x) - shade.position.x)*0.1;
       shade.position.y += ((y*ratio + shade.anchor.y) - shade.position.y)*0.1;
+
+    }
+
+
+    /**
+     * Utility function to manage the tracker animation
+     */
+    _track () {
+      
+      var delta = new Point(this.mouse.x, this.mouse.y);
+      
+      this.tracker.position.x += (delta.x - this.tracker.position.x)*0.1;
+      this.tracker.position.y += (delta.y - this.tracker.position.y)*0.1;
+      
+      // _.each(this.tracker.segments, (s, i) => {
+      //   let dist = s.point.getDistance(delta);
+      //   let pct = dist/(S.window.h*0.07);
+        
+      //   var x = delta.x * pct;
+      //   var y = delta.y * pct;
+
+      //   var destX = s.point.x - x;
+      //   var destY = s.point.y - y;
+
+      //   s.point.x += (destX - s.point.x) * 0.33;
+      //   s.point.y += (destY - s.point.y) * 0.33;
+      // });
 
     }
 

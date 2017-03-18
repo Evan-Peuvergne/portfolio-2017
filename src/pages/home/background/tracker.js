@@ -2,28 +2,52 @@
 
 
 
-  /* Dependencies */
+  /**
+  *
+  *   LETTER|JS
+  *   ---------------
+  *   Class managing the home background letter
+  *   pages > home > background > letter.js
+  *
+  */
   
+
+
+  /*----------  Dependencies  ----------*/
+
+
+
+  // Libs
+
   import _ from 'lodash';
+  import $ from 'jquery';
+  import { TweenMax } from 'gsap';
 
   import Paper from 'paper';
   Paper.install(window);
+
+
+  // Helpers
 
   import S from '../../../shared/helpers/sizes.js';
 
 
 
-  /* Class */
+  
+
+
+  /*----------  Class  ----------*/
+
+
+
+  // Definition
 
   class Tracker {
 
 
     constructor (config = {}) {
 
-      this.elem = config.element;
-
-      // Paper.install(this);
-      // console.log(Paper.view);
+      return this;
 
     }
 
@@ -31,7 +55,7 @@
   }
 
 
-
-  /* Export */
-
+  // Export
+  
   export default Tracker;
+  
