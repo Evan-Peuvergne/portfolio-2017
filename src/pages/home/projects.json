@@ -16,8 +16,8 @@
       }
   	},
     "shadow": {
-      "color": "#f3602c",
-      "opacity": 0.3 
+      "color": "#ff7731",
+      "opacity": 0.5
     },
   	"cover": {
   		"url": "assets/images/projects/jaiye_cover.png",

@@ -59,6 +59,9 @@
         shade: config.canvasShade,
       };
 
+      // $(this.elems.shade).css({ opacity: 0 });
+      // $(this.elems.tracker).css({ display: 'none' })
+
       this.canvas = {};
       _.each(this.elems, (s, n) => {
         this.canvas[n] = new Project(s);
@@ -87,9 +90,12 @@
 
       this.define = new SymbolDefinition(this.letter);
       this.mask = new SymbolItem(this.define);
+      this.canvas.shade.activate();
       this.shadow = new SymbolItem(this.define);
 
       this.containers = {};
+
+      this.canvas.letter.activate();
       this.containers.letter = new Group();
       this.containers.letter.addChild(this.mask);
       this.containers.letter.clipped = true;
@@ -122,7 +128,6 @@
       var p = { letter: null, shade: null, cover: [], };
 
       this.canvas.letter.activate();
-
       p.letter = new CompoundPath(content.letter.path);
       p.letter.visible = false;
       p.letter.fitBounds(new Rectangle({
@@ -227,8 +232,8 @@
 
       var color = new Color(this.content[this.current].shadow.color);
       color.alpha = this.content[this.current].shadow.opacity;
-      tl.to(this.letter, .5, { fillColor: this.content[this.current].shadow.color }, 0);
-      tl.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha}, 0);
+      tl.to(this.letter, .5, { fillColor: this.content[this.current].shadow.color, ease: Power4.easeOut }, 0);
+      tl.to(this.letter.shadowColor, .5, { red: color.red, green: color.green, blue: color.blue, alpha: color.alpha, ease: Power4.easeOut}, 0);
 
       tl.to(this.projects[this.prev].shade.position, .5, { y: this.projects[this.prev].shade.position.y-S.window.h*0.2, ease: Elastic.easeOut.config(1, .9) }, 0);
       TweenMax.set(this.projects[this.current].shade.position, { y: this.projects[this.current].shade.anchor.y+S.window.h*0.2 });
@@ -334,6 +339,11 @@
           s.point.x += Math.cos(frame*settings.frequency + i*2) * settings.amplitude;
           s.point.y += -Math.sin(frame*settings.frequency + i*i) * settings.amplitude;
         });
+      });
+
+      _.each(this.tracker.segments, (s, i) => {
+        s.point.x += Math.cos(frame*.3 + i*2) * .5;
+        s.point.y += -Math.sin(frame*.3 + i*i) * .5;
       });
 
     }

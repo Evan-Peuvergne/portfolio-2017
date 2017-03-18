@@ -44,8 +44,6 @@
 
     component.mounted = function () {
 
-      console.log($('.background-letterCanvas'));
-
       // Letter
       this.letter = new Letter({
         canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
@@ -54,6 +52,7 @@
       });
       this.letter.init(Projects);
       this.letter.launch(this.current);
+
     };
 
 
@@ -71,16 +70,12 @@
 
       svg(width="100%", height="100%")
         defs
-          filter(id="old-goo")
-            feGaussianBlur(in="SourceGraphic" stdDeviation="10" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
-            feBlend(in="SourceGraphic" in2="goo")
-          filter(id="fancy-goo")
-            feGaussianBlur(in="SourceGraphic" stdDeviation="4" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo")
+          filter(id="organic")
+            feGaussianBlur(in="SourceGraphic" stdDeviation="8" result="blur")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -20" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="atop")
       
-      div.background-gooey
+      div.background-organic
         canvas.background-letterCanvas
         canvas.background-trackerCanvas
 
@@ -100,17 +95,15 @@
       right 0
       // background red
 
-    .background-letterCanvas
+    .background-organic
+      position absolute
+      top 0
+      left 0
       z-index 100
-
-    .background-trackerCanvas
-      z-index 110;
+      filter: url(#organic)
 
     .background-shadeCanvas
-      z-index 10;
-
-    .background-gooey
-      filter url("#fancy-goo")
+      z-index 50
 
   </style>
   
