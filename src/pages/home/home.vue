@@ -1,12 +1,5 @@
 
 
-  <template lang="jade">
-    
-      background(v-bind:current="item")
-
-  </template>
-
-
   <script>
 
     
@@ -14,7 +7,8 @@
 
     import $ from 'jquery';
     import { TimelineMax } from 'gsap';
-
+    
+    import Infos from './infos.vue';
     import Background from './background/background.vue';
 
     import Projects from './projects.json';
@@ -30,11 +24,13 @@
     
     component.data = function () {
       return {
-        item: 0
+        item: 0,
+        content: Projects,
       }
     };
 
     component.components = {
+      Infos,
       Background
     };
 
@@ -86,4 +82,35 @@
     export default component;
 
   </script>
+
+
+  <template lang="jade">
+      
+    .home
+      infos(v-bind:current="item", v-bind:content="content")
+      background(v-bind:current="item")
+
+  </template>
+
+
+  <style lang="stylus">
+    
+    .home
+      position absolute
+      top 0
+      left 0
+      width 100%
+      height 100%
+
+      .home-infos
+      .home-background
+        position absolute
+
+      .home-infos
+        z-index 200
+
+      .home-background
+        z-index 100
+
+  </style>
   
