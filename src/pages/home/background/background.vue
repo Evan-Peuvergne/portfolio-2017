@@ -9,8 +9,7 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import Letter from './letter.js';
-    import Tracker from './tracker.js';
+    import Stage from './stage.js';
 
     import Projects from '../projects.json';
 
@@ -35,7 +34,7 @@
 
     component.watch = {
       current: function (val) {
-        this.letter.go(val);
+        this.stage.go(val);
       }
     }
 
@@ -45,13 +44,13 @@
     component.mounted = function () {
 
       // Letter
-      this.letter = new Letter({
+      this.stage = new Stage({
         canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
         canvasTracker: $(this.$el).find('.background-trackerCanvas').get(0),
         canvasShade: $(this.$el).find('.background-shadeCanvas').get(0),
       });
-      this.letter.init(Projects);
-      this.letter.launch(this.current);
+      this.stage.init(Projects);
+      this.stage.launch(this.current);
 
     };
 
@@ -72,7 +71,7 @@
         defs
           filter(id="organic")
             feGaussianBlur(in="SourceGraphic" stdDeviation="8" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 40 -20" result="goo")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="atop")
       
       div.background-organic
@@ -100,7 +99,7 @@
       top 0
       left 0
       z-index 100
-      filter: url(#organic)
+      /*filter: url(#organic)*/
 
     .background-shadeCanvas
       z-index 50

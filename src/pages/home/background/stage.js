@@ -4,10 +4,10 @@
 
   /**
   *
-  *   LETTER|JS
+  *   STAGE|JS
   *   ---------------
-  *   Class managing the home background letter
-  *   pages > home > background > letter.js
+  *   Class managing the home background canvas stage
+  *   pages > home > background > stage.js
   *
   */
   
@@ -43,7 +43,7 @@
 
   // Definition
 
-  class Letter {
+  class Stage {
 
 
     /**
@@ -58,9 +58,6 @@
         tracker: config.canvasTracker,
         shade: config.canvasShade,
       };
-
-      // $(this.elems.shade).css({ opacity: 0 });
-      // $(this.elems.tracker).css({ display: 'none' })
 
       this.canvas = {};
       _.each(this.elems, (s, n) => {
@@ -403,4 +400,4 @@
 
   // Export
 
-  export default Letter;
+  export default Stage;
