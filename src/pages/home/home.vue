@@ -69,7 +69,7 @@
 
       if(this.is.navigating) { return; }
       this.is.navigating = true;
-      setTimeout(() => { this.is.navigating = false; }, 1000);
+      setTimeout(() => { this.is.navigating = false; }, 1500);
       
       this.item = (this.item+1)%Projects.length;
 

@@ -32,20 +32,28 @@
       return {}
     };
 
-    component.components = {};
+    component.watch = {
+      current: function (val) {
+        this.go(val);
+      }
+    }
 
 
     // Init
     
     component.mounted = function () {
 
+      this.prev = this.current;
+      this._isMoving = false;
+
       this.projects = [];
       this.$refs.infos.forEach((e, i) => {
         var dom = { elem: this.$refs.infos[i], title: this.$refs.titles[i], 
-          splitted: null, label: this.$refs.labels[i] };
-        this.projects.push(dom, i);
+          splitted: null, label: this.$refs.labels[i], labelBackground: null, };
+        this.projects.push(dom);
         this.initProject(dom);
       });
+      this.projects[this.current].elem.style.visibility = 'visible';
 
       this.mouse = { x: 0, y: 0 };
       $(window).on('mousemove', (e) => {
@@ -54,12 +62,14 @@
       });
 
       new Ticker().tick('parallax', (t) => {
-        this._parallax(t);
+        if(!this._isMoving){ this._parallax(t); }
       });
 
     };
 
     component.methods.initProject = function (p, i){
+
+      p.elem.style.visibility = 'hidden';
 
       p.title.innerHTML = p.title.innerHTML.replace(' ', '<br/>');
       p.label.innerHTML += '<span></span>';
@@ -70,15 +80,50 @@
       TweenMax.set(_.last(p.splitted.lines), { x: 20 });
 
       _.each(p.splitted.chars, (c, j) => {
-        c.target = { amplitude: _.random(5,10), 
-                direction: (j%2 == 0) ? 1 : -1, };
-        c.position =  { x: 0, y: 0, };
-        c.rotation = 0;
+        c.target = { amplitude: _.random(5,10), direction: (j%2 == 0) ? 1 : -1, };
+        c.p =  { x: 0, y: 0, };
+        c.r = 0;
       });
 
-      p.label.position = { x: 0, y: 0 };
+      p.label.p = { x: 0, y: 0 };
+      p.labelBackground.p = { x: 0, y: 0 };
 
     };
+
+
+    // Transition
+    
+    component.methods.go = function (index) {
+
+      this._isMoving = true;
+
+      let from = this.projects[this.prev];
+      let to = this.projects[this.current];
+
+      let tl = new TimelineMax({ onComplete: () => { 
+        this._isMoving = false;
+        from.elem.style.visibility = 'hidden'; 
+      } });
+      to.elem.style.visibility = 'visible';
+    
+      var ease = Elastic.easeOut.config(1, .8);
+      var duration = 1;
+      tl.staggerFromTo(from.splitted.chars, duration, 
+        { y: 0, opacity: 1 },
+        { y: -50, opacity: 0, ease: ease }, 0.01, 0);
+      tl.staggerFromTo(to.splitted.chars, duration, 
+        { y: 50, opacity: 0, },
+        { y: 0, opacity: 1, ease: ease, }, 0.01, 0.15);
+
+      tl.fromTo(from.label, 1, { y: 0, opacity: 1 }, { y: -50, opacity: 0, ease: ease }, .15);
+      tl.fromTo(to.label, 1, { y: 50, opacity: 0 }, { y: 0, opacity: 1, ease: ease }, .3);      
+
+      tl.fromTo(from.labelBackground, 1, { y: 0, opacity: 0.5 }, { y: -25, opacity: 0, ease: ease }, 0.20);
+      tl.fromTo(to.labelBackground, 1, { y: 25, opacity: 0 }, { y: 0, opacity: 0.5, ease: ease }, 0.35);
+
+      this.prev = this.current;
+
+    }
 
 
     // Animations
@@ -97,21 +142,21 @@
         var positionY = -(y*ratio + (2*(x*y)*c.target.amplitude*c.target.direction));
         var rotation = 2*x*y*c.target.amplitude*c.target.direction;
 
-        c.position.x += (positionX - c.position.x)*0.1;
-        c.position.y += (positionY - c.position.y)*0.1;
-        c.rotation += (rotation - c.rotation)*0.1;
-        TweenMax.set(c, { css: { rotation: c.rotation, x: c.position.x, y: c.position.y, } });
+        c.p.x += (positionX - c.p.x)*0.1;
+        c.p.y += (positionY - c.p.y)*0.1;
+        c.r += (rotation - c.r)*0.1;
+        TweenMax.set(c, { css: { rotation: c.r, x: c.p.x, y: c.p.y, } });
       });
 
       var ratio = 30;
-      project.label.position.x += (x*ratio - project.label.position.x)*0.1;
-      project.label.position.y += (y*ratio - project.label.position.y)*0.1;
-      TweenMax.set(project.label, { x: -project.label.position.x, y: -project.label.position.y });
+      project.label.p.x += (x*ratio - project.label.p.x)*0.1;
+      project.label.p.y += (y*ratio - project.label.p.y)*0.1;
+      TweenMax.set(project.label, { x: -project.label.p.x, y: -project.label.p.y });
 
       var ratio = 10;
-      project.labelBackground.position.x += (x*ratio - project.labelBackground.position.x)*0.1;
-      project.labelBackground.position.y += (y*ratio - project.labelBackground.position.y)*0.1;
-      TweenMax.set(project.labelBackground, { x: -project.labelBackground.position.x, y: -project.labelBackground.position.y });
+      project.labelBackground.p.x += (x*ratio - project.labelBackground.p.x)*0.1;
+      project.labelBackground.p.y += (y*ratio - project.labelBackground.p.y)*0.1;
+      TweenMax.set(project.labelBackground, { x: -project.labelBackground.p.x, y: -project.labelBackground.p.y });
 
     };
 
@@ -144,14 +189,11 @@
       margin-top -25px
 
     .home-info
-      display none
+      display block
       position absolute
       top 0
       left 0
       width 300px
-
-      &:first-child
-        display block
 
       .home-infoTitle
         font-family Bodoni
