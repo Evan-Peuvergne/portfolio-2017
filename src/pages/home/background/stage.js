@@ -126,6 +126,7 @@
 
       this.canvas.letter.activate();
       p.letter = new CompoundPath(content.letter.path);
+      if(index == 2){ console.log(p.letter); }
       p.letter.visible = false;
       p.letter.fitBounds(new Rectangle({
         point: [ 0, S.window.h*(1-content.letter.size)/2 ],

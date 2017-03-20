@@ -80,6 +80,7 @@
       TweenMax.set(_.last(p.splitted.lines), { x: 20 });
 
       _.each(p.splitted.chars, (c, j) => {
+        c.animation = { y: 0 };
         c.target = { amplitude: _.random(5,10), direction: (j%2 == 0) ? 1 : -1, };
         c.p =  { x: 0, y: 0, };
         c.r = 0;
@@ -199,6 +200,7 @@
         font-family Bodoni
         font-size 60px
         letter-spacing 0.04em
+        opacity 0.8
         line-height 1.1
 
       .home-infoLabel

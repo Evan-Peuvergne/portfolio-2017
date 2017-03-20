@@ -17,7 +17,7 @@
     
     /* Component */
 
-    var component = { name: 'home' };
+    var component = { name: 'home', methods: {} };
 
 
     // Properties
@@ -41,12 +41,21 @@
 
       // Properties
       this.is = { navigating: false, };
+
+      // Navigation
+      $(this.$refs.next).on('click', (e) => {
+        e.preventDefault(); this.next();
+      });
+
+      $(this.$refs.previous).on('click', (e) => {
+        e.preventDefault(); this.previous();
+      });
       
       // Keyboard
       $(window).on('keydown', (e) => {
         switch(e.keyCode) {
-          case 37: _.bind(component.previous, this)(); break;
-          case 39: _.bind(component.next, this)(); break;
+          case 37: this.previous(); break;
+          case 39: component.next(); break;
         }
       });
 
@@ -54,7 +63,7 @@
 
     // Navigation
     
-    component.previous = function () { 
+    component.methods.previous = function () { 
 
       if(this.is.navigating) { return; }
       this.is.navigating = true;
@@ -65,7 +74,7 @@
 
     }  
     
-    component.next = function () { 
+    component.methods.next = function () { 
 
       if(this.is.navigating) { return; }
       this.is.navigating = true;
@@ -87,6 +96,9 @@
   <template lang="jade">
       
     .home
+      a.home-navigation.home-next(href="#", ref="next")
+      a.home-navigation.home-previous(href="#", ref="previous")
+
       infos(v-bind:current="item", v-bind:content="content")
       background(v-bind:current="item")
 
@@ -102,15 +114,69 @@
       width 100%
       height 100%
 
-      .home-infos
-      .home-background
+    .home-infos
+    .home-background
+      position absolute
+
+    .home-infos
+      z-index 200
+
+    .home-background
+      z-index 100
+
+    .home-navigation
+      display block
+      cursor pointer
+      position absolute
+      z-index 500
+      top 50%
+      width 140px
+      height 140px
+      text-decoration none
+      color rgba(#000, 0.7)
+      transform translateY(-50%)
+
+      &:before
+        display block
         position absolute
+        top 20px
+        left 20px
+        content ''
+        width 100px
+        height 100px
+        border-radius 50px
+        background rgba(#000, 0.02)
+        transition transform 1s ease
 
-      .home-infos
-        z-index 200
+      &:after
+        display flex
+        position absolute
+        width 140px
+        height 140px
+        font-family 'Ionicons'
+        font-size 23px
+        justify-content center
+        align-items center
 
-      .home-background
-        z-index 100
+      &:hover:before
+        transform scale(1.2)
+
+      &:hover:after
+        color: #fefefe
+
+    .home-previous
+      left -70px
+
+      &:after
+        content "\f108"
+        left 45px
+
+    .home-next
+      right -70px
+
+      &:after
+        content "\f10b"
+        right 45px
 
   </style>
   
