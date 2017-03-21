@@ -23,7 +23,11 @@
 	import $ from 'jquery';
 	import _ from 'lodash';
 
-
+	import Stats from 'stats.js';
+	let stats = new Stats();
+	stats.showPanel(0);
+	document.body.appendChild(stats.dom);
+	stats.dom.style.zIndex = 10000;
 
 
 
@@ -75,6 +79,9 @@
 		 */	
 		framer () {
 			
+			// Stats
+			stats.begin();
+
 			// Functions
 			_.forIn(this.ticks, (tick) => 
 			{
@@ -84,6 +91,7 @@
 			});
 
 			// Frame
+			stats.end();
 			this.frame = window.requestAnimationFrame(() => this.framer());
 
 		}
