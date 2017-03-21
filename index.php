@@ -1,1 +1,1 @@
-<?php echo 'coucou'; ?>
+<?php header( 'Location: /index.html' ) ;  ?>
