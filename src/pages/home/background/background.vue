@@ -10,6 +10,7 @@
     import _ from 'lodash';
 
     import Stage from './stage.js';
+    import Tracker from './tracker.vue';
 
     import Projects from '../projects.json';
 
@@ -29,6 +30,7 @@
     component.data = function () {
       return { 
         length: Projects.length,
+        projects: Projects,
       };
     };
 
@@ -36,7 +38,12 @@
       current: function (val) {
         this.stage.go(val);
       }
-    }
+    };
+
+
+    component.components = {
+      Tracker
+    };
 
 
     // Init
@@ -46,7 +53,7 @@
       // Stage
       this.stage = new Stage({
         canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
-        canvasTracker: $(this.$el).find('.background-trackerCanvas').get(0),
+        // canvasTracker: $(this.$el).find('.background-trackerCanvas').get(0),
         canvasShade: $(this.$el).find('.background-shadeCanvas').get(0),
       });
       this.stage.init(Projects);
@@ -71,7 +78,8 @@
       
       div.background-organic
         canvas.background-letterCanvas
-        canvas.background-trackerCanvas
+        //- canvas.background-trackerCanvas
+        tracker(v-bind:current="current", v-bind:content="projects")
 
       canvas.background-shadeCanvas
 

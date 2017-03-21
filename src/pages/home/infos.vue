@@ -202,6 +202,7 @@
         letter-spacing 0.04em
         opacity 0.8
         line-height 1.1
+        -webkit-font-smoothing always
 
       .home-infoLabel
         display inline-block
