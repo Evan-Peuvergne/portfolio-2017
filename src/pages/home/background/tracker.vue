@@ -30,18 +30,20 @@
     
     component.props = {
       current: { type: Number, default: 0 },
-      projects: { type: Array, default: function () { return []; } }
+      content: { type: Array, default: [] },
+      mouse: { type: Object }
     };
 
     component.data = function () {
       return { 
-        length: this.projects.length,
+        length: this.content.length,
       };
     };
 
     component.watch = {
       current: function (val) {
-        this.stage.go(val);
+        this.go(val);
+        this.prev = val;
       }
     }
 
@@ -50,47 +52,70 @@
 
     component.mounted = function () {
 
-      this.radius = S.window.h*0.07;
+      this.radius = sh*0.07;
       this.size = this.radius*2*1.3;
 
-      this.mouse = { x: S.window.w/2, y: S.window.h/2 };
-      this.position = { x: S.window.w/2 - this.size/2, y: S.window.h/2 - this.size/2 };
-      this.offset = { x: this.position.x - this.size/2, y: this.position.y - this.size/2 };
+      this.pos = { x: sw/2 - this.size/2, y: sh/2 - this.size/2 };
+      this.offset = { x: this.pos.x - this.size/2, y: this.pos.y - this.size/2 };
 
       this.stage = new Project(this.$el);
       this.stage.view.viewSize = new Size(this.size, this.size);
-      TweenMax.set(this.stage.view.element, { x: this.position.x, y: this.position.y });
+      TweenMax.set(this.stage.view.element, { x: this.pos.x, y: this.pos.y });
 
-      this.container = new Group();
       this.shape = new Path.Circle({
         center: [this.size*.5, this.size*.5],
         radius: this.radius
       });
+      this.shape.flatten(8)
+      this.shape.smooth();
       this.shape.fillColor = '#000';
+
+      this.container = new Group();
       this.container.addChild(this.shape);
       this.container.clipped = true;
 
       this.covers = [];
-      this.covers[0] = new Raster({
-        source: Projects[0].cover.url,
-        position: new Point(this.size/2, this.size/2)
+      _.each(this.content, (c, i) => {
+        this.covers[i] = new Raster({
+          source: c.cover.url, 
+          position: new Point(this.size/2, this.size/2),
+          opacity: 0
+        });
+        this.covers[i].onLoad = function () {
+          this.ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
+          this.size = new Size(this.size.width*this.ratio, this.size.height*this.ratio);
+        };
+        this.container.addChild(this.covers[i]);
       });
-      this.covers[0].onLoad = function () {
-        this.ratio = Math.max(S.window.w/this.size.width, S.window.h/this.size.height);
-        this.size = new Size(this.size.width*this.ratio, this.size.height*this.ratio);
-      };
-      this.container.addChild(this.covers[0]);
-      
-      $(window).on('mousemove', (e) => {
-        this.mouse.x = e.clientX;
-        this.mouse.y = e.clientY;
-      });
+
+      this.launch();
+
+    };
+
+
+    // Launch
+    
+    component.methods.launch = function () {
+
+      this.prev = this.current;
+
+      this.covers[this.current].opacity = 1;
 
       new Ticker().tick('home.background.tracker', (f) => { 
         this._calculatePosition();
         this._calculateOffset();
-        this._animate();
+        this._animate(f);
       });
+
+    };
+
+
+    // Go
+    
+    component.methods.go = function (i) {
+
+      TweenMax.to(this.covers[this.prev], .5, { opacity: 0, ease: Power2.easeOut });
+      TweenMax.to(this.covers[i], .5, { opacity: 1, ease: Power2.easeOut });
 
     };
 
@@ -99,8 +124,8 @@
     
     component.methods._calculatePosition = function () {  
 
-      this.position.x += ((this.mouse.x - this.size*.5) - this.position.x)*0.1;
-      this.position.y += ((this.mouse.y - this.size*.5) - this.position.y)*0.1;
+      this.pos.x += ((this.mouse.x - this.size*.5) - this.pos.x)*0.1;
+      this.pos.y += ((this.mouse.y - this.size*.5) - this.pos.y)*0.1;
 
     };
 
@@ -116,7 +141,12 @@
     
     component.methods._animate = function (f) {
 
-      TweenMax.set(this.stage.view.element, { x: this.position.x, y: this.position.y });
+      _.each(this.shape.segments, (s, i) => {
+        s.point.x += Math.cos(f.count*.3 + i*2) * .5;
+        s.point.y += -Math.sin(f.count*.3 + i*i) * .5;
+      });
+
+      TweenMax.set(this.stage.view.element, { x: this.pos.x, y: this.pos.y });
       this.covers[0].position.x = this.offset.x;
       this.covers[0].position.y = this.offset.y;
 

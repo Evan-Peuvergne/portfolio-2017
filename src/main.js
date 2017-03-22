@@ -13,6 +13,13 @@
   
 
 
+  /* Global */
+
+  window.sw = window.innerWidth;
+  window.sh = window.innerHeight;
+
+
+
   /* Dependencies */
 
   import Vue from 'vue';

@@ -195,6 +195,7 @@
       top 0
       left 0
       width 300px
+      pointer-events none
 
       .home-infoTitle
         font-family Bodoni

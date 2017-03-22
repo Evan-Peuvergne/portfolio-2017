@@ -12,6 +12,8 @@
     import Stage from './stage.js';
     import Tracker from './tracker.vue';
 
+    import Ticker from '../../../shared/helpers/ticker.js';
+
     import Projects from '../projects.json';
 
 
@@ -24,13 +26,14 @@
     // Properties
     
     component.props = {
-      current: { type: Number, default: 0 }
+      current: { type: Number, default: 0 },
+      content: { type: Array, default: [] },
+      mouse: { type: Object, defaul: { x: window.sw/2, y: window.sh/2 } }
     };
 
     component.data = function () {
       return { 
-        length: Projects.length,
-        projects: Projects,
+        length: this.content.length,
       };
     };
 
@@ -59,8 +62,6 @@
       this.stage.init(Projects);
       this.stage.launch(this.current);
 
-
-
     };
 
 
@@ -79,7 +80,7 @@
       div.background-organic
         canvas.background-letterCanvas
         //- canvas.background-trackerCanvas
-        tracker(v-bind:current="current", v-bind:content="projects")
+        tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse")
 
       canvas.background-shadeCanvas
 

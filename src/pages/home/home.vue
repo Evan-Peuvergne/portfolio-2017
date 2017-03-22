@@ -12,6 +12,7 @@
     import Background from './background/background.vue';
 
     import Projects from './projects.json';
+    import S from '../../shared/helpers/sizes.js';
 
 
     
@@ -26,6 +27,7 @@
       return {
         item: 0,
         content: Projects,
+        mouse: { x: 0, y: 0 }
       }
     };
 
@@ -49,6 +51,10 @@
 
       $(this.$refs.previous).on('click', (e) => {
         e.preventDefault(); this.previous();
+      });
+
+      $(window).on('mousemove', (e) => {
+        this.mouse = { x: e.clientX, y: e.clientY }; 
       });
       
       // Keyboard
@@ -100,7 +106,7 @@
       a.home-navigation.home-previous(href="#", ref="previous")
 
       infos(v-bind:current="item", v-bind:content="content")
-      background(v-bind:current="item")
+      background(v-bind:current="item", v-bind:content="content", v-bind:mouse="mouse")
 
   </template>
 
