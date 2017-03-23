@@ -114,7 +114,7 @@
       top 0
       left 0
       z-index 100
-      filter: url(#organic)
+      /*filter: url(#organic)*/
 
     .background-shadeCanvas
       z-index 50
