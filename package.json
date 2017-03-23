@@ -4,7 +4,8 @@
   "description": "This is Evan Peuvergne, french webdesigner/developer, portfolio front-end code. Enjoys.",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "deploy": "git push origin master && git push heroku master"
   },
   "author": "Evan Peuvergne",
   "private": true,
