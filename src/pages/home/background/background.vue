@@ -9,7 +9,9 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import Stage from './stage.js';
+    // import Stage from './stage.js';
+
+    import Letter from './letter.vue';
     import Tracker from './tracker.vue';
 
     import Ticker from '../../../shared/helpers/ticker.js';
@@ -45,6 +47,7 @@
 
 
     component.components = {
+      Letter,
       Tracker
     };
 
@@ -54,13 +57,13 @@
     component.mounted = function () {
 
       // Stage
-      this.stage = new Stage({
-        canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
-        // canvasTracker: $(this.$el).find('.background-trackerCanvas').get(0),
-        canvasShade: $(this.$el).find('.background-shadeCanvas').get(0),
-      });
-      this.stage.init(Projects);
-      this.stage.launch(this.current);
+      // this.stage = new Stage({
+      //   canvasLetter: $(this.$el).find('.background-letterCanvas').get(0),
+      //   // canvasTracker: $(this.$el).find('.background-trackerCanvas').get(0),
+      //   canvasShade: $(this.$el).find('.background-shadeCanvas').get(0),
+      // });
+      // this.stage.init(Projects);
+      // this.stage.launch(this.current);
 
     };
 
@@ -78,8 +81,8 @@
     div.home-background
       
       div.background-organic
-        canvas.background-letterCanvas
-        //- canvas.background-trackerCanvas
+        //- canvas.background-letterCanvas
+        letter(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse")
         tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse")
 
       canvas.background-shadeCanvas
