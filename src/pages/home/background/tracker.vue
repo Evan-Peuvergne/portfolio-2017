@@ -56,18 +56,21 @@
 
 
     // Init
+    
+    component.created = function () {
+
+      this.position = { 
+        x: 0,
+        y: 0
+      };
+
+    };
 
     component.mounted = function () {
 
-      this.radius = sh*0.07;
-      this.size = this.radius*2*1.3;
-
-      this.position = { x: sw*.5, y: sh*.5 };
-      this.stage.view.viewSize = new Size(this.size, this.size);
-
       this.shape = new Path.Circle({
-        center: [this.size*.5, this.size*.5],
-        radius: this.radius
+        center: [tracker.s*.5, tracker.s*.5],
+        radius: tracker.r
       });
       this.shape.flatten(8)
       this.shape.smooth();
@@ -76,24 +79,33 @@
       this.container.insertChild(0, this.shape);
       this.container.clipped = true;
 
-      this.launch();
+      this.launch(this.current);
 
     };
 
 
     // Launch
     
-    component.methods.launch = function () {
+    component.methods.launch = function (i) {
 
-      this.prev = this.current;
-
-      this.covers[this.current].opacity = 1;
-
-      new Ticker().tick('home.background.tracker', (f) => { 
-        // this._calculatePosition();
-        // this._calculateOffset();
-        this._animate(f);
+      TweenMax.set(this.$el, {
+        left: this.position.x,
+        top: this.position.y
       });
+      this.view.viewSize = new Paper.Size(tracker.s, tracker.s);
+
+      this.covers[i].opacity = 1;
+
+      new Ticker().tick('tracker.animation', this._animate);
+
+    };
+
+
+    // Transition
+    
+    component.methods.go = function (i) {
+
+      this._coversTransition(i);      
 
     };
 
@@ -101,12 +113,19 @@
     // Animations
     
     component.methods._animate = function (f) {
-      
-      this.position.x += (this.mouse.x - this.position.x) * .1;
-      this.position.y += (this.mouse.y - this.position.y) * .1;
+  
+      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .1;
+      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .1;
 
-      this._displacement(this.position);
+      TweenMax.set(this.$el, { left: this.position.x, top: this.position.y });
+      let offsetX = sw*.5 - tracker.s*.5 - this.position.x + this.view.viewSize.width*.5;
+      let offsetY = sh*.5 - tracker.s*.5 - this.position.y + this.view.viewSize.height*.5;
+      this.covers[this.current].position.x = offsetX;
+      this.covers[this.current].position.y = offsetY;
+
       this._distord(f);
+
+      this.view.update();
 
     };
 
@@ -120,16 +139,20 @@
 
 
   <template lang="jade">
-    
-    canvas.background-tracker(ref="canvas2")
+  
+      canvas.background-tracker(ref="canvas")
 
   </template>
 
 
   <style lang="stylus">
 
-    canvas.background-tracker
-      /*background rgba(#000, 0.1)*/
+    .background-tracker
+      position fixed
+      /*background rgba(#00ff00, 0.05)*/
+    
+    /*canvas.background-trackerCanvas*/
+      
 
   </style>
   

@@ -39,13 +39,20 @@
   window.ease.elastic = Elastic.easeOut.config(1, 0.9);
   window.ease.default = Power2.easeOut;
 
+  window.tracker = {};
+  window.tracker.r = 50;
+  window.tracker.d = window.tracker.r*2;
+  window.tracker.s = window.tracker.d*1.3;
+  window.tracker.p = 35;
+
   
   /* Router */
 
   Vue.use(Router);
 
   const routing = new Router({
-    routes: routes
+    routes: routes,
+    mode: 'history'
   });
 
 

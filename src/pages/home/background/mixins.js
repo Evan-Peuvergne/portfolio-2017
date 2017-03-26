@@ -94,24 +94,6 @@
 	};
 
 
-	// Displacement
-	
-	Covers.methods._displacement = function (position) {
-
-		TweenMax.set(this.stage.view.element, { 
-			x: position.x - this.view.viewSize.width/2, 
-			y: position.y - this.view.viewSize.height/2
-		});
-
-		let offsetX = sw*.5 - position.x + this.view.viewSize.width/2;
-		let offsetY = sh*.5 - position.y + this.view.viewSize.height/2;
-
-		this.covers[this.current].position.x = offsetX;
-		this.covers[this.current].position.y = offsetY;
-
-	};
-
-
 
 
 	/* Letter */
@@ -201,13 +183,12 @@
   	let shape = this.models[i];
   	let center = shape.bounds.center;
 
-  	let bounds = {};
-  	bounds.width = shape.bounds.width + 50*2 + 75*2;
-  	bounds.height = shape.bounds.height + 50*2 + 75*2;
-  	bounds.left = center.x - bounds.width*.5;
-  	bounds.top = center.y - bounds.height*.5
+  	let width = shape.bounds.width + tracker.s + tracker.p*2 + 40;
+  	let height = shape.bounds.height + tracker.s + tracker.p*2 + 40;
+  	let x = center.x - width*.5;
+  	let y = center.y - height*.5;  	
 
-  	return bounds;
+  	return new Paper.Rectangle(x, y, width, height);
 
   };
 
