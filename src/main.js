@@ -43,8 +43,11 @@
   window.tracker.r = 50;
   window.tracker.d = window.tracker.r*2;
   window.tracker.s = window.tracker.d*1.3;
-  window.tracker.p = 35;
+  window.tracker.p = 50;
   window.tracker.distorsion = { f: 0.3, a: 0.4 };
+
+  window.shade = {};
+  window.shade.p = 120;
 
   
   /* Router */

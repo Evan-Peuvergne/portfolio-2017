@@ -10,8 +10,8 @@
     import _ from 'lodash';
     import Paper from 'paper';
 
-    // import Letter from './letter.vue';
     import Tracker from './tracker.vue';
+    import Shade from './shade.vue';
     
     import Mixins from './mixins';
 
@@ -52,7 +52,10 @@
     };
 
 
-    component.components = { Tracker };
+    component.components = { 
+      Tracker,
+      Shade
+    };
 
 
     // Init
@@ -217,7 +220,7 @@
       
       tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
 
-      //- canvas.background-shadeCanvas
+      shade(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="shade")
 
       svg(width="100%", height="100%")
         defs
@@ -241,6 +244,7 @@
 
     .background-letter
       position absolute
+      z-index 200
       background rgba(#ff0000, 0.05)
       filter: url(#organic)
 
