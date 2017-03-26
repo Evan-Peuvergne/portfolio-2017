@@ -13,14 +13,13 @@
   
 
 
-  /* Global */
-
-  window.sw = window.innerWidth;
-  window.sh = window.innerHeight;
+  
 
 
 
   /* Dependencies */
+
+  import { TimelineMax } from 'gsap';
 
   import Vue from 'vue';
   import Router from 'vue-router';
@@ -29,6 +28,16 @@
 
   import { routes } from './routes.js';
 
+  
+
+  /* Global */
+
+  window.sw = window.innerWidth;
+  window.sh = window.innerHeight;
+
+  window.ease = {};
+  window.ease.elastic = Elastic.easeOut.config(1, 0.9);
+  window.ease.default = Power2.easeOut;
 
   
   /* Router */
