@@ -27,7 +27,7 @@
       return {
         item: 0,
         content: Projects,
-        mouse: { x: 0, y: 0 }
+        mouse: { x: 0.5, y: 0.5 }
       }
     };
 
@@ -54,7 +54,9 @@
       });
 
       $(window).on('mousemove', (e) => {
-        this.mouse = { x: e.clientX, y: e.clientY }; 
+        this.mouse = { 
+          x: e.clientX/sw - .5, 
+          y: e.clientY/sh - .5 }; 
       });
       
       // Keyboard
