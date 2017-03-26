@@ -157,10 +157,12 @@
       this.parallax.x += (this.mouse.orth.x*tracker.p - this.parallax.x) * .1;
       this.parallax.y += (this.mouse.orth.y*tracker.p - this.parallax.y) * .1;
 
+      let distorsion = this.content[this.current].letter.distorsion;
+
       _.each(this.shape.children, (c) => {
         _.each(c.segments, (s, i) => {
-          s.point.x = s.point.ox - this.bounds.x + this.parallax.x + Math.cos(f.count*.5 + i) * .25;
-          s.point.y = s.point.oy - this.bounds.y + this.parallax.y - Math.sin(f.count*.5 + i) * .25;
+          s.point.x = s.point.ox - this.bounds.x + this.parallax.x + Math.cos(f.count*distorsion.frequency + i) * distorsion.amplitude;
+          s.point.y = s.point.oy - this.bounds.y + this.parallax.y - Math.sin(f.count*distorsion.frequency + i) * distorsion.amplitude;
           s.handleIn.x = s.handleIn.ox;
           s.handleIn.y = s.handleIn.oy;
           s.handleOut.x = s.handleOut.ox;

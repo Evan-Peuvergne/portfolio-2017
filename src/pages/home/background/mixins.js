@@ -200,7 +200,7 @@
 
 	// Animation
 	
-	Distorsion.methods._distord = function (f) {
+	Distorsion.methods._distord = function (f, settings) {
 
 		var items = [];
 		if(this.shape.children){ items = this.shape.children; }
@@ -208,8 +208,8 @@
 
 		_.each(items, (c) => {
 			_.each(c.segments, (s, i) => {
-				s.point.x += Math.cos(f.count*.5 + i*2) * .3;
-				s.point.y += -Math.sin(f.count*.5 + i*i) * .3;
+				s.point.x += Math.cos(f.count*settings.f + i*2) * settings.a;
+				s.point.y += -Math.sin(f.count*settings.f + i*i) * settings.a;
 			});
 		});
 

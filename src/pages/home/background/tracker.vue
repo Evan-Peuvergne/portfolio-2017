@@ -123,7 +123,7 @@
       this.covers[this.current].position.x = offsetX;
       this.covers[this.current].position.y = offsetY;
 
-      this._distord(f);
+      this._distord(f, tracker.distorsion);
 
       this.view.update();
 
