@@ -23,10 +23,13 @@
 	import _ from 'lodash';
 
 	import Stats from 'stats.js';
-	let stats = new Stats();
-	stats.showPanel(0);
-	document.body.appendChild(stats.dom);
-	stats.dom.style.zIndex = 10000;
+	var stats = false;
+	if(window.location.hostname == 'localhost') {
+		stats = new Stats();
+		stats.showPanel(0);
+		document.body.appendChild(stats.dom);
+		stats.dom.style.zIndex = 10000;
+	}
 
 
 
@@ -79,7 +82,7 @@
 		framer () {
 			
 			// Stats
-			stats.begin();
+			if(stats){ stats.begin(); }
 
 			// Functions
 			_.forIn(this.ticks, (tick) => 
@@ -90,7 +93,7 @@
 			});
 
 			// Frame
-			stats.end();
+			if(stats){ stats.end(); }
 			this.frame = window.requestAnimationFrame(() => this.framer());
 
 		}
