@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/Evan-Peuvergne/portfolio-2017.git"
   },
+  "engines": {
+    "node": "7.4.0"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "^4.15.2",
