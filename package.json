@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "postinstall": "npm install --dev && npm run build"
+    "postinstall": "npm run build"
   },
   "author": "Evan Peuvergne",
   "private": true,
@@ -31,9 +31,7 @@
     "two.js": "^0.6.0",
     "vue": "^2.2.1",
     "vue-router": "^2.3.0",
-    "vuemit": "^1.0.3"
-  },
-  "devDependencies": {
+    "vuemit": "^1.0.3",
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
     "babel-plugin-transform-class-properties": "^6.23.0",
