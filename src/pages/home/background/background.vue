@@ -70,22 +70,9 @@
 
     component.mounted = function () {
 
-      this.stages.l.activate();
       this.shape = new Paper.CompoundPath();
       this.shape.fillColor = '#000';
-      this.shape.strokeWidth = 0;
-      this.shape.shadowColor = '#000';
-      this.shape.shadowBlur = '50';
-
-      this.define = new Paper.SymbolDefinition(this.shape);
-
-      this.mask = new Paper.SymbolItem(this.define);
-      this.stages.s.activate();
-      this.shadow = new Paper.SymbolItem(this.define);
-      this.shadow.sendToBack();
-
-      this.stages.l.activate();
-      this.container.insertChild(0, this.mask);
+      this.container.insertChild(0, this.shape);
       this.container.clipped = true;
 
       _.each(this.content, (c, i) => {
@@ -131,9 +118,8 @@
       this.covers[i].opacity = 1;
 
       this.bounds = this._calculateBounds(i);
-      this.views.l.viewSize = this.bounds.size;
-      this.views.s.viewSize = this.bounds.size;
-      TweenMax.set([this.$refs.container, this.views.s.element], {
+      this.view.viewSize = this.bounds.size;
+      TweenMax.set(this.$refs.container, {
         left: this.bounds.x, top: this.bounds.y,
         width: this.bounds.width, height: this.bounds.height
       });
@@ -190,8 +176,7 @@
         });
       });
 
-      this.views.l.update();
-      this.views.s.update();
+      this.view.update();
 
       this._transfer();
 
@@ -235,7 +220,6 @@
 
       .background-letter(ref="container")
         canvas.background-letterCanvas(ref="canvas")
-      canvas.background-shadow(ref="canvasShadow")
       
       tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
 
@@ -248,21 +232,7 @@
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="atop")
 
-          filter(id="shadow1")
-              feGaussianBlur(in="SourceAlpha", stdDeviation="0")
-              feOffset(dx="4", dy="4", result="offsetblur")
-              feComponentTransfer
-                feFuncA(type="linear", slope="0.2")
-              feMerge
-                feMergeNode
-                feMergeNode(in="SourceGraphic")
-
-          filter(id="shadow2")
-            feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")
-            feGaussianBlur(stdDeviation="20", result="blur", in="offset")
-            feBlend(in="SourceGraphic", in2="blur", mode="lighten")
-
-          filter(id="shadow3")
+          filter(id="shadow")
             feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")
             feGaussianBlur(stdDeviation="20", result="blur", in="offset")
             feComponentTransfer
@@ -281,7 +251,7 @@
       position relative
       width 100%
       height 100%
-      filter url(#shadow3)
+      /*filter url(#shadow)*/
 
     .background-shadeCanvas
       z-index 50
@@ -289,21 +259,14 @@
     .background-letter
       position absolute
       z-index 200
-      /*background rgba(#ff0000, 0.05)*/
-      filter: url(#organic)
+      filter url(#organic)
 
     .background-letterCanvas
-      /*position fixed*/
       position absolute
       top 0
       left 0
       width 100%
       height 100%
-
-    .background-shadow
-      position absolute
-      visibility hidden
-      /*background rgba(#000, 0.1)*/
 
   </style>
   

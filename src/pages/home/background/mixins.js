@@ -107,19 +107,6 @@
 
   };
 
-  Letter.mounted = function () {
-
-    this.stages = {};
-    this.stages.l = this.stage;
-    
-    this.stages.s = new Paper.Project(this.$refs.canvasShadow);
-    this.stages.s.view.viewSize = new Paper.Size(sw, sh);
-    this.stages.s.view.autoUpdate = false;
-
-    this.views = { l: this.stages.l.view, s: this.stages.s.view };
-
-  };
-
 
 	// Morph
 	
