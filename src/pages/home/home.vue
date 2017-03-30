@@ -25,13 +25,18 @@
     
     component.data = function () {
       return {
-        item: 0,
+        current: 0,
         content: Projects,
         mouse: { 
           abs: { x: sw*.5, y: sh*.5 },
           orth: { x: .5, y: .5 }
         }
       }
+    };
+
+    component.computed = {
+      url: function () { return this.content[this.current].url; },
+      color: function () { return this.content[this.current].color; }
     };
 
     component.components = {
@@ -81,10 +86,10 @@
       this.is.navigating = true;
       setTimeout(() => { this.is.navigating = false; }, 1000);
 
-      let i = this.item-1; 
-      this.item = (i >= 0) ? i : Projects.length-1;
+      let i = this.current-1; 
+      this.current = (i >= 0) ? i : Projects.length-1;
 
-    }  
+    };  
     
     component.methods.next = function () { 
 
@@ -92,9 +97,9 @@
       this.is.navigating = true;
       setTimeout(() => { this.is.navigating = false; }, 1500);
       
-      this.item = (this.item+1)%Projects.length;
+      this.current = (this.current+1)%Projects.length;
 
-    }
+    };
 
 
 
@@ -111,8 +116,14 @@
       a.home-navigation.home-next(href="#", ref="next")
       a.home-navigation.home-previous(href="#", ref="previous")
 
-      infos(v-bind:current="item", v-bind:content="content")
-      background(v-bind:current="item", v-bind:content="content", v-bind:mouse="mouse")
+      infos(v-bind:current="current", v-bind:content="content")
+      background(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse")
+
+      div.home-accessMessage
+        p
+          | Let's
+          a(v-bind:href="url", v-bind:style="{ color: color, borderColor: color }" target="_blank") Launch
+          | the project
 
   </template>
 
@@ -135,6 +146,44 @@
 
     .home-background
       z-index 100
+
+    .home-accessMessage
+      display block
+      position absolute
+      z-index 500
+      bottom 2em
+      left 0
+      width 100%
+      text-align center
+      
+      p
+        display inline-block
+        vertical-align middle
+        font-family Gotham Bold
+        font-size 0.75em
+        color rgba(#000, 0.3)
+        letter-spacing 0.15em
+        text-align center
+        text-transform uppercase
+
+        a
+          display inline-block
+          vertical-align middle
+          font-size 0.9em
+          color #000000
+          letter-spacing 0.2em
+          line-height 1
+          text-decoration none
+          padding 0.7em 0.6em 0.6em 0.8em
+          border 2px solid #000000
+          margin 0 1em
+          border-radius 5px
+          transform translate3d(0, -5%, 0)
+          transition color 0.3s ease, border-color 0.3s ease
+
+          &:hover
+            color rgba(#fefefe, 0.8) !important
+            border-color rgba(#fefefe, 0.8) !important
 
     .home-navigation
       display block

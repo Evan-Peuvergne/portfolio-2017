@@ -200,9 +200,9 @@
       .home-infoTitle
         font-family Bodoni
         font-size 60px
-        letter-spacing 0.04em
+        letter-spacing 0.03em
         opacity 0.8
-        line-height 1.1
+        line-height 1
         -webkit-font-smoothing always
 
       .home-infoLabel
