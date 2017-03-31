@@ -129,8 +129,6 @@
       this.covers[i].position.x = offsetX;
       this.covers[i].position.y = offsetY;
 
-      // this.$refs.container.appendChild(this.$refs.tracker.$el);
-
       new Ticker().tick('letter.animation', this._animate);
 
     };
@@ -180,7 +178,7 @@
 
       this.view.update();
 
-      this._transfer();
+      // this._transfer();
 
     };
 
@@ -222,8 +220,7 @@
 
       .background-letter(ref="container")
         canvas.background-letterCanvas(ref="canvas")
-      
-      tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
+        tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
 
       shade(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="shade")
 
@@ -231,7 +228,7 @@
         defs
           filter(id="organic")
             feGaussianBlur(in="SourceGraphic" stdDeviation="8" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="atop")
 
           filter(id="shadow")

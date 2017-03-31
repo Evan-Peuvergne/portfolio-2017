@@ -129,9 +129,9 @@
       for(var i=0; i<m.from.segments.length; i++){
         let c = (i+m.start)%m.from.segments.length;
         let s = m.from.segments[c], t = m.to.segments[c];
-        tl.to(s.point, .75 + i*0.005, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, 0);
-        tl.to(s.handleIn, .75 + i*0.005, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, 0);
-        tl.to(s.handleOut, .75 + i*0.005, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, 0);
+        tl.to(s.point, .75, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleIn, .75, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleOut, .75, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
       }
     });
 
