@@ -177,7 +177,7 @@
           padding 0.7em 0.6em 0.6em 0.8em
           border 2px solid #000000
           margin 0 1em
-          border-radius 5px
+          /*border-radius 5px*/
           transform translate3d(0, -5%, 0)
           transition color 0.3s ease, border-color 0.3s ease
 

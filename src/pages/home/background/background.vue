@@ -129,6 +129,8 @@
       this.covers[i].position.x = offsetX;
       this.covers[i].position.y = offsetY;
 
+      // this.$refs.container.appendChild(this.$refs.tracker.$el);
+
       new Ticker().tick('letter.animation', this._animate);
 
     };
