@@ -67,6 +67,21 @@
     };
 
     component.mounted = function () {
+      
+      this.draw();
+      this.launch(this.current);
+
+      this.container.insertChild(0, this.shape);
+      this.container.clipped = true;
+
+      $(window).on('resize', () => { this.resize(); });
+
+    };
+
+
+    // Draw
+    
+    component.methods.draw = function () {
 
       this.shape = new Path.Circle({
         center: [tracker.s*.5, tracker.s*.5],
@@ -76,12 +91,19 @@
       this.shape.smooth();
       this.shape.fillColor = '#000';
 
-      this.container.insertChild(0, this.shape);
+    };
+    
+    component.methods.resize = function () {
+
+      this.view.viewSize.width = tracker.s;
+      this.view.viewSize.height = tracker.s;
+
+      this.draw();
+      this.container.children[0].replaceWith(this.shape);
       this.container.clipped = true;
 
-      this.launch(this.current);
-
     };
+
 
 
     // Launch

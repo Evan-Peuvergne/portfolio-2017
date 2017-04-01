@@ -54,6 +54,10 @@
     window.sw = window.innerWidth;
     window.sh = window.innerHeight;
 
+    window.tracker.r = window.sh/12;
+    window.tracker.d = window.tracker.r*2;
+    window.tracker.s = window.tracker.d*1.3;
+
   };
 
   

@@ -134,6 +134,7 @@
 
       this.organic = sh/85;
 
+      // this._resizeCovers();
       this.draw();
 
     };

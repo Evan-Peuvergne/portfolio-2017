@@ -6,6 +6,7 @@
 
 	// Libs
 	
+	import $ from 'jquery';
 	import _ from 'lodash';
 	import Paper from 'paper';
 	import { TweenMax } from 'gsap';
@@ -61,25 +62,45 @@
 		this.stage = new Paper.Project(this.$refs.canvas);
 		this.stage.view.viewSize = new Paper.Size(sw, sh);
 		this.view = this.stage.view;
-    	// this.view.autoUpdate = false;
 
 		this.container = new Paper.Group();
 
 		this.covers = [];
 		_.each(this.content, (c, i) => {
+
 			let cover = new Paper.Raster({
 				source: c.cover.url,
 				position: new Paper.Point(sw*.5, sh*.5),
 				opacity: (i == this.current) ? 1 : 0
 			});
+
 			cover.onLoad = function () {
-				this.ratio = Math.max(sw/this.size.width, sh/this.size.height);
-        this.size = new Paper.Size(this.size.width*this.ratio, this.size.height*this.ratio);
+				this.ow = this.size.width;
+				this.oh = this.size.height;
+				this.ratio = Math.max(sw/this.ow, sh/this.oh);
+        this.size = new Paper.Size(this.ow*this.ratio, this.oh*this.ratio);
 			};
 
 			this.container.addChild(cover);
 			this.covers.push(cover);
+
 		});
+
+		$(window).on('resize', () => { this._resizeCovers(); });
+
+	};
+
+
+	// Resize 
+	
+	Covers.methods._resizeCovers = function () {
+
+		_.each(this.covers, (c, i) => {
+			c.ratio = Math.max(sw/c.ow, sh/c.oh);
+      c.size = new Paper.Size(c.ow*c.ratio, c.oh*c.ratio);
+		});
+
+		this.view.update();
 
 	};
 
