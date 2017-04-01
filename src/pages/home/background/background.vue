@@ -181,7 +181,6 @@
         });
       });
 
-      // this.view.update();
       this._transfer();
 
     };
