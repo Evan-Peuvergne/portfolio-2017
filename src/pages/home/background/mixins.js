@@ -61,7 +61,7 @@
 		this.stage = new Paper.Project(this.$refs.canvas);
 		this.stage.view.viewSize = new Paper.Size(sw, sh);
 		this.view = this.stage.view;
-    this.view.autoUpdate = false;
+    	// this.view.autoUpdate = false;
 
 		this.container = new Paper.Group();
 
@@ -70,7 +70,7 @@
 			let cover = new Paper.Raster({
 				source: c.cover.url,
 				position: new Paper.Point(sw*.5, sh*.5),
-				opacity: 0
+				opacity: (i == this.current) ? 1 : 0
 			});
 			cover.onLoad = function () {
 				this.ratio = Math.max(sw/this.size.width, sh/this.size.height);

@@ -49,6 +49,13 @@
   window.shade = {};
   window.shade.p = 100;
 
+  window.onresize = function () {
+
+    window.sw = window.innerWidth;
+    window.sh = window.innerHeight;
+
+  };
+
   
   /* Router */
 

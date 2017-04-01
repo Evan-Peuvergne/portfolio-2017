@@ -35,12 +35,13 @@
     component.props = {
       current: { type: Number, default: 0 },
       content: { type: Array, default: [] },
-      mouse: { type: Object}
+      mouse: { type: Object},
     };
 
     component.data = function () {
       return { 
         length: this.content.length,
+        organic: sh/85,
       };
     };
 
@@ -62,9 +63,7 @@
     
     component.created = function () {
 
-      this._trackerLocation = 'window';
-
-      this.models = [];
+      this._trackerLocation = 'container';
 
     };
 
@@ -75,6 +74,19 @@
       this.container.insertChild(0, this.shape);
       this.container.clipped = true;
 
+      this.draw();
+
+      new Ticker().tick('letter.animation', this._animate);
+      $(window).on('resize', () => { this.resize(); });
+
+    };
+
+
+    // Draw
+    
+    component.methods.draw = function () {
+
+      this.models = [];
       _.each(this.content, (c, i) => {
         let model = new Paper.CompoundPath(c.letter.path);
         model.fitBounds(new Paper.Rectangle({
@@ -102,34 +114,27 @@
         this.models.push(model);
       });
 
-      this.launch(this.current);
-
-    };
-
-
-    // Launch
-    
-    component.methods.launch = function (i = 0) {
-
-      this.shape.fillColor = this.content[i].shadow.color;
-      this.shape.shadowColor = this.content[i].shadow.color;
-
-      this.shape.children = _.cloneDeep(this.models[i].children);
-      this.covers[i].opacity = 1;
-
-      this.bounds = this._calculateBounds(i);
+      this.shape.children = _.cloneDeep(this.models[this.current].children);
+      this.bounds = this._calculateBounds(this.current);
       this.view.viewSize = this.bounds.size;
       TweenMax.set(this.$refs.container, {
         left: this.bounds.x, top: this.bounds.y,
         width: this.bounds.width, height: this.bounds.height
       });
 
-      let offsetX = sw*.5 - this.bounds.left;
-      let offsetY = sh*.5 - this.bounds.top;
-      this.covers[i].position.x = offsetX;
-      this.covers[i].position.y = offsetY;
+      this.covers[this.current].position.x = sw*.5 - this.bounds.left;
+      this.covers[this.current].position.y = sh*.5 - this.bounds.top;
 
-      new Ticker().tick('letter.animation', this._animate);
+    };
+    
+    component.methods.resize = function () {
+
+      this.view.viewSize.width = sw;
+      this.view.viewSize.height = sh;
+
+      this.organic = sh/85;
+
+      this.draw();
 
     };
 
@@ -176,9 +181,8 @@
         });
       });
 
-      this.view.update();
-
-      // this._transfer();
+      // this.view.update();
+      this._transfer();
 
     };
 
@@ -227,7 +231,7 @@
       svg(width="100%", height="100%")
         defs
           filter(id="organic")
-            feGaussianBlur(in="SourceGraphic" stdDeviation="8" result="blur")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="organic" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="atop")
 

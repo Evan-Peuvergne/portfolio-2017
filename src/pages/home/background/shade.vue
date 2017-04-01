@@ -52,7 +52,10 @@
     
     component.created = function () {
 
+      this.prev = this.current;
       this.parallax = { x: 0, y: 0 };
+
+      this.shapes = [];
 
     };
 
@@ -61,7 +64,20 @@
       this.stage = new Paper.Project(this.$el);
       this.view = this.stage.view;
       this.view.viewSize = new Paper.Size(sw, sh);
-      // this.view.autoUpdate = false;
+      this.view.autoUpdate = false;
+
+      this.draw();      
+      this.shapes[this.current].opacity = 0.02;
+
+      new Ticker().tick('shade.animation', this._animate);
+      $(window).on('resize', () => { this.resize(); });
+
+    };
+
+
+    // Draw
+    
+    component.methods.draw = function () {
 
       this.shapes = [];
       _.each(this.content, (c, i) => {
@@ -90,23 +106,33 @@
 
       });
 
-      this.launch();
-
     };
 
+    component.methods.resize = function () {
 
-    // Launch
-    
-    component.methods.launch = function (i = 0) {
+      this.view.viewSize.width = sw;
+      this.view.viewSize.height = sh;
 
-      this.prev = i;
+      _.each(this.shapes, (s, i) => {
 
-      this.shapes[i].opacity = 0.02;
-      this.view.update();
+        let c = this.content[i];
+        let model = new Paper.CompoundPath(c.letter.path);
+        model.fitBounds(new Paper.Rectangle({
+          point: [ 0, sh*(1-c.letter.size)/2 ], size: [ sw, sh*c.letter.size ] 
+        }));
 
-      new Ticker().tick('shade.animation', this._animate);
+        let x = sw*.5 - model.bounds.width*(1-c.letter.offset.x) - 25;
+        let y = sh*.5 - model.bounds.height*c.letter.offset.y;
 
-    };
+        s.fontSize = sh*0.8;
+        s.point.x = x - s.bounds.width * (c.shade.offset.x + .5);
+        s.point.y = y + s.bounds.height * (c.shade.offset.y + .25);
+        s.ox = s.point.x;
+        s.oy = s.point.y;
+
+      });
+
+    }
 
 
     // Transition
@@ -135,6 +161,8 @@
       this.parallax.y += (this.mouse.orth.y*shade.p - this.parallax.y) * .1;
 
       TweenMax.set(this.$el, _.clone(this.parallax));
+
+      this.view.update();
 
     };
 
