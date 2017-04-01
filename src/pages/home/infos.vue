@@ -64,6 +64,7 @@
       new Ticker().tick('parallax', (t) => {
         if(!this._isMoving){ this._parallax(t); }
       });
+      $(window).on('resize', () => { this.resize(); });
 
     };
 
@@ -199,7 +200,7 @@
 
       .home-infoTitle
         font-family Bodoni
-        font-size 60px
+        font-size 4em
         letter-spacing 0.03em
         opacity 0.8
         line-height 1

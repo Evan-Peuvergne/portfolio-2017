@@ -134,7 +134,6 @@
 
       this.organic = sh/85;
 
-      // this._resizeCovers();
       this.draw();
 
     };
@@ -254,7 +253,7 @@
       position relative
       width 100%
       height 100%
-      /*filter url(#shadow)*/
+      filter url(#shadow)
 
     .background-shadeCanvas
       z-index 50
