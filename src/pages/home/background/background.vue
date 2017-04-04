@@ -10,8 +10,10 @@
     import _ from 'lodash';
     import Paper from 'paper';
 
+    import Letter from './letter.vue';
     import Tracker from './tracker.vue';
     import Shade from './shade.vue';
+    import Navigation from './navigation.vue';
     
     import Mixins from './mixins';
 
@@ -26,7 +28,7 @@
     var component = { 
       name: 'background', 
       methods: {},
-      mixins: [ Mixins.Covers, Mixins.Letter, Mixins.Distorsion ]
+      mixins: []
     };
 
 
@@ -35,178 +37,95 @@
     component.props = {
       current: { type: Number, default: 0 },
       content: { type: Array, default: [] },
-      mouse: { type: Object},
+      mouse: { type: Object },
     };
 
     component.data = function () {
       return { 
         length: this.content.length,
-        organic: sh/85,
+        organic: sh/140,
       };
     };
 
     component.watch = {
       current: function (val) {
-        this.go(val);
         this.prev = val;
       }
     };
 
 
     component.components = { 
-      Tracker,
-      Shade
+      Letter, Tracker, Shade, Navigation
     };
 
 
     // Init
-    
-    component.created = function () {
-
-      this._trackerLocation = 'container';
-
-    };
 
     component.mounted = function () {
 
-      this.shape = new Paper.CompoundPath();
-      this.shape.fillColor = '#000';
-      this.container.insertChild(0, this.shape);
-      this.container.clipped = true;
+      // this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
+      
+      this.locations = [this.$refs.letter];
+      this.currentLocation = this.$el;
 
-      this.draw();
-
-      new Ticker().tick('letter.animation', this._animate);
-      $(window).on('resize', () => { this.resize(); });
+      $(window).on('mousemove', () => { this.transfer(); });
 
     };
 
 
-    // Draw
+    // Transfer
     
-    component.methods.draw = function () {
+    component.methods.transfer = function () {
 
-      this.models = [];
-      _.each(this.content, (c, i) => {
-        let model = new Paper.CompoundPath(c.letter.path);
-        model.fitBounds(new Paper.Rectangle({
-          point: [ 0, sh*(1-c.letter.size)/2 ], size: [ sw, sh*c.letter.size ] 
-        }));
+      let t = new Paper.Rectangle({
+        point: [ this.mouse.abs.x, this.mouse.abs.y ],
+        size: [0, 0]
+      }).expand(tracker.d);
 
-        model.position.x = sw*.5 - model.bounds.width*(1-c.letter.offset.x) - 25;
-        model.position.y = sh*.5 - model.bounds.height*c.letter.offset.y;
-        model.x = model.position.x;
-        model.y = model.position.y;
-        model.w = model.bounds.width;
-        model.h = model.bounds.height;
+      for(var i=0; i<this.locations.length; i++) {
 
-        _.each(model.children, (c, i) => {
-          _.each(c.segments, (s, j) => {
-            s.point.ox = s.point.x;
-            s.point.oy = s.point.y;
-            s.handleIn.ox = s.handleIn.x;
-            s.handleIn.oy = s.handleIn.y;
-            s.handleOut.ox = s.handleOut.x;
-            s.handleOut.oy = s.handleOut.y;
-          });
-        });
+        let loc = this.locations[i];
+        let bounds = loc.bounds;
+        if(bounds.intersects(t)){
+          if(loc != this.currentLocation){ 
+            loc.$el.appendChild(this.$refs.tracker.$el);
+            this.currentLocation = loc; 
+          }
+          return;
+        }
 
-        this.models.push(model);
-      });
-
-      this.shape.children = _.cloneDeep(this.models[this.current].children);
-      this.bounds = this._calculateBounds(this.current);
-      this.view.viewSize = this.bounds.size;
-      TweenMax.set(this.$refs.container, {
-        left: this.bounds.x, top: this.bounds.y,
-        width: this.bounds.width, height: this.bounds.height
-      });
-
-      this.covers[this.current].position.x = sw*.5 - this.bounds.left;
-      this.covers[this.current].position.y = sh*.5 - this.bounds.top;
-
-    };
-    
-    component.methods.resize = function () {
-
-      this.view.viewSize.width = sw;
-      this.view.viewSize.height = sh;
-
-      this.organic = sh/85;
-
-      this.draw();
-
-    };
-
-
-    // Transition
-    
-    component.methods.go = function (i) {
-
-      this.bounds = this._calculateBounds(i);
-      this.view.viewSize = this.bounds.size;
-      TweenMax.set(this.$refs.container, {
-        left: this.bounds.x, top: this.bounds.y,
-        width: this.bounds.width, height: this.bounds.height
-      });
-
-      let offsetX = sw*.5 - this.bounds.left;
-      let offsetY = sh*.5 - this.bounds.top;
-      this.covers[i].position.x = offsetX;
-      this.covers[i].position.y = offsetY;
-
-      this._morph(i);
-      this._coversTransition(i);
-
-    };
-
-
-    // Animate
-    
-    component.methods._animate = function (f) {
-
-      this.parallax.x += (this.mouse.orth.x*tracker.p - this.parallax.x) * .1;
-      this.parallax.y += (this.mouse.orth.y*tracker.p - this.parallax.y) * .1;
-
-      let distorsion = this.content[this.current].letter.distorsion;
-
-      _.each(this.shape.children, (c) => {
-        _.each(c.segments, (s, i) => {
-          s.point.x = s.point.ox - this.bounds.x + this.parallax.x + Math.cos(f.count*distorsion.frequency + i) * distorsion.amplitude;
-          s.point.y = s.point.oy - this.bounds.y + this.parallax.y - Math.sin(f.count*distorsion.frequency + i) * distorsion.amplitude;
-          s.handleIn.x = s.handleIn.ox;
-          s.handleIn.y = s.handleIn.oy;
-          s.handleOut.x = s.handleOut.ox;
-          s.handleOut.y = s.handleOut.oy;
-        });
-      });
-
-      this._transfer();
-
-    };
-
-    component.methods._transfer = function () {
-
-      let cursor = new Paper.Rectangle({
-        point: [this.mouse.abs.x-tracker.r, this.mouse.abs.y-tracker.r],
-        size: [tracker.d, tracker.d]
-      });
-
-      let isInContainer = this.bounds.contains(cursor);
-
-      if(isInContainer && this._trackerLocation != 'container') {
-        this._trackerLocation = 'container';
-        this.$refs.container.appendChild(this.$refs.tracker.$el);
-        return;
       }
 
-      if(!isInContainer && this._trackerLocation != 'window') {
-        this._trackerLocation = 'window';
+      if(this.currentLocation != this.$el){
         this.$el.appendChild(this.$refs.tracker.$el);
+        this.currentLocation = this.$el;
         return;
       }
 
     };
+
+    // component.methods._transfer = function () {
+
+    //   let cursor = new Paper.Rectangle({
+    //     point: [this.mouse.abs.x-tracker.r, this.mouse.abs.y-tracker.r],
+    //     size: [tracker.d, tracker.d]
+    //   });
+
+    //   let isInContainer = this.bounds.contains(cursor);
+
+    //   if(isInContainer && this._trackerLocation != 'container') {
+    //     this._trackerLocation = 'container';
+    //     this.$refs.container.appendChild(this.$refs.tracker.$el);
+    //     return;
+    //   }
+
+    //   if(!isInContainer && this._trackerLocation != 'window') {
+    //     this._trackerLocation = 'window';
+    //     this.$el.appendChild(this.$refs.tracker.$el);
+    //     return;
+    //   }
+
+    // };
 
 
     
@@ -220,13 +139,19 @@
   <template lang="jade">
     
     div.home-background
-
-      .background-letter(ref="container")
-        canvas.background-letterCanvas(ref="canvas")
-        tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
-
+  
+      //- Navigation
+      navigation(direction="previous", ref="previous")
+      navigation(direction="next", ref="next")
+      
+      //- Tracker
+      tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
+      
+      //- Letter
+      letter(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="letter")
       shade(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="shade")
 
+      //- Filters
       svg(width="100%", height="100%")
         defs
           filter(id="organic")
@@ -253,7 +178,7 @@
       position relative
       width 100%
       height 100%
-      filter url(#shadow)
+      /*filter url(#shadow)*/
 
     .background-shadeCanvas
       z-index 50

@@ -64,7 +64,7 @@
       new Ticker().tick('parallax', (t) => {
         if(!this._isMoving){ this._parallax(t); }
       });
-      $(window).on('resize', () => { this.resize(); });
+      // $(window).on('resize', () => { this.resize(); });
 
     };
 

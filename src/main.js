@@ -46,6 +46,9 @@
   window.tracker.p = 50;
   window.tracker.distorsion = { f: 0.3, a: 0.3 };
 
+  window.nav = {};
+  window.nav.r = window.sh*0.085;
+
   window.shade = {};
   window.shade.p = 100;
 

@@ -72,7 +72,7 @@
       $(window).on('keydown', (e) => {
         switch(e.keyCode) {
           case 37: this.previous(); break;
-          case 39: component.next(); break;
+          case 39: this.next(); break;
         }
       });
 
@@ -113,8 +113,8 @@
   <template lang="jade">
       
     .home
-      a.home-navigation.home-next(href="#", ref="next")
-      a.home-navigation.home-previous(href="#", ref="previous")
+      //- a.home-navigation.home-next(href="#", ref="next")
+      //- a.home-navigation.home-previous(href="#", ref="previous")
 
       infos(v-bind:current="current", v-bind:content="content")
       background(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse")

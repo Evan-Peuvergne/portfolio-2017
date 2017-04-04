@@ -162,18 +162,16 @@
 
   <template lang="jade">
   
-      canvas.background-tracker(ref="canvas")
+      canvas.home-backgroundTracker(ref="canvas")
 
   </template>
 
 
   <style lang="stylus">
 
-    .background-tracker
+    .home-backgroundTracker
       position fixed
-      /*background rgba(#00ff00, 0.05)*/
-    
-    /*canvas.background-trackerCanvas*/
+      z-index 400
       
 
   </style>

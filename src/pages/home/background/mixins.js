@@ -33,13 +33,105 @@
 	var Covers = { methods: {} };
 	var Letter = { methods: {} };
 	var Distorsion = { methods: {} };
+	var Mask = { methods: {} };
+  var Morphs = { methods: {} };
 
-	var Mixins = { Covers: Covers,  Letter: Letter, Distorsion: Distorsion };
+	var Mixins = { Covers,  Letter, Distorsion, Mask, Morphs };
 
 
 	// Export 
 	
 	export default Mixins;
+
+
+
+
+
+	/* Mask */
+
+
+  // Created
+  
+  Mask.created = function () {
+
+    this.bounds = new Paper.Rectangle({
+      point: [0, 0],
+      size: [sw, sh]
+    });
+
+  };
+
+
+	// Draw
+	
+	Mask.methods.drawCovers = function (group) {
+
+		let covers = [];
+
+		_.each(this.content, (c, i) => {
+
+			let cover = new Paper.Raster({
+				source: c.cover.url,
+				position: new Paper.Point(sw*.5, sh*.5),
+        opacity: 0
+			});
+
+      cover.onLoad = function () {
+        this.ow = this.size.width;
+        this.oh = this.size.height;
+        this.ratio = Math.max(sw/this.ow, sh/this.oh);
+        this.size = new Paper.Size(this.ow*this.ratio, this.oh*this.ratio);
+      };
+
+      group.addChild(cover);
+      covers.push(cover);
+
+		});
+
+    return covers;
+
+	};
+
+  Mask.methods.resizeCovers = function (bounds) {
+
+    
+
+  };
+
+
+  // Position
+  
+  Mask.methods.position = function (bounds) {
+
+    this.view.viewSize = bounds.size;
+    TweenMax.set(this.$refs.canvas, { left: bounds.x, top: bounds.y });
+
+    this.covers[this.current].position.x = sw*.5 - bounds.x;
+    this.covers[this.current].position.y = sh*.5 - bounds.y;
+
+    this.bounds = bounds;
+
+  };
+  
+  Mask.methods.offsetCover = function (index, bounds) {
+
+    let x = sw*.5 - bounds.x;
+    let y = sh*.5 - bounds.y;
+
+    this.covers[index].position.x = x;
+    this.covers[index].position.y = y;
+
+  };
+
+
+  // Go
+  
+  Mask.methods.goCover = function (index) {
+
+    TweenMax.to(this.covers[this.prev], .75, { opacity: 0, ease: ease.default });
+    TweenMax.to(this.covers[index], .75, { opacity: 1, ease: ease.default });
+
+  };
 
 
 
@@ -86,14 +178,14 @@
 
 		});
 
-		$(window).on('resize', () => { this._resizeCovers(); });
+		// $(window).on('resize', () => { this.resizeCovers(); });
 
 	};
 
 
 	// Resize 
 	
-	Covers.methods._resizeCovers = function () {
+	Covers.methods.resizeCovers = function () {
 
 		_.each(this.covers, (c, i) => {
 			c.ratio = Math.max(sw/c.ow, sh/c.oh);
@@ -131,9 +223,9 @@
 
 	// Morph
 	
-	Letter.methods._morph = function (i) {
+	Morphs.methods.morph = function (i) {
 
-    let morphs = this._createMorphs(this.shape.children, this.models[i].children);
+    let morphs = this.createMorphs(this.shape.children, this.models[i].children);
     this.shape.children = [];
     _.each(morphs, (m) => { this.shape.children.push(m.from); });
     
@@ -150,15 +242,15 @@
       for(var i=0; i<m.from.segments.length; i++){
         let c = (i+m.start)%m.from.segments.length;
         let s = m.from.segments[c], t = m.to.segments[c];
-        tl.to(s.point, .75, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleIn, .75, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleOut, .75, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.point, .8, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleIn, .8, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleOut, .8, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
       }
     });
 
   };
 
-  Letter.methods._createMorphs = function (from, to) {
+  Morphs.methods.createMorphs = function (from, to) {
 
     var morphs = [];
 
