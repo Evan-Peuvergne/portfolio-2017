@@ -198,9 +198,11 @@
 
 	// Transition
 	
-	Covers.methods._coversTransition = function (index) {
+	Covers.methods._coversTransition = function (index, prev = null) {
 
-		TweenMax.to(this.covers[this.prev], .75, { opacity: 0, ease: ease.default });
+    if(prev == null){ prev = this.prev; }
+
+		TweenMax.to(this.covers[prev], .75, { opacity: 0, ease: ease.default });
     TweenMax.to(this.covers[index], .75, { opacity: 1, ease: ease.default });
 
 	};
@@ -241,9 +243,9 @@
       for(var i=0; i<m.from.segments.length; i++){
         let c = (i+m.start)%m.from.segments.length;
         let s = m.from.segments[c], t = m.to.segments[c];
-        tl.to(s.point, .75, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleIn, .75, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleOut, .75, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.point, .8, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleIn, .8, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleOut, .8, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
       }
     });
 

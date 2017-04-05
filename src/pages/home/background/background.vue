@@ -45,7 +45,8 @@
         bounds: new Paper.Rectangle({
           point: [0, 0], size: [sw, sh] }),
         length: this.content.length,
-        organic: sh/110,
+        // organic: sh/110,
+        organic: sh/90
       };
     };
 
@@ -65,17 +66,11 @@
 
     component.mounted = function () {
 
-      // this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
       
       this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
-      // this.locations = [this.$refs.letter];
-      // this.locations = [];
       this.currentLocation = this.$el;
 
-      $(window).on('mousemove', () => { 
-        this.transfer(); 
-        // console.log(this.bounds.x);
-      });
+      $(window).on('mousemove', () => { this.transfer(); });
 
     };
 
@@ -129,8 +124,8 @@
     div.home-background
   
       //- Navigation
-      navigation(direction="previous", v-bind:content="content", ref="previous")
-      navigation(direction="next", v-bind:content="content" ref="next")
+      navigation(direction="previous", v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content", ref="previous")
+      navigation(direction="next", v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content" ref="next")
       
       //- Tracker
       tracker(v-bind:bounds="bounds", v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
@@ -145,7 +140,7 @@
           filter(id="organic")
             feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="organic" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="goo")
-            feComposite(in="SourceGraphic" in2="goo" operator="over")
+            feComposite(in="SourceGraphic" in2="goo" operator="atop")
 
           filter(id="shadow")
             feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")

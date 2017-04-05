@@ -44,6 +44,7 @@
 
     component.data = function () {
       return { 
+        force: null,
         length: this.content.length,
       };
     };
@@ -54,6 +55,12 @@
         this.prev = val;
       }
     }
+
+    component.computed = {
+      index: function () {
+        return (this.force != null) ? this.force : this.current;
+      }
+    };
 
 
     // Init
@@ -74,6 +81,15 @@
 
       this.container.insertChild(0, this.shape);
       this.container.clipped = true;
+
+      this.$events.on('home.navigation.hovering', (e) => {
+        this.force = e.target;
+        this._coversTransition(e.target);
+      });
+      this.$events.on('home.navigation.leaving', (e) => {
+        this.force = null;
+        this._coversTransition(this.current, e.target);
+      });
 
       $(window).on('resize', () => { this.resize(); });
 
@@ -143,8 +159,8 @@
       TweenMax.set(this.$el, { left: this.position.x - this.bounds.x, top: this.position.y - this.bounds.y });
       let offsetX = sw*.5 - tracker.s*.5 - this.position.x + this.view.viewSize.width*.5;
       let offsetY = sh*.5 - tracker.s*.5 - this.position.y + this.view.viewSize.height*.5;
-      this.covers[this.current].position.x = offsetX;
-      this.covers[this.current].position.y = offsetY;
+      this.covers[this.index].position.x = offsetX;
+      this.covers[this.index].position.y = offsetY;
 
       this._distord(f, tracker.distorsion);
 

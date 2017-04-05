@@ -30,21 +30,24 @@
     component.props = {
       direction: { type: String },
       mouse: { type: Object },
+      current: { type: Number },
       content: { type: Array, default: [] }
     };
 
     component.data = function () {
-      return { 
+      return {
+        selected: false,
         size: nav.r*2.5,
         radius: nav.r,
       };
     };
 
-    component.watch = {
-      current: function (val) {
-        this.go(val);
-        this.prev = val;
-      }
+    component.computed = {
+      index: function () {
+        let inc = (this.direction == 'previous') ? -1 : 1;
+        let index = this.current + inc;
+        return (index > 0) ? (index%3) : this.content.length-1;
+      }, 
     };
 
 
@@ -52,12 +55,6 @@
 
 
     // Init
-    
-    component.created = function () {
-
-
-
-    };
 
     component.mounted = function () {
 
@@ -71,21 +68,28 @@
           nav.r],
         radius: this.radius,
       });
-      this.shape.fillColor = '#000';
 
       this.shade = this.shape.clone();
       this.shade.fillColor = '#000';
       this.shade.opacity = 0.02;
 
+      this.area = this.shape.clone();
+      let scale = (this.radius + tracker.r)/this.radius + .01;
+      this.area.scale(scale);
+
       this.container = new Paper.Group();
+      this.shape.fillColor = '#000';
       this.covers = this.drawCovers(this.container);
       this.container.insertChild(0, this.shape);
       this.container.clipped = true;
 
       $(this.$el).on('click', (e) => { 
-        e.preventDefault(); 
+        e.preventDefault();
+        if(!this.selected){ return false; }
         this.$events.emit('home.navigation', { direction: this.direction });
       });
+
+      new Ticker().tick('navigation.' + this.direction, this.monitor);
 
       this.draw();
 
@@ -101,16 +105,67 @@
         point: [fRect.left, fRect.top], size: [fRect.width, fRect.height] });
 
       let cRect = this.$refs.canvas.getBoundingClientRect();
-      let bounds = new Paper.Rectangle({ 
+      this.canvasBounds = new Paper.Rectangle({ 
         point: [cRect.left, cRect.top], size: [cRect.width, cRect.height] }); 
-      _.each(this.covers, (c, i) => { this.offsetCover(i, bounds); });
-
+      _.each(this.covers, (c, i) => { this.offsetCover(i, this.canvasBounds); });
 
     };
     
     component.methods.resize = function () {
 
       
+
+    };
+
+
+    // Monitor
+
+    component.methods.monitor = function () {
+
+      let t = new Paper.Point([
+        this.mouse.abs.x - this.canvasBounds.x,
+        this.mouse.abs.y - this.canvasBounds.y,
+      ]);
+
+      if(this.area.contains(t)){ 
+        if(!this.selected){
+          this.activate();
+          this.selected = true;
+        }
+        return;
+      }
+      
+      if(this.selected){
+        this.deactivate();
+        this.selected = false;
+      }
+
+      return;
+
+    };
+
+
+    // Activation
+    
+    component.methods.activate = function () {
+
+      TweenMax.to(this.covers[this.index], 0.35, { opacity: 1, ease: ease.default });
+
+      this.$events.emit('home.navigation.hovering', { 
+        direction: this.direction,
+        target: this.index, 
+      });
+
+    };
+
+    component.methods.deactivate = function () {
+
+      TweenMax.to(this.covers[this.index], 0.35, { opacity: 0, ease: ease.default });
+
+      this.$events.emit('home.navigation.leaving', {
+        direction: this.direction,
+        target: this.index,
+      });
 
     };
 
@@ -126,7 +181,7 @@
   <template lang="jade">
     
     .home-navigation(v-bind:class="[direction]", v-bind:style="{width: size + 'px', height: (size*2.5) + 'px'}")
-      .home-navigationContainer(v-bind:style="{width: size*0.75 + 'px', height: size*1.5 + 'px'}", ref="container")
+      .home-navigationContainer(v-bind:style="{width: size*0.75 + 'px', height: size*1.5 + 'px', filter: (selected) ? 'url(#organic)' : 'none'}", ref="container")
         canvas(ref="canvas")
 
 
@@ -146,8 +201,8 @@
       .home-navigationContainer
         position absolute
         top 50%
-        filter url(#organic)
         transform translate3d(0, -50%, 0)
+        /*background rgba(#00ff00, 0.1)*/
 
       canvas
         position absolute
