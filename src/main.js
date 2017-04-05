@@ -23,6 +23,7 @@
 
   import Vue from 'vue';
   import Router from 'vue-router';
+  import Events from 'vue-events';
 
   import App from './app.vue';
 
@@ -64,7 +65,15 @@
   };
 
   
-  /* Router */
+  /* Plugins */
+
+
+  // Events
+  
+  Vue.use(Events);
+
+
+  // Router
 
   Vue.use(Router);
 

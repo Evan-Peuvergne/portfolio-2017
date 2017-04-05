@@ -42,8 +42,10 @@
 
     component.data = function () {
       return { 
+        bounds: new Paper.Rectangle({
+          point: [0, 0], size: [sw, sh] }),
         length: this.content.length,
-        organic: sh/140,
+        organic: sh/110,
       };
     };
 
@@ -65,10 +67,15 @@
 
       // this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
       
-      this.locations = [this.$refs.letter];
+      this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
+      // this.locations = [this.$refs.letter];
+      // this.locations = [];
       this.currentLocation = this.$el;
 
-      $(window).on('mousemove', () => { this.transfer(); });
+      $(window).on('mousemove', () => { 
+        this.transfer(); 
+        // console.log(this.bounds.x);
+      });
 
     };
 
@@ -88,8 +95,9 @@
         let bounds = loc.bounds;
         if(bounds.intersects(t)){
           if(loc != this.currentLocation){ 
-            loc.$el.appendChild(this.$refs.tracker.$el);
-            this.currentLocation = loc; 
+            loc.$refs.container.appendChild(this.$refs.tracker.$el);
+            this.bounds = bounds;
+            this.currentLocation = loc;
           }
           return;
         }
@@ -98,34 +106,14 @@
 
       if(this.currentLocation != this.$el){
         this.$el.appendChild(this.$refs.tracker.$el);
+        this.bounds = new Paper.Rectangle({ point: [0, 0], size: [sw, sh] });
         this.currentLocation = this.$el;
         return;
       }
 
+      return;
+
     };
-
-    // component.methods._transfer = function () {
-
-    //   let cursor = new Paper.Rectangle({
-    //     point: [this.mouse.abs.x-tracker.r, this.mouse.abs.y-tracker.r],
-    //     size: [tracker.d, tracker.d]
-    //   });
-
-    //   let isInContainer = this.bounds.contains(cursor);
-
-    //   if(isInContainer && this._trackerLocation != 'container') {
-    //     this._trackerLocation = 'container';
-    //     this.$refs.container.appendChild(this.$refs.tracker.$el);
-    //     return;
-    //   }
-
-    //   if(!isInContainer && this._trackerLocation != 'window') {
-    //     this._trackerLocation = 'window';
-    //     this.$el.appendChild(this.$refs.tracker.$el);
-    //     return;
-    //   }
-
-    // };
 
 
     
@@ -141,11 +129,11 @@
     div.home-background
   
       //- Navigation
-      navigation(direction="previous", ref="previous")
-      navigation(direction="next", ref="next")
+      navigation(direction="previous", v-bind:content="content", ref="previous")
+      navigation(direction="next", v-bind:content="content" ref="next")
       
       //- Tracker
-      tracker(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
+      tracker(v-bind:bounds="bounds", v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="tracker")
       
       //- Letter
       letter(v-bind:current="current", v-bind:content="content", v-bind:mouse="mouse", ref="letter")
@@ -157,7 +145,7 @@
           filter(id="organic")
             feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="organic" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="goo")
-            feComposite(in="SourceGraphic" in2="goo" operator="atop")
+            feComposite(in="SourceGraphic" in2="goo" operator="over")
 
           filter(id="shadow")
             feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")

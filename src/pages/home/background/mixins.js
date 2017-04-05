@@ -104,10 +104,12 @@
   Mask.methods.position = function (bounds) {
 
     this.view.viewSize = bounds.size;
-    TweenMax.set(this.$refs.canvas, { left: bounds.x, top: bounds.y });
+    TweenMax.set(this.$refs.container, { 
+      left: bounds.x, top: bounds.y,
+      width: bounds.width, height: bounds.height
+    });
 
-    this.covers[this.current].position.x = sw*.5 - bounds.x;
-    this.covers[this.current].position.y = sh*.5 - bounds.y;
+    this.offsetCover(this.current, bounds);
 
     this.bounds = bounds;
 
@@ -115,11 +117,8 @@
   
   Mask.methods.offsetCover = function (index, bounds) {
 
-    let x = sw*.5 - bounds.x;
-    let y = sh*.5 - bounds.y;
-
-    this.covers[index].position.x = x;
-    this.covers[index].position.y = y;
+    this.covers[index].position.x = sw*.5 - bounds.x;
+    this.covers[index].position.y = sh*.5 - bounds.y;
 
   };
 
@@ -242,9 +241,9 @@
       for(var i=0; i<m.from.segments.length; i++){
         let c = (i+m.start)%m.from.segments.length;
         let s = m.from.segments[c], t = m.to.segments[c];
-        tl.to(s.point, .8, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleIn, .8, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
-        tl.to(s.handleOut, .8, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.point, .75, { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleIn, .75, { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, i*.005);
+        tl.to(s.handleOut, .75, { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, i*.005);
       }
     });
 

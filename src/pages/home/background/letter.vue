@@ -193,7 +193,7 @@
 
   <template lang="jade">
     
-    .home-backgroundLetter
+    .home-backgroundLetter(ref="container")
       canvas(ref="canvas")
 
   </template>

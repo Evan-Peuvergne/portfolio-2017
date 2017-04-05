@@ -76,6 +76,11 @@
         }
       });
 
+      this.$events.on('home.navigation', (e) => {
+        if(e.direction == 'next'){ this.next(); }
+        else{ this.previous(); }
+      });
+
     }
 
     // Navigation
@@ -183,60 +188,6 @@
           &:hover
             color rgba(#fefefe, 0.8) !important
             border-color rgba(#fefefe, 0.8) !important
-
-    .home-navigation
-      display block
-      cursor pointer
-      position absolute
-      z-index 500
-      top 50%
-      width 140px
-      height 140px
-      text-decoration none
-      color rgba(#000, 0.7)
-      transform translateY(-50%)
-
-      &:before
-        display block
-        position absolute
-        top 20px
-        left 20px
-        content ''
-        width 100px
-        height 100px
-        border-radius 50px
-        background rgba(#000, 0.02)
-        transition transform 1s ease
-
-      &:after
-        display flex
-        position absolute
-        width 140px
-        height 140px
-        font-family 'Ionicons'
-        font-size 23px
-        justify-content center
-        align-items center
-
-      &:hover:before
-        transform scale(1.2)
-
-      &:hover:after
-        color: #fefefe
-
-    .home-previous
-      left -70px
-
-      &:after
-        content "\f108"
-        left 45px
-
-    .home-next
-      right -70px
-
-      &:after
-        content "\f10b"
-        right 45px
 
   </style>
   

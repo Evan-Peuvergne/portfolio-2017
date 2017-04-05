@@ -21,7 +21,7 @@
     var component = { 
       name: 'navigation', 
       methods: {},
-      mixins: [ Mixins.Covers, ]
+      mixins: [ Mixins.Mask, ]
     };
 
 
@@ -29,7 +29,8 @@
     
     component.props = {
       direction: { type: String },
-      mouse: { type: Object }
+      mouse: { type: Object },
+      content: { type: Array, default: [] }
     };
 
     component.data = function () {
@@ -60,6 +61,8 @@
 
     component.mounted = function () {
 
+      this.stage = new Paper.Project(this.$refs.canvas);
+      this.view = this.stage.view;
       this.view.viewSize = new Size(this.radius, this.radius*2);
 
       this.shape = new Paper.Shape.Circle({
@@ -74,10 +77,17 @@
       this.shade.fillColor = '#000';
       this.shade.opacity = 0.02;
 
+      this.container = new Paper.Group();
+      this.covers = this.drawCovers(this.container);
       this.container.insertChild(0, this.shape);
       this.container.clipped = true;
 
-      this.view.update();
+      $(this.$el).on('click', (e) => { 
+        e.preventDefault(); 
+        this.$events.emit('home.navigation', { direction: this.direction });
+      });
+
+      this.draw();
 
     };
 
@@ -86,38 +96,21 @@
     
     component.methods.draw = function () {
 
-      
+      let fRect = this.$refs.container.getBoundingClientRect();
+      this.bounds = new Paper.Rectangle({
+        point: [fRect.left, fRect.top], size: [fRect.width, fRect.height] });
+
+      let cRect = this.$refs.canvas.getBoundingClientRect();
+      let bounds = new Paper.Rectangle({ 
+        point: [cRect.left, cRect.top], size: [cRect.width, cRect.height] }); 
+      _.each(this.covers, (c, i) => { this.offsetCover(i, bounds); });
+
 
     };
     
     component.methods.resize = function () {
 
       
-
-    };
-
-
-    // Animate
-    
-    component.methods._animate = function (f) {
-
-      this.parallax.x += (this.mouse.orth.x*tracker.p - this.parallax.x) * .1;
-      this.parallax.y += (this.mouse.orth.y*tracker.p - this.parallax.y) * .1;
-
-      let distorsion = this.content[this.current].letter.distorsion;
-
-      _.each(this.shape.children, (c) => {
-        _.each(c.segments, (s, i) => {
-          s.point.x = s.point.ox - this.bounds.x + this.parallax.x + Math.cos(f.count*distorsion.frequency + i) * distorsion.amplitude;
-          s.point.y = s.point.oy - this.bounds.y + this.parallax.y - Math.sin(f.count*distorsion.frequency + i) * distorsion.amplitude;
-          s.handleIn.x = s.handleIn.ox;
-          s.handleIn.y = s.handleIn.oy;
-          s.handleOut.x = s.handleOut.ox;
-          s.handleOut.y = s.handleOut.oy;
-        });
-      });
-
-      this._transfer();
 
     };
 
@@ -132,8 +125,9 @@
 
   <template lang="jade">
     
-    .home-backgroundNavigation(v-bind:class="[direction]", v-bind:style="{width: size*.75 + 'px', height: (size*1.5) + 'px'}")
-      canvas(ref="canvas")
+    .home-navigation(v-bind:class="[direction]", v-bind:style="{width: size + 'px', height: (size*2.5) + 'px'}")
+      .home-navigationContainer(v-bind:style="{width: size*0.75 + 'px', height: size*1.5 + 'px'}", ref="container")
+        canvas(ref="canvas")
 
 
   </template>
@@ -141,19 +135,24 @@
 
   <style lang="stylus" scoped>
 
-    .home-backgroundNavigation
+    .home-navigation
       display block
       position absolute
       z-index 800
       top 50%
       transform translate3d(0, -50%, 0)
-      /*background rgba(#00ff00, 0.1)*/
+      cursor pointer
+
+      .home-navigationContainer
+        position absolute
+        top 50%
+        filter url(#organic)
+        transform translate3d(0, -50%, 0)
 
       canvas
         position absolute
         top 50%
         transform translate3d(0, -50%, 0)
-        /*background rgba(#ff0000, 0.1)*/
 
       &.previous
         left 0
@@ -161,6 +160,7 @@
       &.next
         right 0
 
+        .home-navigationContainer
         canvas
           right 0
 

@@ -14,7 +14,7 @@
       },
       "distorsion": {
         "frequency": 0.5, 
-        "amplitude": 0.5
+        "amplitude": 0.4
       }
   	},
     "shadow": {

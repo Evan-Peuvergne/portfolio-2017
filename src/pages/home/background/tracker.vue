@@ -36,6 +36,7 @@
     // Properties
     
     component.props = {
+      bounds: { type: Object, },
       current: { type: Number, default: 0 },
       content: { type: Array, default: [] },
       mouse: { type: Object }
@@ -139,7 +140,7 @@
       this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .1;
       this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .1;
 
-      TweenMax.set(this.$el, { left: this.position.x, top: this.position.y });
+      TweenMax.set(this.$el, { left: this.position.x - this.bounds.x, top: this.position.y - this.bounds.y });
       let offsetX = sw*.5 - tracker.s*.5 - this.position.x + this.view.viewSize.width*.5;
       let offsetY = sh*.5 - tracker.s*.5 - this.position.y + this.view.viewSize.height*.5;
       this.covers[this.current].position.x = offsetX;
@@ -170,7 +171,7 @@
   <style lang="stylus">
 
     .home-backgroundTracker
-      position fixed
+      position absolute
       z-index 400
       
 
