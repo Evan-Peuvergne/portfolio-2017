@@ -47,7 +47,10 @@
         let inc = (this.direction == 'previous') ? -1 : 1;
         let index = this.current + inc;
         return (index > 0) ? (index%3) : this.content.length-1;
-      }, 
+      },
+      icon: function () {
+        return './assets/icons/' + this.direction + '.svg';
+      }
     };
 
 
@@ -150,6 +153,8 @@
     component.methods.activate = function () {
 
       TweenMax.to(this.covers[this.index], 0.35, { opacity: 1, ease: ease.default });
+      
+      $(this.$refs.icon.contentDocument).find('#icon').css('stroke', '#fefefe');
 
       this.$events.emit('home.navigation.hovering', { 
         direction: this.direction,
@@ -161,6 +166,8 @@
     component.methods.deactivate = function () {
 
       TweenMax.to(this.covers[this.index], 0.35, { opacity: 0, ease: ease.default });
+
+      $(this.$refs.icon.contentDocument).find('#icon').css('stroke', '#323232');
 
       this.$events.emit('home.navigation.leaving', {
         direction: this.direction,
@@ -181,8 +188,9 @@
   <template lang="jade">
     
     .home-navigation(v-bind:class="[direction]", v-bind:style="{width: size + 'px', height: (size*2.5) + 'px'}")
+      object.home-navigationIcon(type="image/svg+xml", v-bind:data="icon", ref="icon")
       .home-navigationContainer(v-bind:style="{width: size*0.75 + 'px', height: size*1.5 + 'px', filter: (selected) ? 'url(#organic)' : 'none'}", ref="container")
-        canvas(ref="canvas")
+        canvas.home-navigationCanvas(ref="canvas")
 
 
   </template>
@@ -198,22 +206,38 @@
       transform translate3d(0, -50%, 0)
       cursor pointer
 
+      .home-navigationIcon
+        display block
+        position absolute
+        z-index 550
+        top 50%
+        width 1.1em
+        transform translate3d(0, -50%, 0)
+
       .home-navigationContainer
         position absolute
+        z-index 520
         top 50%
         transform translate3d(0, -50%, 0)
         /*background rgba(#00ff00, 0.1)*/
 
-      canvas
+      .home-navigationCanvas
         position absolute
         top 50%
         transform translate3d(0, -50%, 0)
 
+
       &.previous
         left 0
 
+        .home-navigationIcon
+          left 1em
+
       &.next
         right 0
+
+        .home-navigationIcon
+          right 1em
 
         .home-navigationContainer
         canvas
