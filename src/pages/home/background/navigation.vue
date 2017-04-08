@@ -46,13 +46,23 @@
       index: function () {
         let inc = (this.direction == 'previous') ? -1 : 1;
         let index = this.current + inc;
-        return (index > 0) ? (index%3) : this.content.length-1;
+        return (index >= 0) ? (index%3) : this.content.length-1;
       },
       icon: function () {
         return './assets/icons/' + this.direction + '.svg';
       }
     };
 
+    component.watch = {
+      current: function (val) {
+        if(this.selected){
+          TweenMax.to(this.covers[this.current], 0.5, { opacity: 0, ease: ease.default });
+          TweenMax.to(this.covers[this.index], 0.5, { opacity: 1, ease: ease.default });
+          this.$events.emit('home.navigation.hovering', { 
+            direction: this.direction, target: this.index, });
+        }
+      }
+    };
 
     component.components = {};
 
@@ -77,7 +87,7 @@
       this.shade.opacity = 0.02;
 
       this.area = this.shape.clone();
-      let scale = (this.radius + tracker.r)/this.radius + .01;
+      let scale = (this.radius + tracker.r)/this.radius + .1;
       this.area.scale(scale);
 
       this.container = new Paper.Group();
@@ -152,7 +162,7 @@
     
     component.methods.activate = function () {
 
-      TweenMax.to(this.covers[this.index], 0.35, { opacity: 1, ease: ease.default });
+      TweenMax.to(this.covers[this.index], 0.5, { opacity: 1, ease: ease.default });
       
       $(this.$refs.icon.contentDocument).find('#icon').css('stroke', '#fefefe');
 
@@ -165,7 +175,7 @@
 
     component.methods.deactivate = function () {
 
-      TweenMax.to(this.covers[this.index], 0.35, { opacity: 0, ease: ease.default });
+      TweenMax.to(this.covers[this.index], 0.5, { opacity: 0, ease: ease.default });
 
       $(this.$refs.icon.contentDocument).find('#icon').css('stroke', '#323232');
 
@@ -228,7 +238,7 @@
 
 
       &.previous
-        left 0
+        left 10em
 
         .home-navigationIcon
           left 1em

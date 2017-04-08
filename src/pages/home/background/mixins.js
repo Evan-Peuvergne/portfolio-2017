@@ -125,9 +125,11 @@
 
   // Go
   
-  Mask.methods.goCover = function (index) {
+  Mask.methods.goCover = function (index, prev) {
 
-    TweenMax.to(this.covers[this.prev], .75, { opacity: 0, ease: ease.default });
+    if(prev == null){ prev = this.prev; }
+
+    TweenMax.to(this.covers[prev], .75, { opacity: 0, ease: ease.default });
     TweenMax.to(this.covers[index], .75, { opacity: 1, ease: ease.default });
 
   };

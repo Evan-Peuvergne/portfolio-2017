@@ -144,10 +144,10 @@
       let from = this.shapes[this.prev];
       let to = this.shapes[this.current];
 
-      tl.fromTo(from.point, .75, { y: from.oy }, { y: from.oy-200, ease: ease.elastic }, 0);
+      tl.fromTo(from.point, .75, { y: from.oy }, { y: from.oy-400, ease: ease.elastic }, 0);
       tl.fromTo(from, .75, { opacity: 0.02 }, { opacity: 0, ease: ease.default }, 0);
 
-      tl.fromTo(to.point, .75, { y: to.oy+200 }, { y: to.oy, ease: ease.elastic }, 0);
+      tl.fromTo(to.point, .75, { y: to.oy+400 }, { y: to.oy, ease: ease.elastic }, 0);
       tl.fromTo(to, .75, { opacity: 0 }, { opacity: 0.02, ease: ease.default }, 0);
 
     };

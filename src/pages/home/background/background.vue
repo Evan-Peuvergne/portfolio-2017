@@ -45,8 +45,9 @@
         bounds: new Paper.Rectangle({
           point: [0, 0], size: [sw, sh] }),
         length: this.content.length,
+        organic: sh/140,
         // organic: sh/110,
-        organic: sh/90
+        // organic: sh/90
       };
     };
 
@@ -66,11 +67,14 @@
 
     component.mounted = function () {
 
-      
-      this.locations = [this.$refs.letter, this.$refs.previous, this.$refs.next];
-      this.currentLocation = this.$el;
+      console.log(document.width);
 
-      $(window).on('mousemove', () => { this.transfer(); });
+      this.locations = [this.$refs.previous, this.$refs.next];
+      this.bounds = this.$refs.letter.bounds;
+      this.currentLocation = this.$refs.letter.$refs.container;
+      this.$refs.letter.$refs.container.append(this.$refs.tracker.$el);
+
+      // $(window).on('mousemove', () => { this.transfer(); });
 
     };
 
@@ -99,10 +103,10 @@
 
       }
 
-      if(this.currentLocation != this.$el){
-        this.$el.appendChild(this.$refs.tracker.$el);
-        this.bounds = new Paper.Rectangle({ point: [0, 0], size: [sw, sh] });
-        this.currentLocation = this.$el;
+      if(this.currentLocation != this.$refs.letter.$refs.container){
+        this.$refs.letter.$refs.container.appendChild(this.$refs.tracker.$el);
+        this.bounds = this.$refs.letter.bounds;
+        this.currentLocation = this.$refs.letter.$refs.container;
         return;
       }
 
@@ -139,8 +143,8 @@
         defs
           filter(id="organic")
             feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="organic" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="goo")
-            feComposite(in="SourceGraphic" in2="goo" operator="atop")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
+            feComposite(in="SourceGraphic" in2="goo" operator="over")
 
           filter(id="shadow")
             feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")
@@ -169,7 +173,7 @@
     .background-letter
       position absolute
       z-index 200
-      filter url(#organic)
+      /*filter url(#organic)*/
 
     .background-letterCanvas
       position absolute

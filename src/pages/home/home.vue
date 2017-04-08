@@ -25,7 +25,7 @@
     
     component.data = function () {
       return {
-        current: 0,
+        current: 1,
         content: Projects,
         mouse: { 
           abs: { x: sw*.5, y: sh*.5 },
@@ -126,9 +126,9 @@
 
       div.home-accessMessage
         p
-          | Let's
-          a(v-bind:href="url", v-bind:style="{ color: color, borderColor: color }" target="_blank") Launch
-          | the project
+          | Maintain clicked or
+          a(v-bind:href="url", v-bind:style="{ color: color, borderColor: color }" target="_blank") press
+          | to discover
 
   </template>
 

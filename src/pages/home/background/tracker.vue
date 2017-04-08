@@ -67,10 +67,7 @@
     
     component.created = function () {
 
-      this.position = { 
-        x: 0,
-        y: 0
-      };
+      this.position = { x: 0, y: 0 };
 
     };
 
@@ -84,7 +81,7 @@
 
       this.$events.on('home.navigation.hovering', (e) => {
         this.force = e.target;
-        this._coversTransition(e.target);
+        this._coversTransition(e.target, this.current);
       });
       this.$events.on('home.navigation.leaving', (e) => {
         this.force = null;
@@ -107,6 +104,7 @@
       this.shape.flatten(8)
       this.shape.smooth();
       this.shape.fillColor = '#000';
+      this.strokeWidth = 0;
 
     };
     
