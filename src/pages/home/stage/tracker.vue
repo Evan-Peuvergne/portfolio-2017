@@ -69,7 +69,14 @@
     
     component.methods.draw = function () {
 
-      
+      this.shape.flatten(4);
+      this.shape.smooth();
+
+      this.shape.segments.forEach(s => {
+        [s.point, s.handleIn, s.handleOut].forEach(p => {
+          p.ox = p.x; p.oy = p.y;
+        });
+      });
 
     };
     
@@ -95,41 +102,16 @@
 
       if(this.shape == null){ return false; }
   
-      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .1;
-      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .1;
+      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .2;
+      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .2;
 
-      this.shape.segments.forEach(s => {
-        s.point.x = s.point.ox + this.position.x;
-        s.point.y = s.point.oy + this.position.y;
+      this.shape.segments.forEach((s, i) => {
+        s.point.x = s.point.ox + this.position.x + Math.cos(f.time*tracker.distorsion.f + i) * tracker.distorsion.a;
+        s.point.y = s.point.oy + this.position.y - Math.sin(f.time*tracker.distorsion.f + i*i) * tracker.distorsion.a;
       })
 
       this.svg.attr('d', this.shape.pathData);
       Paper.project.view.update();
-
-    };
-
-
-    // Utils
-    
-    component.methods.define = function (shape) {
-
-      this.shape = shape;
-
-      this.shape.flatten(8);
-      this.shape.smooth();
-
-      this.shape.segments.forEach(s => {
-        [s.point, s.handleIn, s.handleOut].forEach(p => {
-          p.ox = p.x; p.oy = p.y;
-        });
-      });
-
-      this.shape.strokeWidth = 0;
-      this.shape.fillColor = '#ff7731';
-      this.shape.opacity = 0.5;
-      this.shape.shadowColor = '#ff7731';
-      this.shape.shadowBlur = 20;
-      this.shape.shadowOffset = 0;
 
     };
 

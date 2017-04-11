@@ -62,22 +62,24 @@
       this.canvas = new Paper.Project(this.$refs.canvas);
       this.canvas.view.autoUpdate = false;
 
-      // Add letter shape definition here
+      this.draw();
+
+      this.letter = new Paper.CompoundPath();
+      this.$refs.letter.shape = this.letter;
+      this.$refs.letter.draw();
 
       this.tracker = new Paper.Path.Circle({
         center: [tracker.s*.5, tracker.s*.5],
         radius: tracker.r
       });
-      this.$refs.tracker.define(this.tracker);
-      // console.log(this.$refs.tracker);
+      this.$refs.tracker.shape = this.tracker;
+      this.$refs.tracker.draw();
 
-      this.draw();
-      this.$refs.letter.define(this.shapes[this.current]);
-      this.$refs.letter.shape.fillColor = '#ff7731';
-      this.$refs.letter.shape.opacity = 0.5;
-      this.$refs.letter.shape.shadowColor = '#ff7731';
-      this.$refs.letter.shape.shadowBlur = 20;
-      this.$refs.letter.shape.shadowOffset = 0;
+      this.letter.fillColor = this.letter.shadowColor = this.tracker.fillColor = this.tracker.shadowColor = Projects[this.current].shadow.color;
+      this.letter.shadowBlur = this.tracker.shadowBlur = 40;
+      this.letter.opacity = this.tracker.opacity = Projects[this.current].shadow.opacity;
+      
+      this.container = SVG.adopt(this.$refs.container);
 
       $(this.$refs.images[0]).attr('opacity', 1);
 
@@ -89,23 +91,6 @@
     component.methods.draw = function () {
 
       this.canvas.view.viewSize = new Paper.Size(sw, sh);
-
-      this.shapes = [];
-      this.content.forEach((c, i) => {
-
-        let s = new Paper.CompoundPath(c.letter.path);
-        let fitter = new Paper.Rectangle({
-          point: [0, sh*(1-c.letter.size)/2],
-          size: [sw, sh*c.letter.size]
-        });
-        s.fitBounds(fitter);
-
-        s.position.x = sw*.5 - s.bounds.width*(1-c.letter.offset.x) - 25;
-        s.position.y = sh*.5 - s.bounds.height*c.letter.offset.y;
-
-        this.shapes.push(s);
-
-      });
 
     };
 
@@ -140,14 +125,15 @@
             letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shapes="shapes", v-bind:content="content" ref="letter")
 
           filter(id="organic")
-            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="8" result="blur")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="5" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
-            feComposite(in="SourceGraphic" in2="goo" operator="atop")
+            feComposite(in="SourceGraphic" in2="goo" operator="over")
 
         //- Background
-        g.home-stageBackground(clip-path="url(#mask)", filter="url(#organic)")
-          template(v-for="c in content")
-            image(v-bind:href="c.cover.url", preserveAspectRatio="xMidYMid slice", width="100%", height="100%", opacity="0", ref="images")
+        g.home-stageBackground
+          g(clip-path="url(#mask)")
+            template(v-for="c in content")
+              image(v-bind:href="c.cover.url", preserveAspectRatio="xMidYMid slice", width="100%", height="100%", opacity="0", ref="images")
 
       //- Canvas
       canvas.home-stageCanvas(ref="canvas")
@@ -172,6 +158,9 @@
 
     .home-stageCanvas
       z-index 300
+
+    .home-stageBackground
+      filter: url(#organic)
 
   </style>
   

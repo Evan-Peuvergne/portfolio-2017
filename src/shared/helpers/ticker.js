@@ -90,6 +90,7 @@
 				if(tick.pause){ return false; }
 				tick.func(tick.stats);
 				tick.stats.count++;
+				tick.stats.time = new Date().getTime() - tick.stats.start;
 			});
 
 			// Frame
@@ -115,7 +116,7 @@
 				func: func, 
 				duration: duration, 
 				pause: false, 
-				stats: { count: 0, start: null, }
+				stats: { count: 0, start: new Date().getTime(), time: 0 }
 			};
 
 			// Framer

@@ -45,14 +45,30 @@
 
     // Init
     
+    component.created = function () {
+
+      this.is = { navigating : false };
+
+    };
+    
     component.mounted = function () {
 
+      $(window).on('keydown', this.keydown);
       $(window).on('mousemove', this.mousemove);
 
     }
 
 
-    // Mouse
+    // Events
+    
+    component.methods.keydown = function (e) {
+
+      switch(e.keyCode) {
+        case 37: this.previous(); break;
+        case 39 : this.next(); break;
+      }
+
+    };
     
     component.methods.mousemove = function (e) {
 
@@ -69,20 +85,12 @@
     
     component.methods.previous = function () { 
 
-      if(this.is.navigating) { return; }
-      this.is.navigating = true;
-      setTimeout(() => { this.is.navigating = false; }, 1000);
-
       let i = this.current-1; 
       this.current = (i >= 0) ? i : Projects.length-1;
 
     };  
     
     component.methods.next = function () { 
-
-      if(this.is.navigating) { return; }
-      this.is.navigating = true;
-      setTimeout(() => { this.is.navigating = false; }, 1000);
       
       this.current = (this.current+1)%Projects.length;
 
