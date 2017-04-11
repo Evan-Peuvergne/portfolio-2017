@@ -13,6 +13,7 @@
     import Paper from 'paper';
 
     import Letter from './letter.vue';
+    import Tracker from './tracker.vue';
 
     import Ticker from '../../../shared/helpers/ticker.js';
 
@@ -50,21 +51,35 @@
     };
 
 
-    component.components = { Letter, };
+    component.components = { Letter, Tracker };
 
 
     // Hooks
 
     component.mounted = function () {
 
-      this.svg = new SVG(this.$refs.container);
-      this.paper = new Paper.Project();
-      this.paper.view.autoUpdate = false;
-      this.$parent.$el.appendChild(this.paper.view.element);
+      this.svg = new SVG(this.$refs.svg);
+      this.canvas = new Paper.Project(this.$refs.canvas);
+      this.canvas.view.autoUpdate = false;
+
+      // Add letter shape definition here
+
+      this.tracker = new Paper.Path.Circle({
+        center: [tracker.s*.5, tracker.s*.5],
+        radius: tracker.r
+      });
+      this.$refs.tracker.define(this.tracker);
+      // console.log(this.$refs.tracker);
 
       this.draw();
       this.$refs.letter.define(this.shapes[this.current]);
-      // this.$refs.letter.shape.fillColor = '#000';
+      this.$refs.letter.shape.fillColor = '#ff7731';
+      this.$refs.letter.shape.opacity = 0.5;
+      this.$refs.letter.shape.shadowColor = '#ff7731';
+      this.$refs.letter.shape.shadowBlur = 20;
+      this.$refs.letter.shape.shadowOffset = 0;
+
+      $(this.$refs.images[0]).attr('opacity', 1);
 
     };
 
@@ -73,7 +88,7 @@
     
     component.methods.draw = function () {
 
-      this.paper.view.viewSize = new Paper.Size(sw, sh);
+      this.canvas.view.viewSize = new Paper.Size(sw, sh);
 
       this.shapes = [];
       this.content.forEach((c, i) => {
@@ -112,41 +127,51 @@
   <template lang="jade">
     
     //- Root
-    svg.home-stage(width="100%", height="100%", ref="container")
+    .home-stage
+      
+      //- SVG
+      svg.home-stageSVG(width="100%", height="100%", shape-rendering="optimizeSpeed", ref="svg")
 
-      //- Defs
-      defs
+        //- Defs
+        defs
 
-        clipPath.home-stageMask#mask
-          letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shapes="shapes", v-bind:content="content" ref="letter")
-          path.home-stageTracker
+          clipPath.home-stageMask#mask
+            tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
+            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shapes="shapes", v-bind:content="content" ref="letter")
 
-        filter(id="shadow")
-          feOffset(dx="0", dy="0", result="offset", in="SourceGraphic")
-          feGaussianBlur(stdDeviation="20", result="blur", in="offset")
-          feComponentTransfer
-            feFuncA(type="linear", slope="0.6")
-          feMerge
-            feMergeNode
-            feMergeNode(in="SourceGraphic")
+          filter(id="organic")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="8" result="blur")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
+            feComposite(in="SourceGraphic" in2="goo" operator="atop")
 
-      //- Background
-      g.home-stageBackground(clip-path="url(#mask)")
-        template(v-for="c in content")
-          image(v-bind:href="c.cover.url", preserveAspectRatio="xMidYMid slice", width="100%", height="100%")
+        //- Background
+        g.home-stageBackground(clip-path="url(#mask)", filter="url(#organic)")
+          template(v-for="c in content")
+            image(v-bind:href="c.cover.url", preserveAspectRatio="xMidYMid slice", width="100%", height="100%", opacity="0", ref="images")
+
+      //- Canvas
+      canvas.home-stageCanvas(ref="canvas")
 
   </template>
 
 
-  <style lang="stylus">
+  <style lang="stylus" scoped>
     
-    canvas
+    .home-stage
+    .home-stageSVG
+    .home-stageCanvas
+      display block
       position absolute
-      z-index -1
       top 0
       left 0
       width 100%
       height 100%
+
+    .home-stageSVG
+      z-index 500
+
+    .home-stageCanvas
+      z-index 300
 
   </style>
   

@@ -103,9 +103,7 @@
       });
 
       this.letter.attr('d', this.shape.pathData);
-      // console.log(this.shape.pathData);
-
-      // console.log(this.sh)
+      // Paper.project.view.update();
 
     };
 
