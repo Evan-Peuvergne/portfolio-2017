@@ -40,7 +40,9 @@
     };
 
     component.data = function () {
-      return {};
+      return {
+        region: { x: 0, y: 0, width: 100, height: 100 }
+      };
     };
 
     component.watch = {
@@ -60,6 +62,8 @@
 
       this.covers = [];
       this.prev = this.current;
+
+      this.tl = new TimelineMax();
 
     };
 
@@ -84,8 +88,8 @@
       this.$refs.tracker.draw();
 
       this.letter.fillColor = this.letter.shadowColor = this.tracker.fillColor = this.tracker.shadowColor = Projects[this.current].shadow.color;
-      this.letter.shadowBlur = this.tracker.shadowBlur = 60;
-      this.letter.opacity = this.tracker.opacity = 0.5;
+      this.letter.shadowBlur = this.tracker.shadowBlur = 75;
+      this.letter.opacity = this.tracker.opacity = Projects[this.current].shadow.opacity;
       
       this.container = SVG.adopt(this.$refs.container);
 
@@ -102,7 +106,7 @@
 
     component.methods.resize = function () {
 
-
+      this.tl.clear();
 
     };
 
@@ -111,7 +115,16 @@
     
     component.methods.go = function (index) {
 
-      // this.covers[index].animate().style('opacity', 1);
+      let anims = {
+        fillColor: Projects[index].shadow.color,
+        shadowColor: Projects[index].shadow.color,
+        opacity: Projects[index].shadow.opacity,
+        ease: ease.default
+      };
+
+      this.tl.clear();
+      this.tl.to(this.letter, .6, _.clone(anims), 0);
+      this.tl.to(this.tracker, .6, _.clone(anims), 0);
 
     };
 
