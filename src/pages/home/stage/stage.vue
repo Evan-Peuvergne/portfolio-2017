@@ -14,6 +14,7 @@
 
     import Letter from './letter.vue';
     import Tracker from './tracker.vue';
+    import Background from './background.vue';
 
     import Ticker from '../../../shared/helpers/ticker.js';
 
@@ -39,22 +40,28 @@
     };
 
     component.data = function () {
-      return {
-        shapes: [],
-      };
+      return {};
     };
 
     component.watch = {
       current: function (val) {
+        this.go(val);
         this.prev = val;
       }
     };
 
 
-    component.components = { Letter, Tracker };
+    component.components = { Letter, Tracker, Background };
 
 
     // Hooks
+    
+    component.created = function () {
+
+      this.covers = [];
+      this.prev = this.current;
+
+    };
 
     component.mounted = function () {
 
@@ -65,6 +72,7 @@
       this.draw();
 
       this.letter = new Paper.CompoundPath();
+      this.letter.strokeWidth = 0;
       this.$refs.letter.shape = this.letter;
       this.$refs.letter.draw();
 
@@ -76,12 +84,10 @@
       this.$refs.tracker.draw();
 
       this.letter.fillColor = this.letter.shadowColor = this.tracker.fillColor = this.tracker.shadowColor = Projects[this.current].shadow.color;
-      this.letter.shadowBlur = this.tracker.shadowBlur = 40;
-      this.letter.opacity = this.tracker.opacity = Projects[this.current].shadow.opacity;
+      this.letter.shadowBlur = this.tracker.shadowBlur = 60;
+      this.letter.opacity = this.tracker.opacity = 0.5;
       
       this.container = SVG.adopt(this.$refs.container);
-
-      $(this.$refs.images[0]).attr('opacity', 1);
 
     };
 
@@ -100,6 +106,14 @@
 
     };
 
+
+    // Transition
+    
+    component.methods.go = function (index) {
+
+      // this.covers[index].animate().style('opacity', 1);
+
+    };
 
     
     /* Export */
@@ -120,21 +134,32 @@
         //- Defs
         defs
 
-          clipPath.home-stageMask#mask
-            tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
-            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shapes="shapes", v-bind:content="content" ref="letter")
+          tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
 
-          filter(id="organic")
-            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="5" result="blur")
+          clipPath#mask
+            use(xlink:href="#maskTracker")
+            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content" ref="letter")
+
+          clipPath#maskFallback
+            use(xlink:href="#maskTracker")
+
+          filter(id="organic", x="32%", y="10%", width="16%", height="80%")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="6" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="over")
 
-        //- Background
-        g.home-stageBackground
-          g(clip-path="url(#mask)")
-            template(v-for="c in content")
-              image(v-bind:href="c.cover.url", preserveAspectRatio="xMidYMid slice", width="100%", height="100%", opacity="0", ref="images")
 
+      //- Fallback
+      .home-stageFallback
+        background(v-bind:current="current")
+
+      
+      //- Background
+      .home-stageBackground
+        div.home-stageOrganic
+          div.home-stageMask
+            background(v-bind:current="current")
+  
       //- Canvas
       canvas.home-stageCanvas(ref="canvas")
 
@@ -146,6 +171,8 @@
     .home-stage
     .home-stageSVG
     .home-stageCanvas
+    .home-stageBackground
+    .home-stageFallback
       display block
       position absolute
       top 0
@@ -153,14 +180,28 @@
       width 100%
       height 100%
 
+    .home-stageBackground
+      z-index 600
+
+    .home-stageFallback
+      z-index 590
+      clip-path url(#maskFallback)
+    
+    .home-stageMask
+      width 100%
+      height 100%
+      clip-path url(#mask)
+
+    .home-stageOrganic
+      width 100%
+      height 100%
+      filter url(#organic)
+
     .home-stageSVG
       z-index 500
 
     .home-stageCanvas
       z-index 300
-
-    .home-stageBackground
-      filter: url(#organic)
 
   </style>
   

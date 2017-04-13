@@ -127,8 +127,8 @@
       this.shape.children.forEach(c => {
         c.segments.forEach((s, i) => {
           
-          s.point.x = s.point.ox + this.parallax.x + Math.cos(f.count*distorsion.frequency + i) * distorsion.amplitude;
-          s.point.y = s.point.oy + this.parallax.y - Math.sin(f.count*distorsion.frequency + i) * distorsion.amplitude;
+          s.point.x = s.point.ox + this.parallax.x + Math.cos(f.time*distorsion.frequency + i) * distorsion.amplitude;
+          s.point.y = s.point.oy + this.parallax.y - Math.sin(f.time*distorsion.frequency + i) * distorsion.amplitude;
           
           [s.handleIn, s.handleOut].forEach(p => { 
             p.x = p.ox;
@@ -231,7 +231,8 @@
 
   <style lang="stylus">
 
-
+    .home-stageLetter
+      stroke-width 0
 
   </style>
   

@@ -69,7 +69,7 @@
     
     component.methods.draw = function () {
 
-      this.shape.flatten(4);
+      this.shape.flatten(8);
       this.shape.smooth();
 
       this.shape.segments.forEach(s => {
@@ -126,7 +126,7 @@
 
   <template lang="jade">
       
-      path.home-stageTracker(d="")
+      path.home-stageTracker#maskTracker(d="")
 
   </template>
   

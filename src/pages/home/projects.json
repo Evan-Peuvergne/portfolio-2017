@@ -13,7 +13,7 @@
         "origin": 15
       },
       "distorsion": {
-        "frequency": 0.5, 
+        "frequency": 0.018, 
         "amplitude": 0.4
       }
   	},
@@ -47,7 +47,7 @@
         "origin": 30
       },
       "distorsion": {
-        "frequency": 0.4, 
+        "frequency": 0.018, 
         "amplitude": 0.3
       }
   	},
@@ -78,7 +78,7 @@
         "origin": 30
       },
       "distorsion": {
-        "frequency": 0.4, 
+        "frequency": 0.018, 
         "amplitude": 0.3
       }
     },
