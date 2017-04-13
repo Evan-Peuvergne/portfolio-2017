@@ -79,6 +79,7 @@
       this.letter.strokeWidth = 0;
       this.$refs.letter.shape = this.letter;
       this.$refs.letter.draw();
+      this.setRegion(this.$refs.letter.shapes[this.current].bounds);
 
       this.tracker = new Paper.Path.Circle({
         center: [tracker.s*.5, tracker.s*.5],
@@ -126,6 +127,24 @@
       this.tl.to(this.letter, .6, _.clone(anims), 0);
       this.tl.to(this.tracker, .6, _.clone(anims), 0);
 
+      this.setRegion(this.$refs.letter.shapes[index].bounds);
+
+    };
+
+
+    // Utils
+    
+    component.methods.setRegion = function (bounds) {
+
+      bounds = bounds.expand(tracker.p + 10);
+
+      this.region = { 
+        x: (bounds.x/sw*100) + '%', 
+        y: (bounds.y/sh*100) + '%', 
+        width: (bounds.width/sw*100) + '%', 
+        height: (bounds.height/sh*100) + '%' 
+      };
+
     };
 
     
@@ -156,7 +175,7 @@
           clipPath#maskFallback
             use(xlink:href="#maskTracker")
 
-          filter(id="organic", x="32%", y="10%", width="16%", height="80%")
+          filter(id="organic", v-bind:x="region.x", v-bind:y="region.y", v-bind:width="region.width", v-bind:height="region.height")
             feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="6" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="over")
