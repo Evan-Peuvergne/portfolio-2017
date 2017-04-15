@@ -88,15 +88,18 @@
     
     component.methods.go = function (index) {
       
-      TweenMax.set(this.covers[this.prev], { zIndex: -1 });
-      TweenMax.set(this.covers[index], { zIndex: 0, opacity: 0 });
+      // TweenMax.set(this.covers[this.prev], { zIndex: -1 });
+      // TweenMax.set(this.covers[index], { zIndex: 0, opacity: 0 });
 
-      let prev = this.prev;
-      TweenMax.fromTo(this.covers[index], .5, 
-        { css: {opacity: 0 } }, 
-        { css: { opacity: 1 }, ease: ease.default, 
-        onComplete: () => { TweenMax.set(this.covers[prev], { opacity: 0 }); } 
-      });
+      // let prev = this.prev;
+      // TweenMax.fromTo(this.covers[index], .5, 
+      //   { css: {opacity: 0 } }, 
+      //   { css: { opacity: 1 }, ease: ease.default, 
+      //   onComplete: () => { TweenMax.set(this.covers[prev], { opacity: 0 }); } 
+      // });
+      
+      TweenMax.set(this.covers[index], { opacity: 1 });
+      TweenMax.set(this.covers[this.prev], { opacity: 0 });
 
     };
 

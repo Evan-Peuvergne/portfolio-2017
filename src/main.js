@@ -37,7 +37,7 @@
   window.sh = window.innerHeight;
 
   window.ease = {};
-  window.ease.elastic = Elastic.easeOut.config(0.8, 0.7);
+  window.ease.elastic = Elastic.easeOut.config(0.8, 0.75);
   window.ease.default = Power2.easeOut;
 
   window.tracker = {};

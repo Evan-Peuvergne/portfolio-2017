@@ -102,8 +102,8 @@
 
       if(this.shape == null){ return false; }
   
-      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .2;
-      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .2;
+      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .3;
+      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .3;
 
       this.shape.segments.forEach((s, i) => {
         s.point.x = s.point.ox + this.position.x + Math.cos(f.time*tracker.distorsion.f + i) * tracker.distorsion.a;

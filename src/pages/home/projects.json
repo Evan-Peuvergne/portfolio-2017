@@ -13,13 +13,13 @@
         "origin": 15
       },
       "distorsion": {
-        "frequency": 0.018, 
+        "frequency": 0.025, 
         "amplitude": 0.4
       }
   	},
     "shadow": {
       "color": "#ff7731",
-      "opacity": 0.5
+      "opacity": 0.4
     },
   	"cover": {
   		"url": "assets/images/projects/jaiye_cover.png",
@@ -84,7 +84,7 @@
     },
     "shadow": {
       "color": "#692C05",
-      "opacity": 0.7
+      "opacity": 0.4
     },
     "cover": {
       "url": "assets/images/projects/cartebancaire_cover.jpg",

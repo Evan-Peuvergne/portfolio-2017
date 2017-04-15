@@ -15,6 +15,7 @@
     import Letter from './letter.vue';
     import Tracker from './tracker.vue';
     import Background from './background.vue';
+    import Shade from './shade.vue';
 
     import Ticker from '../../../shared/helpers/ticker.js';
 
@@ -40,9 +41,13 @@
     };
 
     component.data = function () {
+      new Paper.Project();
       return {
+        letter: new Paper.CompoundPath(),
+        models: _.map(Projects, (p) => { return new Paper.CompoundPath(p.letter.path); }),
         region: { x: 0, y: 0, width: 100, height: 100 }
       };
+      Paper.project.remove();
     };
 
     component.watch = {
@@ -53,14 +58,13 @@
     };
 
 
-    component.components = { Letter, Tracker, Background };
+    component.components = { Letter, Tracker, Background, Shade };
 
 
     // Hooks
     
     component.created = function () {
 
-      this.covers = [];
       this.prev = this.current;
 
       this.tl = new TimelineMax();
@@ -69,30 +73,11 @@
 
     component.mounted = function () {
 
-      this.svg = new SVG(this.$refs.svg);
-      this.canvas = new Paper.Project(this.$refs.canvas);
-      this.canvas.view.autoUpdate = false;
-
       this.draw();
+      this.letter.children = _.cloneDeep(this.models[this.current].children);
+      this.setRegion(this.models[this.current].bounds);
 
-      this.letter = new Paper.CompoundPath();
-      this.letter.strokeWidth = 0;
-      this.$refs.letter.shape = this.letter;
-      this.$refs.letter.draw();
-      this.setRegion(this.$refs.letter.shapes[this.current].bounds);
-
-      this.tracker = new Paper.Path.Circle({
-        center: [tracker.s*.5, tracker.s*.5],
-        radius: tracker.r
-      });
-      this.$refs.tracker.shape = this.tracker;
-      this.$refs.tracker.draw();
-
-      this.letter.fillColor = this.letter.shadowColor = this.tracker.fillColor = this.tracker.shadowColor = Projects[this.current].shadow.color;
-      this.letter.shadowBlur = this.tracker.shadowBlur = 75;
-      this.letter.opacity = this.tracker.opacity = Projects[this.current].shadow.opacity;
-      
-      this.container = SVG.adopt(this.$refs.container);
+      $(window).on('resize', this.resize);
 
     };
 
@@ -101,13 +86,29 @@
     
     component.methods.draw = function () {
 
-      this.canvas.view.viewSize = new Paper.Size(sw, sh);
+      this.models.forEach((m, i) => {
+
+        let settings = Projects[i].letter
+        let fitter = new Paper.Rectangle({
+          point: [0, sh*(1-settings.size)/2],
+          size: [sw, sh*settings.size]
+        });
+        m.fitBounds(fitter);
+
+        m.position.x = sw*.5 - m.bounds.width*(1-settings.offset.x) - 25;
+        m.position.y = sh*.5 - m.bounds.height*settings.offset.y;
+
+        m.children.forEach(c => { c.segments.forEach(s => {
+          [s.point, s.handleIn, s.handleOut].forEach(p => { p.ox = p.x; p.oy = p.y; });
+        }); });
+
+      });      
 
     };
 
     component.methods.resize = function () {
 
-      this.tl.clear();
+      this.draw();
 
     };
 
@@ -125,9 +126,9 @@
 
       this.tl.clear();
       this.tl.to(this.letter, .6, _.clone(anims), 0);
-      this.tl.to(this.tracker, .6, _.clone(anims), 0);
+      // this.tl.to(this.tracker, .6, _.clone(anims), 0);
 
-      this.setRegion(this.$refs.letter.shapes[index].bounds);
+      this.setRegion(this.models[index].bounds);
 
     };
 
@@ -166,17 +167,17 @@
         //- Defs
         defs
 
-          tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
+          //- tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
 
           clipPath#mask
-            use(xlink:href="#maskTracker")
-            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content" ref="letter")
+            //- use(xlink:href="#maskTracker")
+            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shape="letter", v-bind:models="models", ref="letter")
 
           clipPath#maskFallback
-            use(xlink:href="#maskTracker")
+            //- use(xlink:href="#maskTracker")
 
           filter(id="organic", v-bind:x="region.x", v-bind:y="region.y", v-bind:width="region.width", v-bind:height="region.height")
-            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="6" result="blur")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="5" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="over")
 
@@ -194,6 +195,9 @@
   
       //- Canvas
       canvas.home-stageCanvas(ref="canvas")
+
+      //- Shade
+      shade(v-bind:current="current", v-bind:letter="letter")
 
   </template>
 
@@ -234,6 +238,7 @@
 
     .home-stageCanvas
       z-index 300
+      /*background red*/
 
   </style>
   

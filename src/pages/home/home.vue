@@ -9,8 +9,8 @@
     import { TimelineMax } from 'gsap';
 
     import Stage from './stage/stage.vue';
+    import Infos from './old_infos.vue';
     
-    // import Infos from './infos.vue';
     // import Background from './background/background.vue';
 
     import Projects from './projects.json';
@@ -40,7 +40,7 @@
       color: function () { return this.content[this.current].color; }
     };
 
-    component.components = { Stage };
+    component.components = { Stage, Infos };
 
 
     // Init
@@ -108,7 +108,7 @@
   <template lang="jade">
       
     .home
-
+      
       stage(v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content")
 
       p.home-accessMessage
@@ -140,7 +140,7 @@
     .home-accessMessage
       display block
       position absolute
-      z-index 500
+      z-index 800
       bottom 2em
       width 100%
       font-family Gotham Bold
