@@ -45,6 +45,7 @@
       return {
         letter: new Paper.CompoundPath(),
         models: _.map(Projects, (p) => { return new Paper.CompoundPath(p.letter.path); }),
+        tracker: new Paper.Path.Circle({ center: [0, 0], radius: tracker.r }),
         region: { x: 0, y: 0, width: 100, height: 100 }
       };
       Paper.project.remove();
@@ -66,8 +67,6 @@
     component.created = function () {
 
       this.prev = this.current;
-
-      this.tl = new TimelineMax();
 
     };
 
@@ -115,20 +114,9 @@
 
     // Transition
     
-    component.methods.go = function (index) {
+    component.methods.go = function (i) {
 
-      let anims = {
-        fillColor: Projects[index].shadow.color,
-        shadowColor: Projects[index].shadow.color,
-        opacity: Projects[index].shadow.opacity,
-        ease: ease.default
-      };
-
-      this.tl.clear();
-      this.tl.to(this.letter, .6, _.clone(anims), 0);
-      // this.tl.to(this.tracker, .6, _.clone(anims), 0);
-
-      this.setRegion(this.models[index].bounds);
+      this.setRegion(this.models[i].bounds);
 
     };
 
@@ -167,14 +155,14 @@
         //- Defs
         defs
 
-          //- tracker(v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
+          tracker(v-bind:shape="tracker", v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
 
           clipPath#mask
-            //- use(xlink:href="#maskTracker")
+            use(xlink:href="#maskTracker")
             letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shape="letter", v-bind:models="models", ref="letter")
 
           clipPath#maskFallback
-            //- use(xlink:href="#maskTracker")
+            use(xlink:href="#maskTracker")
 
           filter(id="organic", v-bind:x="region.x", v-bind:y="region.y", v-bind:width="region.width", v-bind:height="region.height")
             feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="5" result="blur")
@@ -192,12 +180,9 @@
         div.home-stageOrganic
           div.home-stageMask
             background(v-bind:current="current")
-  
-      //- Canvas
-      canvas.home-stageCanvas(ref="canvas")
 
       //- Shade
-      shade(v-bind:current="current", v-bind:letter="letter")
+      shade(v-bind:current="current", v-bind:letter="letter", v-bind:tracker="tracker", v-bind:models="models")
 
   </template>
 

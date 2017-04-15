@@ -28,6 +28,7 @@
     // Properties
     
     component.props = {
+      shape: { type: Object },
       current: { type: Number, default: 0 },
       mouse: { type: Object }
     };
@@ -50,8 +51,6 @@
     
     component.created = function () {
 
-      this.shape = null;
-
       this.position = { x: 0, y: 0 };
 
     };
@@ -59,6 +58,11 @@
     component.mounted = function () {
       
       this.svg = SVG.adopt(this.$el);
+
+      this.shape.flatten(8);
+      this.shape.smooth();
+
+      this.draw();
       
       new Ticker().tick('tracker.animate', this.animate);   
 
@@ -68,9 +72,6 @@
     // Draw
     
     component.methods.draw = function () {
-
-      this.shape.flatten(8);
-      this.shape.smooth();
 
       this.shape.segments.forEach(s => {
         [s.point, s.handleIn, s.handleOut].forEach(p => {
@@ -102,8 +103,8 @@
 
       if(this.shape == null){ return false; }
   
-      this.position.x += ((this.mouse.abs.x - tracker.s*.5) - this.position.x) * .3;
-      this.position.y += ((this.mouse.abs.y - tracker.s*.5) - this.position.y) * .3;
+      this.position.x += ((this.mouse.abs.x) - this.position.x) * .2;
+      this.position.y += ((this.mouse.abs.y) - this.position.y) * .2;
 
       this.shape.segments.forEach((s, i) => {
         s.point.x = s.point.ox + this.position.x + Math.cos(f.time*tracker.distorsion.f + i) * tracker.distorsion.a;
@@ -111,7 +112,6 @@
       })
 
       this.svg.attr('d', this.shape.pathData);
-      Paper.project.view.update();
 
     };
 
