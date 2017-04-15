@@ -51,7 +51,7 @@
   window.nav.r = window.sh*0.085;
 
   window.shade = {};
-  window.shade.p = 100;
+  window.shade.p = { x:125, y: 75 };
 
   window.onresize = function () {
 

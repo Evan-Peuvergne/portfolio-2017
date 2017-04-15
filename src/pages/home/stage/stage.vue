@@ -68,11 +68,12 @@
 
       this.prev = this.current;
 
+      this.draw();
+
     };
 
     component.mounted = function () {
 
-      this.draw();
       this.letter.children = _.cloneDeep(this.models[this.current].children);
       this.setRegion(this.models[this.current].bounds);
 
@@ -165,7 +166,7 @@
             use(xlink:href="#maskTracker")
 
           filter(id="organic", v-bind:x="region.x", v-bind:y="region.y", v-bind:width="region.width", v-bind:height="region.height")
-            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="5" result="blur")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="6" result="blur")
             feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="over")
 
@@ -182,7 +183,7 @@
             background(v-bind:current="current")
 
       //- Shade
-      shade(v-bind:current="current", v-bind:letter="letter", v-bind:tracker="tracker", v-bind:models="models")
+      shade(v-bind:current="current", v-bind:letter="letter", v-bind:tracker="tracker", v-bind:models="models", v-bind:mouse="mouse")
 
   </template>
 
