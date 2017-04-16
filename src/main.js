@@ -37,7 +37,7 @@
   window.sh = window.innerHeight;
 
   window.ease = {};
-  window.ease.elastic = Elastic.easeOut.config(0.8, 0.75);
+  window.ease.elastic = Elastic.easeOut.config(0.8, 0.7);
   window.ease.default = Power2.easeOut;
 
   window.tracker = {};
@@ -45,13 +45,18 @@
   window.tracker.d = window.tracker.r*2;
   window.tracker.s = window.tracker.d*1.3;
   window.tracker.p = 50;
-  window.tracker.distorsion = { f: 0.025, a: 0.8 };
+  window.tracker.distorsion = { f: 0.02, a: 1 };
 
   window.nav = {};
   window.nav.r = window.sh*0.085;
 
   window.shade = {};
   window.shade.p = { x:125, y: 75 };
+
+  window.titles = {};
+  window.titles.p = { x: 20, y: 20 };
+  window.titles.lp = { x: 5, y: 5 };
+  window.titles.hp = { x: 8, y: 8 };
 
   window.onresize = function () {
 

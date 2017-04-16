@@ -9,7 +9,7 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import Paper from 'paper';
+    import SVG from 'svg.js';
 
     import { TweenMax } from 'gsap';
 
@@ -63,8 +63,9 @@
 
       // this.stage = new Paper.Project(this.$el);
 
-      this.covers = this.$refs.covers;
-      TweenMax.set(this.covers[this.current], { opacity: 1 });
+      this.$refs.covers.forEach(c => { this.covers.push(SVG.adopt(c)); });
+      this.covers[this.current].attr('display', 'block');
+      // TweenMax.set(this.covers[this.current], { opacity: 1 });
 
     };
 
@@ -98,8 +99,11 @@
       //   onComplete: () => { TweenMax.set(this.covers[prev], { opacity: 0 }); } 
       // });
       
-      TweenMax.set(this.covers[index], { opacity: 1 });
-      TweenMax.set(this.covers[this.prev], { opacity: 0 });
+      // TweenMax.set(this.covers[index], { opacity: 1 });
+      // TweenMax.set(this.covers[this.prev], { opacity: 0 });
+      
+      this.covers[index].attr('display', 'block');
+      this.covers[this.prev].attr('display', 'none');
 
     };
 
@@ -113,25 +117,16 @@
 
   <template lang="jade">
     
-    .background
+    g.background
       template(v-for="c in content")
-        .background-cover(v-bind:style="{ backgroundImage: 'url(' + c.cover.url + ')' }", ref="covers")
+        image.background-cover(v-bind:xlink:href="c.cover.url", x="0", y="0", width="100%", height="100%", preserveAspectRatio="xMinYMin slice", display="none", ref="covers")
 
   </template>
 
 
   <style lang="stylus" scoped>
 
-    .background
-    .background-cover
-      position absolute
-      width 100%
-      height 100%
 
-    .background-cover
-      z-index -1
-      opacity 0
-      background-size cover
 
   </style>
   

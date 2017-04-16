@@ -155,32 +155,21 @@
 
         //- Defs
         defs
+          
+          mask#mask
+            g(filter="url(#organic)" style="background: red;")
+              tracker(v-bind:shape="tracker", v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
+              letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shape="letter", v-bind:models="models", ref="letter")
 
-          tracker(v-bind:shape="tracker", v-bind:current="current", v-bind:mouse="mouse", ref="tracker")
-
-          clipPath#mask
-            use(xlink:href="#maskTracker")
-            letter(v-bind:current="current", v-bind:mouse="mouse", v-bind:shape="letter", v-bind:models="models", ref="letter")
-
-          clipPath#maskFallback
-            use(xlink:href="#maskTracker")
-
-          filter(id="organic", v-bind:x="region.x", v-bind:y="region.y", v-bind:width="region.width", v-bind:height="region.height")
-            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="6" result="blur")
-            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo")
+          filter(id="organic")
+            feGaussianBlur(in="SourceGraphic" v-bind:stdDeviation="7" result="blur")
+            feColorMatrix(in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10" result="goo")
             feComposite(in="SourceGraphic" in2="goo" operator="over")
 
+        //- Covers 
+        g(mask="url(#mask)")
+          background(v-bind:current="current")
 
-      //- Fallback
-      .home-stageFallback
-        background(v-bind:current="current")
-
-      
-      //- Background
-      .home-stageBackground
-        div.home-stageOrganic
-          div.home-stageMask
-            background(v-bind:current="current")
 
       //- Shade
       shade(v-bind:current="current", v-bind:letter="letter", v-bind:tracker="tracker", v-bind:models="models", v-bind:mouse="mouse")
@@ -207,12 +196,12 @@
 
     .home-stageFallback
       z-index 590
-      clip-path url(#maskFallback)
+      /*mask url(#maskFallback)*/
     
     .home-stageMask
       width 100%
       height 100%
-      clip-path url(#mask)
+      mask url(#mask)
 
     .home-stageOrganic
       width 100%

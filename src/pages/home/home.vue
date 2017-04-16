@@ -9,9 +9,7 @@
     import { TimelineMax } from 'gsap';
 
     import Stage from './stage/stage.vue';
-    import Infos from './old_infos.vue';
-    
-    // import Background from './background/background.vue';
+    import Titles from './titles/titles.vue';
 
     import Projects from './projects.json';
 
@@ -40,7 +38,7 @@
       color: function () { return this.content[this.current].color; }
     };
 
-    component.components = { Stage, Infos };
+    component.components = { Stage, Titles, };
 
 
     // Init
@@ -106,11 +104,17 @@
 
 
   <template lang="jade">
-      
+    
+    //- Root
     .home
       
+      //- Titles
+      titles(v-bind:current="current", v-bind:mouse="mouse")
+
+      //- Stage
       stage(v-bind:current="current", v-bind:mouse="mouse", v-bind:content="content")
 
+      //- Message
       p.home-accessMessage
         | Maintain clicked or
         a(v-bind:href="url", v-bind:style="{ color: color, borderColor: color }" target="_blank") press
@@ -129,13 +133,22 @@
       width 100%
       height 100%
 
-    .home-stage
-      display block
-      position absolute
-      top 0
-      left 0
-      width 100%
-      height 100%
+      .titles
+        position absolute
+        z-index 800
+        top calc(50% - 2.5em)
+        left 50%
+        width 50%
+        height 50%
+
+      .home-stage
+        display block
+        position absolute
+        z-index 500
+        top 0
+        left 0
+        width 100%
+        height 100%
     
     .home-accessMessage
       display block

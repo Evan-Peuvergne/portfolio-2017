@@ -192,7 +192,7 @@
 
   <template lang="jade">
     
-    path.home-stageLetter
+    path.home-stageLetter(fill="white")
 
   </template>
 

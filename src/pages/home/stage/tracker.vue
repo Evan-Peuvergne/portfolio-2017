@@ -34,9 +34,7 @@
     };
 
     component.data = function () {
-      return {
-        // shape: null,
-      };
+      return {};
     };
 
     component.watch = {
@@ -126,7 +124,7 @@
 
   <template lang="jade">
       
-      path.home-stageTracker#maskTracker(d="")
+      path.home-stageTracker#maskTracker(d="", fill="white")
 
   </template>
   
