@@ -1,0 +1,17 @@
+{
+  "images": [
+    "assets/images/projects/jaiye_cover.png",
+    "assets/images/projects/nouvelleco_cover.png",
+    "assets/images/projects/cartebancaire_cover.jpg"
+  ],
+  "fonts": [
+    "assets/fonts/bodoni.eot",
+    "assets/fonts/bodoni.svg",
+    "assets/fonts/bodoni.ttf",
+    "assets/fonts/bodoni.woff"
+  ],
+  "icons": [
+    "assets/icons/next.svg",
+    "assets/icons/previous.svg"
+  ]
+}

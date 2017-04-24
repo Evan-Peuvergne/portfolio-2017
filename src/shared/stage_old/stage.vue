@@ -17,9 +17,9 @@
     import Background from './background.vue';
     import Shade from './shade.vue';
 
-    import Ticker from '../../../shared/helpers/ticker.js';
+    import Ticker from '../../vendors/helpers/ticker.js';
 
-    import Projects from '../projects.json';
+    import Projects from '../../pages/home/projects.json';
 
 
     
@@ -36,17 +36,17 @@
     
     component.props = {
       current: { type: Number, default: 0 },
-      content: { type: Array, default: [] },
+      // content: { type: Array, default: [] },
       mouse: { type: Object },
     };
 
     component.data = function () {
       new Paper.Project();
       return {
-        letter: new Paper.CompoundPath(),
-        models: _.map(Projects, (p) => { return new Paper.CompoundPath(p.letter.path); }),
+        shape: new Paper.CompoundPath(),
         tracker: new Paper.Path.Circle({ center: [0, 0], radius: tracker.r }),
-        region: { x: 0, y: 0, width: 100, height: 100 }
+        region: { x: 0, y: 0, width: 100, height: 100 },
+        content: Projects,
       };
       Paper.project.remove();
     };
@@ -74,8 +74,8 @@
 
     component.mounted = function () {
 
-      this.letter.children = _.cloneDeep(this.models[this.current].children);
-      this.setRegion(this.models[this.current].bounds);
+      // this.letter.children = _.cloneDeep(this.models[this.current].children);
+      // this.setRegion(this.models[this.current].bounds);
 
       $(window).on('resize', this.resize);
 
@@ -97,12 +97,12 @@
 
         m.position.x = sw*.5 - m.bounds.width*(1-settings.offset.x) - 25;
         m.position.y = sh*.5 - m.bounds.height*settings.offset.y;
-
+        
         m.children.forEach(c => { c.segments.forEach(s => {
           [s.point, s.handleIn, s.handleOut].forEach(p => { p.ox = p.x; p.oy = p.y; });
         }); });
 
-      });      
+      });     
 
     };
 

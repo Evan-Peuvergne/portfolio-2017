@@ -13,9 +13,9 @@
     import SVG from 'svg.js';
     import Paper from 'paper';
 
-    import Ticker from '../../../shared/helpers/ticker.js';
+    import Ticker from '../../vendors/helpers/ticker.js';
 
-    import Projects from '../projects.json';
+    import Projects from '../../pages/home/projects.json';
 
 
 

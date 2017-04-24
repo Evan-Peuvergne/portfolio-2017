@@ -1,22 +1,6 @@
 
 
 
-
-  /**
-  *
-  *   MAIN | Js
-  *
-  *   Desc : app global behavior definition
-  *   Location : > main.js
-  *
-  */
-  
-
-
-  
-
-
-
   /* Dependencies */
 
   import { TimelineMax } from 'gsap';
@@ -25,7 +9,7 @@
   import Router from 'vue-router';
   import Events from 'vue-events';
 
-  import App from './app.vue';
+  import App from './shared/app.vue';
 
   import { routes } from './routes.js';
 
@@ -70,6 +54,7 @@
   };
 
   
+  
   /* Plugins */
 
 
@@ -95,6 +80,8 @@
     router: routing,
     render: h => h(App) 
   });
+
+  window.app = app;
 
   app.$mount('#app');
   

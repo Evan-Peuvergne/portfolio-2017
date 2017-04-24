@@ -9,11 +9,11 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import SVG from 'svg.js';
-
     import { TweenMax } from 'gsap';
 
-    import Projects from '../projects.json';
+    import SVG from 'svg.js';
+
+    import Projects from '../../pages/home/projects.json';
 
 
     
