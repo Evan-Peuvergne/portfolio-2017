@@ -51,8 +51,6 @@
       this.prev = this.current;
       this.parallax = { x: 0, y: 0 };
 
-      this.tl = new TimelineMax();
-
     };
     
     component.mounted = function () {
@@ -87,6 +85,8 @@
           
         });
 
+        t.timeline = new TimelineMax();
+
         this.titles.push(t);
 
       });
@@ -103,9 +103,8 @@
       let from = this.titles[this.prev];
       let to = this.titles[i];
 
-      let tl = new TimelineMax({ 
-        onComplete: () => { TweenMax.set(from.container, { visibility: 'hidden' }); } 
-      });
+      let tl = to.timeline;
+      tl.clear();
       
       tl.staggerFromTo(from.splitted.chars, 1, 
         { y: 0, opacity: 1 },
@@ -128,6 +127,26 @@
         { opacity: 0 }, { opacity: 1, ease: ease.default }, .25);
 
     }
+
+    component.methods.enter = function () {
+
+      let target = this.titles[this.current];
+      let tl = target.timeline;
+      
+      TweenMax.set(target.container, { visibility: 'visible' });
+      
+      tl.staggerFromTo(target.splitted.chars, 1, 
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, ease: ease.elastic }, .015, .5);
+
+      tl.fromTo(target, 1, 
+        { lm: 50, hm: 40, },
+        { lm: 0, hm: 0, ease: ease.elastic, }, .75);
+
+      tl.fromTo(target.label, .5, 
+        { opacity: 0, }, { opacity: 1, ease: ease.default }, .75);
+
+    };
 
 
     // Animations
@@ -192,9 +211,6 @@
       left 0
       top 0
       width 100%
-
-      &:first-child
-        visibility visible
 
     .title-main
       font-family Bodoni

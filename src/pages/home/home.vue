@@ -71,11 +71,12 @@
 
       Projects.forEach(p => {
         this.models.push(new Paper.CompoundPath(p.letter.path));
-      });  
+      });
 
       this.draw();
 
       $(window).on('keydown', this.keydown);
+      $(window).on('mousemove', this.mousemove);
 
       this.$events.on('loaded', this.enter);
 
@@ -128,6 +129,8 @@
       StageStore.covers.default = false;
       StageStore.covers.items[this.current].active = true;
 
+      this.$refs.titles.enter();
+
     };
 
 
@@ -139,6 +142,16 @@
         case 37: this.previous(); break;
         case 39 : this.next(); break;
       }
+
+    };
+
+    component.methods.mousemove = function (e) {
+
+      this.mouse.abs.x = e.clientX;
+      this.mouse.abs.y = e.clientY;
+
+      this.mouse.orth.x = e.clientX/sw - .5;
+      this.mouse.orth.y = e.clientY/sh - .5;
 
     };
 
@@ -200,7 +213,7 @@
     .home
       
       //- Titles
-      titles(v-bind:current="current" v-bind:mouse="mouse")
+      titles(v-bind:current="current" v-bind:mouse="mouse" ref="titles")
 
       //- Message
       //- p.home-accessMessage
@@ -220,7 +233,6 @@
       left 0
       width 100%
       height 100%
-      opacity 0
 
       .titles
         position absolute
