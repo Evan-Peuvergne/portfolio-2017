@@ -28,12 +28,11 @@
       this.shape = new Paper.CompoundPath();
 
       // Covers
-      this.covers = [{
-        name: 'default', 
-        url: 'assets/images/projects/jaiye_cover.png',
-        active: true,
-      }];
-      this._currentCover = 0;
+      this.covers = {
+        items: [],
+        default: true,
+        current: 0,
+      };
 
       // States
       this.active = true;
@@ -56,10 +55,10 @@
 
     set cover (val) {
 
-      this.covers[this._currentCover].active = false;
+      this.covers.items[this.covers.current].active = false;
 
-      this._currentCover = _.findIndex(this.covers, o => { return o.name == val; });
-      this.covers[this._currentCover].active = true;
+      this.covers.current = _.findIndex(this.covers.items, o => { return o.name == val; });
+      this.covers.items[this.covers.current].active = true;
 
     }
 

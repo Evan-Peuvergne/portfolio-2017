@@ -52,7 +52,7 @@
       this.shape = StageStore.shape;
 
       Projects.forEach(p => {
-        StageStore.covers.push({
+        StageStore.covers.items.push({
           name: p.id, url: p.cover.url, active: false,
         });
       });
@@ -125,6 +125,9 @@
         step: .01
       });
 
+      StageStore.covers.default = false;
+      StageStore.covers.items[this.current].active = true;
+
     };
 
 
@@ -147,6 +150,8 @@
       this.prev = this.current;
       this.current = i;
 
+      StageStore.cover = Projects[this.current].id;
+
       Morphing.clear(this.shape, this.models[this.prev]);
 
       let morphs = Morphing.generate(this.shape, this.models[i], { 
@@ -157,8 +162,6 @@
         duration: .7,
         step: .005
       });
-
-      StageStore.cover = Projects[this.current].id;
 
       this.timeline.to(this.shape, .6, StageStore.getShadow(Projects[this.current].shadow), 0);
 
@@ -197,7 +200,7 @@
     .home
       
       //- Titles
-      titles(v-bind:current="current", v-bind:mouse="mouse")
+      titles(v-bind:current="current" v-bind:mouse="mouse")
 
       //- Message
       //- p.home-accessMessage
