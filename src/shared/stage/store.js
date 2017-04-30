@@ -25,7 +25,9 @@
       // Canvas
       this.canvas = new Paper.Project();
       this.view = this.canvas.view;
-      this.shape = new Paper.CompoundPath();
+
+      this.model = new Paper.CompoundPath();
+      this.tracker = new Paper.CompoundPath();
 
       // Covers
       this.covers = {
@@ -35,20 +37,74 @@
       };
 
       // States
-      this.active = true;
-      this.sourcing = false;
-
-      this._parallaxing = false;
-      this._distording = false;
+      this.is = {
+        active: true,
+        sourcing: false,
+        mousing: false,
+        parallaxing: false,
+        tracking: false,
+        distording: false,
+      };
 
       this.distorsion = { 
         frequency: 0.025,
         amplitude: 0.4,
       };
       
-      this.mouse = { x: 0, y: 0 };
+      this.mouse = { 
+        orth: { x: 0, y: 0 },
+        abs: { x: 0, y: 0, }
+      };
 
     };
+
+
+    // States
+    
+    set active (val) { this.is.active = val; }
+
+    set sourcing (val) { this.is.sourcing = val; }
+
+    set mousing (val) { 
+
+      this.is.mousing = val; 
+
+      if(val){ $(window).on('mousemove', this.mousemove.bind(this)); }
+      else{ $(window).off('mousemove', this.mousemove.bind(this)); }
+
+    }
+
+    set parallaxing (val) { 
+
+      this.is.parallaxing = val;
+      this.updateMousing();
+
+    }
+
+    set tracking (val) {
+
+      this.is.tracking = val;
+      this.updateMousing();
+
+    }
+
+    set distording (val) {
+
+      this.is.distording = val;
+
+    }
+
+    updateMousing () {
+
+      if(this.is.parallaxing || this.is.tracking){ 
+        if(!this.is.mousing){ this.mousing = true; }
+      }
+
+      else{ 
+        if(this.is.mousing){ this.mousing = false; }
+      }
+      
+    }
 
 
     // Covers
@@ -79,46 +135,31 @@
 
     }
 
-
-    // Parallax
-    
-    get parallaxing () {
-
-      return this._parallaxing;
-
-    }
-
-    set parallaxing (val) {
-
-      this._parallaxing = val;
-
-      if(val){ $(window).on('mousemove', this.mousemove.bind(this)); }
-      else{ $(window).off('mousemove', this.mousemove.bind(this)); }
-
-    }
-
     mousemove (e) {
 
-      this.mouse.x = e.clientX/sw - .5;
-      this.mouse.y = e.clientY/sh - .5;
+      this.mouse.abs.x = e.clientX;
+      this.mouse.abs.y = e.clientY;
+
+      this.mouse.orth.x = e.clientX/sw - .5;
+      this.mouse.orth.y = e.clientY/sh - .5;
 
     }
 
 
     // Distorsion
     
-    get distording () {
+    // get distording () {
 
-      return this._distording;
+    //   return this._distording;
 
-    }
+    // }
 
 
-    set distording (val) {
+    // set distording (val) {
 
-      this._distording = val;
+    //   this._distording = val;
 
-    }
+    // }
 
   }
 

@@ -21,7 +21,7 @@
   window.sh = window.innerHeight;
 
   window.ease = {};
-  window.ease.elastic = Elastic.easeOut.config(0.8, 0.7);
+  window.ease.elastic = Elastic.easeOut.config(0.8, 0.8);
   window.ease.default = Power2.easeOut;
 
   window.tracker = {};
@@ -35,7 +35,7 @@
   window.nav.r = window.sh*0.085;
 
   window.shade = {};
-  window.shade.p = { x:125, y: 75 };
+  window.shade.p = { x:75, y: 75 };
 
   window.titles = {};
   window.titles.p = { x: 20, y: 20 };

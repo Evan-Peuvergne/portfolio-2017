@@ -19,9 +19,7 @@
     var component = { name: 'app', methods: {} };
 
     component.data = function () {
-      // new Paper.Project();
       return {
-        // shape: new Paper.CompoundPath(),
         mouse: { 
           abs: { x: sw*.5, y: sh*.5 },
           orth: { x: .5, y: .5 }

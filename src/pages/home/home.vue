@@ -10,11 +10,14 @@
 
     import Paper from 'paper';
     import { TimelineMax } from 'gsap';
+    import Ticker from '../../vendors/helpers/ticker.js';
 
     import Titles from './titles/titles.vue';
 
     import StageStore from '../../shared/stage/store.js';
+
     import Morphing from '../../shared/stage/morphing.js';
+    import Shades from '../../shared/stage/shades.js';
 
     import Projects from '../../shared/projects.json';
 
@@ -44,12 +47,16 @@
 
     component.components = { Titles, };
 
+    component.mixins = [ Morphing, Shades, ];
+
 
     // Init
     
     component.created = function () {
 
-      this.shape = StageStore.shape;
+      this.parallax = { x: 0, y: 0 };
+
+      this.shape = StageStore.model;
 
       Projects.forEach(p => {
         StageStore.covers.items.push({
@@ -77,6 +84,9 @@
 
       $(window).on('keydown', this.keydown);
       $(window).on('mousemove', this.mousemove);
+      $(window).on('resize', this.resize);
+
+      new Ticker().tick('home.animation', this.animate);
 
       this.$events.on('loaded', this.enter);
 
@@ -100,16 +110,19 @@
         m.position.y = sh*.5 - m.bounds.height*settings.offset.y;
 
         m.children.forEach(c => { c.segments.forEach(s => {
-          [s.point, s.handleIn, s.handleOut].forEach(p => { 
+          [s.point, s.handleIn, s.handleOut].forEach(p => {
             p.ox = p.x; p.oy = p.y; });
         }); });
 
       });
 
+      this.drawShades(this.models, 
+        _.map(Projects, (p) => { return p.shade; }));
+
     };
 
 
-    // Animations
+    // Transitions
     
     component.methods.enter = function () {
 
@@ -126,10 +139,27 @@
         step: .01
       });
 
+      TweenMax.to(this.shades[this.current], .6, { opacity: 0.02, ease: ease.default });
+
       StageStore.covers.default = false;
       StageStore.covers.items[this.current].active = true;
 
       this.$refs.titles.enter();
+
+    };
+
+
+    // Animation
+    
+    component.methods.animate = function (f) {
+
+      this.parallax.x += (this.mouse.orth.x*shade.p.x - this.parallax.x) * .15;
+      this.parallax.y += (this.mouse.orth.y*shade.p.y - this.parallax.y) * .15;
+
+      this.shades.forEach(s => {
+        s.position.x = s.x + this.parallax.x;
+        s.position.y = s.y + this.parallax.y;
+      });
 
     };
 
@@ -155,6 +185,14 @@
 
     };
 
+    component.methods.resize = function (e) {
+
+      this.draw();
+
+      this.shape.children = _.cloneDeep(this.models[this.current].children);
+
+    };
+
 
     // Navigation
     
@@ -177,6 +215,8 @@
       });
 
       this.timeline.to(this.shape, .6, StageStore.getShadow(Projects[this.current].shadow), 0);
+
+      this.changeShade(this.shades[this.prev], this.shades[this.current]);
 
     };
     
@@ -215,12 +255,6 @@
       //- Titles
       titles(v-bind:current="current" v-bind:mouse="mouse" ref="titles")
 
-      //- Message
-      //- p.home-accessMessage
-        | Maintain clicked or
-        a(v-bind:href="url", v-bind:style="{ color: color, borderColor: color }" target="_blank") press
-        | to discover
-
   </template>
 
 
@@ -241,43 +275,6 @@
         left 50%
         width 50%
         height 50%
-
-      .home-stage
-        display block
-        position absolute
-        z-index 500
-        top 0
-        left 0
-        width 100%
-        height 100%
-    
-    .home-accessMessage
-      display block
-      position absolute
-      z-index 800
-      bottom 2em
-      width 100%
-      font-family Gotham Bold
-      font-size 0.75em
-      color rgba(#000, 0.3)
-      letter-spacing 0.075em
-      text-transform uppercase
-      text-align center
-
-      a
-        display inline-block
-        vertical-align middle
-        font-size 0.9em
-        letter-spacing 0.15em
-        padding 0.7em 0.7em 0.6em 0.8em
-        margin 0 0.8em
-        border 2px solid #000000
-        text-decoration none
-        transition color 0.3s ease, border-color 0.3s ease
-
-        &:hover
-          color rgba(#fefefe, 0.8) !important
-          border-color rgba(#fefefe, 0.8) !important
 
   </style>
   

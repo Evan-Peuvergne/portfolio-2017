@@ -1,7 +1,9 @@
 
 
+  
   /* Dependencies */
 
+  import $ from 'jquery';
   import _ from 'lodash';
 
   import Paper from 'paper';
@@ -11,9 +13,6 @@
 
   /* Util */
 
-
-  // Variables
-  
   var Morphing = {};
 
 

@@ -10,6 +10,7 @@
     import Paper from 'paper';
 
     import Model from './model.vue';
+    import Tracker from './tracker.vue';
     import Covers from './covers.vue';
 
     import Projects from '../projects.json';
@@ -29,28 +30,25 @@
 
     // Properties
     
-    component.props = {
-      // shape: { type: Object },
-    };
+    component.props = {};
 
     component.data = function () {
-
-      return {
-        canvas: StageStore.canvas,
-        shape: StageStore.shape,
-      };
-
+      return {};
     };
 
 
-    component.components = { Model, Covers };
+    component.components = { Model, Tracker, Covers };
 
 
     // Hooks
     
     component.created = function () {
 
+      this.canvas = StageStore.canvas;
       this.view = StageStore.view;
+
+      this.model = StageStore.model;
+      this.tracker = StageStore.tracker;
 
     };
 
@@ -61,9 +59,11 @@
 
       this.view.autoUpdate = false;
 
-      TweenMax.set(this.shape, this.getStyles(Projects[0].shadow));
+      TweenMax.set(this.model, this.getStyles(Projects[0].shadow));
 
       this.draw();
+
+      $(window).on('resize', this.resize);
 
     };
 
@@ -78,8 +78,7 @@
 
     component.methods.resize = function () {
 
-      
-
+      this.canvas.view.viewSize = new Paper.Size(sw, sh);      
     };
 
 
@@ -93,12 +92,6 @@
 
 
     // Utils
-    
-    component.methods.setRegion = function (bounds) {
-
-      
-
-    };
 
     component.methods.getStyles = function (config) {
 
@@ -134,7 +127,8 @@
 
           mask.stage-mask#mask
             g(filter="url(#organic)")
-              model(v-bind:shape="shape")
+              model
+              tracker
 
           filter.stage-filter#organic
             feGaussianBlur(in="SourceGraphic" stdDeviation="6" result="blur")

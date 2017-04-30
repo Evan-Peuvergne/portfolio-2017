@@ -27,9 +27,7 @@
 
     // Properties
     
-    component.props = {
-      // shape: { type: Object },
-    };
+    component.props = {};
 
     component.data = function () {
       return {
@@ -58,7 +56,7 @@
 
       StageStore.active = true;
 
-      this.shape = StageStore.shape;
+      this.shape = StageStore.model;
 
       this.preloader = new Preloader.LoadQueue({ loadNow: false });
       

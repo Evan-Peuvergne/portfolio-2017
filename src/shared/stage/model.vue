@@ -29,12 +29,12 @@
 
     // Properties
     
-    component.props = {
-      shape: { type: Object },
-    };
+    component.props = {};
 
     component.data = function () {
-      return {};
+      return {
+        state: StageStore.is,
+      };
     };
 
     component.components = {};
@@ -43,6 +43,8 @@
     // Hooks
     
     component.created = function () {
+
+      this.shape = StageStore.model;
 
       this.parallax = { x: 0, y: 0 };
 
@@ -61,28 +63,28 @@
     
     component.methods.animate = function (f) {
 
-      if(!StageStore.active){ return; }
+      if(!StageStore.is.active){ return; }
 
-      if(StageStore.parallaxing){
-        this.parallax.x += (StageStore.mouse.x*tracker.p - this.parallax.x) * .1;
-        this.parallax.y += (StageStore.mouse.y*tracker.p - this.parallax.y) * .1;
+      if(StageStore.is.parallaxing){
+        this.parallax.x += (StageStore.mouse.orth.x*tracker.p - this.parallax.x) * .1;
+        this.parallax.y += (StageStore.mouse.orth.y*tracker.p - this.parallax.y) * .1;
       }
 
       this.shape.children.forEach(c => {
         c.segments.forEach((s, i) => {
 
-          if(StageStore.sourcing) {   
+          if(StageStore.is.sourcing) {   
             [s.point, s.handleIn, s.handleOut].forEach(p => {
               p.x = p.ox; p.y = p.oy;
             });   
           }
 
-          if(StageStore.parallaxing){
+          if(StageStore.is.parallaxing){
             s.point.x += this.parallax.x;
             s.point.y += this.parallax.y;
           }
 
-          if(StageStore.distording){
+          if(StageStore.is.distording){
             s.point.x += Math.cos(f.time*StageStore.distorsion.frequency + i) * StageStore.distorsion.amplitude;
             s.point.y += Math.cos(f.time*StageStore.distorsion.frequency + 2*i) * StageStore.distorsion.amplitude;
           }
@@ -90,7 +92,7 @@
         });
       });
 
-      Paper.project.view.update();
+      StageStore.view.update();
       this.svg.attr('d', this.shape.pathData);
 
     };
