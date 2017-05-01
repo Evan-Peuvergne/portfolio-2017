@@ -142,10 +142,15 @@
       li
         display inline-block
         vertical-align middle
-        margin 0 1em
+        padding 1em
+        transition color 0.3s ease
 
         &.current
-          color rgba(#000, 0.7)
+          color rgba(#000, 0.75)
+
+        &:hover
+        &.current:hover
+          color rgba(#fefefe, 0.85)
 
       a
         color inherit

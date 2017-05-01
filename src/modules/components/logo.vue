@@ -101,7 +101,7 @@
         width 30px
         height logo-bar-size
         border-radius 2px
-        background-color rgba(#000, 0.2)
+        background-color rgba(#000, 0.8)
         transition background-color 0.5s ease
 
       for i in (1..3)
