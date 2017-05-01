@@ -12,7 +12,8 @@
     import { TimelineMax } from 'gsap';
     import Ticker from '../../vendors/helpers/ticker.js';
 
-    import Titles from './titles/titles.vue';
+    import Titles from './titles.vue';
+    import Navigation from './navigation.vue';
 
     import StageStore from '../../shared/stage/store.js';
 
@@ -34,6 +35,7 @@
     
     component.data = function () {
       return {
+        title: 'Evan Peuvergne | Projects',
         current: 0,
         prev: 0,
         mouse: { 
@@ -45,7 +47,7 @@
 
     component.computed = {};
 
-    component.components = { Titles, };
+    component.components = { Titles, Navigation };
 
     component.mixins = [ Morphing, Shades, ];
 
@@ -56,7 +58,8 @@
 
       this.parallax = { x: 0, y: 0 };
 
-      this.shape = StageStore.model;
+      this.model = StageStore.model;
+      this.tracker = StageStore.tracker;
 
       Projects.forEach(p => {
         StageStore.covers.items.push({
@@ -68,7 +71,7 @@
 
       this.timeline = new TimelineMax({
         onComplete: () => {
-          Morphing.clear(this.shape, this.models[0]);
+          Morphing.clear(this.model, this.models[0]);
         }
       });
 
@@ -89,6 +92,8 @@
       new Ticker().tick('home.animation', this.animate);
 
       this.$events.on('loaded', this.enter);
+
+      console.log(this.$root);
 
     };
 
@@ -130,11 +135,11 @@
       StageStore.parallaxing = true;
       StageStore.distording = true;
 
-      let morphs = Morphing.generate(this.shape, this.models[0], { 
+      let morphs = Morphing.generate(this.model, this.models[0], { 
         start: 34, 
       });
 
-      Morphing.run(this.timeline, this.shape, morphs, {
+      Morphing.run(this.timeline, this.model, morphs, {
         duration: .75,
         step: .01
       });
@@ -189,7 +194,7 @@
 
       this.draw();
 
-      this.shape.children = _.cloneDeep(this.models[this.current].children);
+      this.model.children = _.cloneDeep(this.models[this.current].children);
 
     };
 
@@ -203,18 +208,18 @@
 
       StageStore.cover = Projects[this.current].id;
 
-      Morphing.clear(this.shape, this.models[this.prev]);
+      Morphing.clear(this.model, this.models[this.prev]);
 
-      let morphs = Morphing.generate(this.shape, this.models[i], { 
+      let morphs = Morphing.generate(this.model, this.models[i], { 
         start: Projects[this.current].letter.transition.origin, 
       });
 
-      Morphing.run(this.timeline, this.shape, morphs, {
+      Morphing.run(this.timeline, this.model, morphs, {
         duration: .7,
         step: .005
       });
 
-      this.timeline.to(this.shape, .6, StageStore.getShadow(Projects[this.current].shadow), 0);
+      this.timeline.to([this.model, this.tracker], .6, StageStore.getShadow(Projects[this.current].shadow), 0);
 
       this.changeShade(this.shades[this.prev], this.shades[this.current]);
 
@@ -255,6 +260,9 @@
       //- Titles
       titles(v-bind:current="current" v-bind:mouse="mouse" ref="titles")
 
+      //- Navigation
+      navigation(v-bind:mouse="mouse" ref="mouse")
+
   </template>
 
 
@@ -270,7 +278,7 @@
 
       .titles
         position absolute
-        z-index 800
+        z-index 1500
         top calc(50% - 2.5em)
         left 50%
         width 50%

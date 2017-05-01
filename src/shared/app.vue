@@ -14,35 +14,65 @@
 
 
 
+    
     /* Component */
 
     var component = { name: 'app', methods: {} };
 
     component.data = function () {
-      return {
-        mouse: { 
-          abs: { x: sw*.5, y: sh*.5 },
-          orth: { x: .5, y: .5 }
-        }
+      return {};
+    };
+
+    component.computed = {
+      title: function () {
+        return this.$refs.view.title || 'Evan Peuvergne | Webdesigner & Developer';
       }
     };
 
     component.components = { Loader, Stage };
 
 
+    
+
     /* Hooks */
 
     component.created = function () {
 
-      
+      this.$favicon = document.querySelector("link[rel*='icon']");      
 
     };
 
     component.mounted = function () {
 
+      $(window).on('focus', () => {
+        this.$favicon.href="./assets/favicon/here.ico";
+        document.title = this.title;
+        console.log(this.title);
+      });
 
+      $(window).on('blur', () => { 
+        this.$favicon.href="./assets/favicon/leaving.ico";
+        document.title = 'Don\'t leave pleaseeeee'; 
+        console.log(this.title);
+      });
 
     };
+
+
+
+
+    /* Methods */
+
+
+    // Metas
+    
+    component.methods.setTitle = function (t) {
+
+      console.log("tata");
+
+    };
+
+
 
 
 
@@ -60,7 +90,7 @@
     .app
 
       //- Stage
-      stage(v-bind:mouse="mouse" ref="stage")
+      stage(ref="stage")
 
       //- Loader
       loader(ref="loader")

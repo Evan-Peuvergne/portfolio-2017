@@ -63,11 +63,24 @@
     
     component.methods.enter = function () {
 
-      this.tracker.children[0] = new Paper.Path.Circle({
-        center: [sw/2 - tracker.r, -tracker.r],
+      let shape = new Paper.Path.Circle({
+        center: [0, 0],
         radius: tracker.r,
-        fillColor: '#000',
       });
+      
+      shape.flatten(8);
+      shape.smooth();
+
+      shape.segments.forEach(s => {
+        [s.point, s.handleIn, s.handleOut].forEach(p => {
+          p.ox = p.x; p.oy = p.y;
+        });
+      });
+
+      this.tracker.children[0] = shape;
+
+
+      StageStore.tracking = true;
 
       new Ticker().tick('tracker.animation', this.animate);
 
@@ -78,7 +91,16 @@
     
     component.methods.animate = function (f) {
 
-      // this.parallax.x += ()
+      this.parallax.x += (StageStore.mouse.abs.x - this.parallax.x) * .2;
+      this.parallax.y += (StageStore.mouse.abs.y - this.parallax.y) * .2;
+      
+      this.tracker.children[0].segments.forEach((s, i) => {
+        s.point.x = s.point.ox + this.parallax.x + Math.cos(f.time*tracker.distorsion.f + i) * tracker.distorsion.a;
+        s.point.y = s.point.oy + this.parallax.y - Math.sin(f.time*tracker.distorsion.f - i) * tracker.distorsion.a;
+      });
+
+      StageStore.view.update();
+      this.svg.attr('d', this.tracker.pathData);
 
     };
 
@@ -100,7 +122,8 @@
 
   <style lang="stylus" scoped>
 
-    
+    .tracker
+      fill #ffffff
 
   </style>
   

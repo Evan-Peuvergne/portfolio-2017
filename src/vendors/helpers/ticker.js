@@ -28,6 +28,9 @@
 		stats = new Stats();
 		stats.showPanel(0);
 		document.body.appendChild(stats.dom);
+		stats.dom.style.position = 'absolute';
+		stats.dom.style.right = 0;
+		stats.dom.style.left = 'auto';
 		stats.dom.style.zIndex = 10000;
 	}
 

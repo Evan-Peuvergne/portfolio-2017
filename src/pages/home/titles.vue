@@ -8,12 +8,12 @@
     import $ from 'jquery';
     import _ from 'lodash';
 
-    import Splitter from '../../../vendors/libs/SplitText.js';
+    import Splitter from '../../vendors/libs/SplitText.js';
     import { TimelineMax } from 'gsap';
 
-    import Ticker from '../../../vendors/helpers/ticker.js';
+    import Ticker from '../../vendors/helpers/ticker.js';
 
-    import Projects from '../projects.json';
+    import Projects from './projects.json';
 
 
     

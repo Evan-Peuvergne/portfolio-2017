@@ -59,7 +59,7 @@
 
       this.view.autoUpdate = false;
 
-      TweenMax.set(this.model, this.getStyles(Projects[0].shadow));
+      TweenMax.set([this.model, this.tracker], StageStore.getShadow(Projects[0].shadow));
 
       this.draw();
 

@@ -52,8 +52,11 @@
       };
       
       this.mouse = { 
-        orth: { x: 0, y: 0 },
-        abs: { x: 0, y: 0, }
+        orth: { x: 0.5, y: 0.5 },
+        abs: { 
+          x: window.innerWidth*.5, 
+          y: window.innerHeight*.5,
+        }
       };
 
     };
@@ -88,12 +91,9 @@
 
     }
 
-    set distording (val) {
+    set distording (val) { this.is.distording = val; }
 
-      this.is.distording = val;
-
-    }
-
+    
     updateMousing () {
 
       if(this.is.parallaxing || this.is.tracking){ 
