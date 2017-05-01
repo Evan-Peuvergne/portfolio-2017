@@ -91,9 +91,7 @@
 
       new Ticker().tick('home.animation', this.animate);
 
-      this.$events.on('loaded', this.enter);
-
-      console.log(this.$root);
+      this.$events.on('loaded', this.enter)
 
     };
 

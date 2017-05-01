@@ -12,6 +12,8 @@
     import Loader from './loader/loader.vue';
     import Stage from './stage/stage.vue';
 
+    import Logo from '../modules/components/logo.vue';
+
 
 
     
@@ -29,7 +31,7 @@
       }
     };
 
-    component.components = { Loader, Stage };
+    component.components = { Loader, Stage, Logo };
 
 
     
@@ -44,17 +46,10 @@
 
     component.mounted = function () {
 
-      $(window).on('focus', () => {
-        this.$favicon.href="./assets/favicon/here.ico";
-        document.title = this.title;
-        console.log(this.title);
-      });
+      document.title = this.title;
 
-      $(window).on('blur', () => { 
-        this.$favicon.href="./assets/favicon/leaving.ico";
-        document.title = 'Don\'t leave pleaseeeee'; 
-        console.log(this.title);
-      });
+      $(window).on('focus', this.focus);
+      $(window).on('blur', this.blur);
 
     };
 
@@ -64,11 +59,19 @@
     /* Methods */
 
 
-    // Metas
+    // Events
     
-    component.methods.setTitle = function (t) {
+    component.methods.focus = function () {
 
-      console.log("tata");
+      this.$favicon.href="./assets/favicon/here.ico";
+      document.title = this.title;
+
+    };
+    
+    component.methods.blur = function () {
+
+      this.$favicon.href="./assets/favicon/leaving.ico";
+      document.title = 'Don\'t leave pleaseeeee'; 
 
     };
 
@@ -89,13 +92,24 @@
     //- Root
     .app
 
+      //- Navigation
+      nav.app-nav
+
+        //- Logo
+        logo(ref="")
+
+        //- Menu
+        ul.app-menu
+          li.current
+            a(href="#") Works
+          li
+            a(href="#") About
+
       //- Stage
       stage(ref="stage")
 
-      //- Loader
+      //- View
       loader(ref="loader")
-  
-      //- Content
       router-view(ref="view")
 
   </template>
@@ -104,6 +118,38 @@
   <style lang="stylus" src="./shared.styl"></style>
   
   <style lang="stylus" scoped>
+    
+    nav-offset = 3em
+
+    .app-nav
+      display flex
+      align-items center
+      position absolute
+      z-index 1800
+      top nav-offset
+      left nav-offset
+      right nav-offset
+
+      .logo
+        margin 0 1.5em 0 0
+
+    .app-menu
+      font-family Gotham Bold
+      font-size 0.9em
+      color rgba(#000, 0.3)
+      padding 0.2em 0 0 0
+
+      li
+        display inline-block
+        vertical-align middle
+        margin 0 1em
+
+        &.current
+          color rgba(#000, 0.7)
+
+      a
+        color inherit
+        text-decoration none
     
     .stage
     .loader
