@@ -50,6 +50,9 @@
     
     component.mounted = function () {
 
+      this.contents = this.$refs.content.children;
+      this.networks = this.$refs.networks.children;
+
       this.draw();
 
       this.$events.on('loaded', this.enter);   
@@ -102,6 +105,26 @@
         step: .01
       });
 
+      TweenMax.staggerFromTo(this.contents, 1, 
+        { y: 150, opacity: 0 },
+        { y: 0, opacity: 1, ease: ease.elashard, }, .1);
+
+      TweenMax.staggerFromTo(this.networks, 1, 
+        { y: 100, opacity: 0 },
+        { y: 0, opacity: 1, ease: ease.elashard, delay: .3 }, .075);
+
+    };
+
+    component.methods.leave = function () {
+
+      TweenMax.staggerFromTo(_.reverse(this.contents), .85, 
+        { y: 0, opacity: 1 },
+        { y: -100, opacity: 0, ease: ease.elashard, }, .075);
+
+      TweenMax.staggerFromTo(this.networks, .85, 
+        { y: 0, opacity: 1 },
+        { y: 100, opacity: 0, ease: ease.elashard, delay: .1 }, .075);
+
     };
 
 
@@ -132,16 +155,14 @@
       .about-shape(ref="shape")
 
       //- Content
-      .about-content
-
+      .about-content(ref="content")
         p Hi, my name is Evan.
         p I'm a 21 y/o french <strong>webdesigner</strong>, focused on <strong>#product</strong> and <strong>#interactive</strong> design. Student in 4th year at <strong><a href="http://hetic.net">HETIC</a></strong>.
         p I'm also do some crazy prototypes with <strong>#framerjs</strong> or creative developments with <strong>#threejs</strong> and <strong>#shaders</strong>.
         p.about-contentPunchline I'm looking for a 6 months product design internship from July to December 2017 in the US.
 
       //- Networks
-      ul.about-networks
-        
+      ul.about-networks(ref="networks")
         li <a href="#">Email</a>
         li <a href="#">Linkedin</a>
         li <a href="#">Twitter</a>
@@ -190,6 +211,7 @@
       line-height 1.5
       
       p
+        opacity 0
         margin 0 0 1em 0 
 
         strong
@@ -214,7 +236,7 @@
         display inline-block
         vertical-align middle
         padding 2em
-        /*margin 0 1em*/
+        opacity 0
 
         a
           font-family Gotham Medium
