@@ -15,6 +15,7 @@
     import StageStore from '../../shared/stage/store.js';
 
     import Morphing from '../../shared/stage/morphing.js';
+    import Transitions from '../../shared/transitions.js';
 
     import Config from './config.json';
 
@@ -39,6 +40,8 @@
 
     component.components = {};
 
+    component.mixins = [ Transitions, ];
+
 
     // Init
     
@@ -55,7 +58,7 @@
 
       this.draw();
 
-      this.$events.on('loaded', this.enter);   
+      this.$events.on('loaded', this.enter);
 
     };
 

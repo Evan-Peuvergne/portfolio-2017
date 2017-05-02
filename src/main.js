@@ -69,9 +69,9 @@
 
   Vue.use(Router);
 
-  const routing = new Router({
+  var routing = new Router({
     routes: routes,
-    mode: 'history'
+    mode: 'history',
   });
 
 

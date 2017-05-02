@@ -109,7 +109,8 @@
       if(!m.to){ m.to = Morphing._emptyPath(m.from); }
 
       m.start = config.start;
-      m.offset = maxOffset - Math.max(m.from.segments.length, m.to.segments.length);
+      // m.offset = maxOffset - Math.max(m.from.segments.length, m.to.segments.length);
+      m.offset = 0;
 
     });
 
@@ -128,33 +129,6 @@
     });
 
     return empty;
-
-  };
-
-  Morphing.testgenerate = function (from, to, config = {}) {
-
-    let standard = { start: 0, end: 0 };
-    config = _.extend({}, standard, config);
-
-    var morphs = [];
-
-    // from = _.reverse(from.children);
-    // to = _.reverse(_.cloneDeep(to.children));
-    
-    from = from.children;
-    to = _.cloneDeep(to.children);
-
-    let commons = Math.min(from.length, to.length);
-    let diffs = Math.max(from.length, to.length);
-
-    for(var i=0; i<commons; i++){
-      morphs.push({
-        from: from[i], to: to[i],
-        start: config.start
-      });
-    }
-
-    return morphs;
 
   };
 

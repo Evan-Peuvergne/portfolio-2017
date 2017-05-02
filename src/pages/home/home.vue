@@ -19,6 +19,7 @@
 
     import Morphing from '../../shared/stage/morphing.js';
     import Shades from '../../shared/stage/shades.js';
+    import Transitions from '../../shared/transitions.js';
 
     import Projects from '../../shared/projects.json';
 
@@ -49,7 +50,7 @@
 
     component.components = { Titles, Navigation };
 
-    component.mixins = [ Morphing, Shades, ];
+    component.mixins = [ Morphing, Shades, Transitions ];
 
 
     // Init
@@ -89,7 +90,7 @@
 
       new Ticker().tick('home.animation', this.animate);
 
-      this.$events.on('loaded', this.enter)
+      this.$events.on('loaded', this.enter);
 
     };
 
@@ -150,6 +151,8 @@
     };
 
     component.methods.leave = function () {
+
+      console.log('leaving home');
 
       let timeline = new TimelineMax({ onComplete: this.clearShades, });
 

@@ -22,22 +22,12 @@
     var component = { name: 'app', methods: {} };
 
     component.data = function () {
-      return {};
+      return {
+        is: { loaded: false },
+      };
     };
 
-    component.watch = {
-      '$route': function (to, from) {
-        _.defer(() => { 
-
-          let origin = _.head(from.matched).instances.default;
-          if(origin && origin.leave){ origin.leave(); }
-
-          let dest = _.head(to.matched).instances.default;
-          if(dest && dest.enter){ dest.enter(); }
-
-        });
-      }
-    }
+    component.watch = {};
 
     component.computed = {
       title: function () {
@@ -54,20 +44,21 @@
 
     component.created = function () {
 
-      this.$favicon = document.querySelector("link[rel*='icon']");      
+      this.$favicon = document.querySelector("link[rel*='icon']");   
 
     };
 
     component.mounted = function () {
-
-      console.log(this.$route.name);
 
       document.title = this.title;
 
       $(window).on('focus', this.focus);
       $(window).on('blur', this.blur);
 
-      this.$events.on('loaded', this.enter);
+      this.$events.on('loaded', () => { 
+        this.enter();
+        this.is.loaded = true 
+      });
 
     };
 
