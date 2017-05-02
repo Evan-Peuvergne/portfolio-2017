@@ -29,11 +29,11 @@
       '$route': function (to, from) {
         _.defer(() => { 
 
-          let dest = _.head(to.matched).instances.default;
-          if(dest && dest.enter){ dest.enter(); }
-
           let origin = _.head(from.matched).instances.default;
           if(origin && origin.leave){ origin.leave(); }
+
+          let dest = _.head(to.matched).instances.default;
+          if(dest && dest.enter){ dest.enter(); }
 
         });
       }
@@ -59,6 +59,8 @@
     };
 
     component.mounted = function () {
+
+      console.log(this.$route.name);
 
       document.title = this.title;
 
@@ -134,9 +136,9 @@
 
         //- Menu
         ul.app-menu(ref="menu")
-          li.current
+          li(v-bind:class="{ current: $route.name == 'home' }")
             router-link(to="/") Works
-          li
+          li(v-bind:class="{ current: $route.name == 'about' }")
             router-link(to="about") About
 
       //- Stage
@@ -144,7 +146,9 @@
 
       //- View
       loader(ref="loader")
-      router-view(ref="view")
+
+      transition(:duration="1000")
+        router-view(ref="view")
 
   </template>
 

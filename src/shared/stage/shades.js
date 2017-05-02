@@ -74,6 +74,12 @@
 
 	};
 
+	Shades.methods.clearShades = function () {
+
+		this.shades.forEach(s => s.remove);
+
+	};
+
 
 	// Change
 	

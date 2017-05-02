@@ -96,7 +96,7 @@
     };
 
 
-    // Transition
+    // Actions
     
     component.methods.go = function (i) {
 
@@ -128,6 +128,9 @@
 
     }
 
+
+    // Transitions
+
     component.methods.enter = function () {
 
       let target = this.titles[this.current];
@@ -145,6 +148,23 @@
 
       tl.fromTo(target.label, .5, 
         { opacity: 0, }, { opacity: 1, ease: ease.default }, .75);
+
+    };
+
+    component.methods.leave = function () {
+
+      let o = this.titles[this.current];
+
+      TweenMax.staggerFromTo(o.splitted.chars, 1, 
+        { y: 0, opacity: 1 },
+        { y: -50, opacity: 0, ease: ease.elashard }, .015, 0);
+
+      TweenMax.fromTo(o, 1, 
+        { lm: 0, hm: 0 },
+        { lm: -50, hm: -40, ease: ease.elashard, delay: .1 });
+
+      TweenMax.fromTo(o.label, .5, { opacity: 1 }, 
+        { opacity: 0, ease: ease.default, delay: 0.1 });
 
     };
 

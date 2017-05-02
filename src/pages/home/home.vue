@@ -69,15 +69,13 @@
 
       this.models = [];
 
-      this.timeline = new TimelineMax({
-        onComplete: () => {
-          // Morphing.clear(this.model, this.models[0]);
-        }
-      });
+      this.timeline = new TimelineMax();
 
     };
     
     component.mounted = function () {
+
+      this.titles = this.$refs.titles;
 
       Projects.forEach(p => {
         this.models.push(new Paper.CompoundPath(p.letter.path));
@@ -148,6 +146,16 @@
       StageStore.covers.items[this.current].active = true;
 
       this.$refs.titles.enter();
+
+    };
+
+    component.methods.leave = function () {
+
+      let timeline = new TimelineMax({ onComplete: this.clearShades, });
+
+      timeline.to(this.shades[this.current], .6, { opacity: 0, ease: ease.default, }, 0);
+
+      this.titles.leave();
 
     };
 
