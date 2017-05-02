@@ -71,7 +71,7 @@
 
       this.timeline = new TimelineMax({
         onComplete: () => {
-          Morphing.clear(this.model, this.models[0]);
+          // Morphing.clear(this.model, this.models[0]);
         }
       });
 
@@ -134,7 +134,7 @@
       StageStore.distording = true;
 
       let morphs = Morphing.generate(this.model, this.models[0], { 
-        start: 34, 
+       start: 0, 
       });
 
       Morphing.run(this.timeline, this.model, morphs, {

@@ -16,6 +16,7 @@
   /* Dependencies */  
 
   import Home from './pages/home/home.vue';
+  import About from './pages/about/about.vue';
 
 
 
@@ -26,6 +27,11 @@
       path: '/',
       component: Home,
       name: 'home'
+    },
+    {
+      path: '/about',
+      component: About,
+      name: 'about'
     }
   ];
   

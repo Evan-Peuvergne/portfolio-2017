@@ -25,6 +25,20 @@
       return {};
     };
 
+    component.watch = {
+      '$route': function (to, from) {
+        _.defer(() => { 
+
+          let dest = _.head(to.matched).instances.default;
+          if(dest && dest.enter){ dest.enter(); }
+
+          let origin = _.head(from.matched).instances.default;
+          if(origin && origin.leave){ origin.leave(); }
+
+        });
+      }
+    }
+
     component.computed = {
       title: function () {
         return this.$refs.view.title || 'Evan Peuvergne | Webdesigner & Developer';
@@ -51,6 +65,8 @@
       $(window).on('focus', this.focus);
       $(window).on('blur', this.blur);
 
+      this.$events.on('loaded', this.enter);
+
     };
 
 
@@ -76,6 +92,24 @@
     };
 
 
+    // Transitions
+    
+    component.methods.enter = function () {
+
+      let timeline = new TimelineMax();
+
+      timeline.fromTo(this.$refs.logo.$el, .7, 
+        { y: -150, opacity: 0, visibility: 'visible' },
+        { y: 0, opacity: 1, ease: ease.elashard, });
+
+      timeline.set(this.$refs.menu, { visibility: 'visible' }, 0.1);
+      timeline.staggerFromTo(this.$refs.menu.children, .7, 
+        { y: -150, opacity: 0 },
+        { y: 0, opacity: 1, ease: ease.elashard, }, 0.1, 0.1);
+
+    };
+
+
 
 
 
@@ -96,14 +130,14 @@
       nav.app-nav
 
         //- Logo
-        logo(ref="")
+        logo(ref="logo")
 
         //- Menu
-        ul.app-menu
+        ul.app-menu(ref="menu")
           li.current
-            a(href="#") Works
+            router-link(to="/") Works
           li
-            a(href="#") About
+            router-link(to="about") About
 
       //- Stage
       stage(ref="stage")
@@ -131,9 +165,12 @@
       right nav-offset
 
       .logo
-        margin 0 1.5em 0 0
+        visibility hidden
+        margin 0 2em 0 0
 
     .app-menu
+      display block
+      visibility hidden
       font-family Gotham Bold
       font-size 0.9em
       color rgba(#000, 0.3)
