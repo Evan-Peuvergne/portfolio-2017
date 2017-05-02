@@ -97,6 +97,7 @@
     component.methods.enter = function () {
 
       StageStore.sourcing = true;
+      StageStore.mousing = true;
       StageStore.parallaxing = false;
       StageStore.distording = true;
 
@@ -127,15 +128,6 @@
       TweenMax.staggerFromTo(this.networks, .85, 
         { y: 0, opacity: 1 },
         { y: 100, opacity: 0, ease: ease.elashard, delay: .1 }, .075);
-
-    };
-
-
-    // Animation
-    
-    component.methods.animate = function (f) {
-
-      
 
     };
 

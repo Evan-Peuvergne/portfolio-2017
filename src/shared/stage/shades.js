@@ -77,6 +77,9 @@
 	Shades.methods.clearShades = function () {
 
 		this.shades.forEach(s => s.remove);
+		this.shades = [];
+
+		this.shadesContainer.remove();
 
 	};
 

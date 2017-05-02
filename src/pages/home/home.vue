@@ -145,6 +145,9 @@
 
       StageStore.covers.default = false;
       StageStore.covers.items[this.current].active = true;
+      StageStore.cover = Projects[this.current].id;
+
+      TweenMax.to([this.model, this.tracker], .6, StageStore.getShadow(Projects[this.current].shadow));
 
       this.$refs.titles.enter();
 
@@ -152,9 +155,17 @@
 
     component.methods.leave = function () {
 
-      console.log('leaving home');
+      let timeline = new TimelineMax({ 
+        onComplete: () => {
 
-      let timeline = new TimelineMax({ onComplete: this.clearShades, });
+          new Ticker().remove('home.animation');
+
+          $(window).off('keydown', this.keydown);
+          $(window).off('mousemove', this.mousemove);
+          $(window).off('resize', this.resize);
+
+        } 
+      });
 
       timeline.to(this.shades[this.current], .6, { opacity: 0, ease: ease.default, }, 0);
 
@@ -181,6 +192,8 @@
     // Events
     
     component.methods.keydown = function (e) {
+
+      console.log('coucou');
 
       switch(e.keyCode) {
         case 37: this.previous(); break;
