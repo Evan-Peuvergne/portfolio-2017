@@ -1,22 +1,52 @@
-var express = require('express');
-var path = require('path');
-var serveStatic = require('serve-static');
-var env = process.env.NODE_ENV || 'development';
 
-app = express();
 
-var forceSsl = function (req, res, next) {
-  if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect(['https://', req.get('Host'), req.url].join(''));
-  }
-  return next();
-};
+	
+	/* Dependencies */
 
-if (env === 'production') {
-  app.use(forceSsl);
-}
+	var env = process.env.NODE_ENV || 'development';
+	var path = require('path');
 
-app.use(serveStatic(__dirname));
+	var express = require('express');
+	var serveStatic = require('serve-static');
 
-var port = process.env.PORT || 5000;
-app.listen(port);
+
+
+	
+	/* Server */
+
+
+	// App
+	
+	app = express();
+
+
+	// SSL
+
+	var forceSsl = function (req, res, next) {
+  	if (req.headers['x-forwarded-proto'] !== 'https') {
+    	return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  	}
+  	return next();
+	};
+
+	if (env === 'production') {
+  	app.use(forceSsl);
+	}
+
+
+	// Statics
+
+	app.use(serveStatic(__dirname));
+
+
+	// Routing
+	
+	app.get('*', function (req, res) {
+		res.sendFile(path.joint(__dirname, 'index.html'));
+	});
+
+
+	// Listen
+
+	var port = process.env.PORT || 5000;
+	app.listen(port);
