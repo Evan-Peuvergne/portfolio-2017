@@ -153,18 +153,24 @@
 
     component.methods.leave = function () {
 
+      let tl = new TimelineMax({
+        complete: () => {
+          new Ticker().remove('titles.animation');
+        }
+      });
+
       let o = this.titles[this.current];
 
-      TweenMax.staggerFromTo(o.splitted.chars, 1, 
+      tl.staggerFromTo(o.splitted.chars, 1, 
         { y: 0, opacity: 1 },
         { y: -50, opacity: 0, ease: ease.elashard }, .015, 0);
 
-      TweenMax.fromTo(o, 1, 
+      tl.fromTo(o, 1, 
         { lm: 0, hm: 0 },
-        { lm: -50, hm: -40, ease: ease.elashard, delay: .1 });
+        { lm: -50, hm: -40, ease: ease.elashard, delay: .1 }, 0);
 
-      TweenMax.fromTo(o.label, .5, { opacity: 1 }, 
-        { opacity: 0, ease: ease.default, delay: 0.1 });
+      tl.fromTo(o.label, .5, { opacity: 1 }, 
+        { opacity: 0, ease: ease.default, delay: 0.1 }, 0);
 
     };
 

@@ -65,7 +65,7 @@
 			s.fontSize = sh*.8;
 
 			s.position.x = m.position.x - c.offset.x*s.bounds.width;
-			s.position.y = m.position.y;
+			s.position.y = m.position.y - c.offset.y*s.bounds.width;
 
 			s.x = s.ox = s.position.x;
 			s.y = s.oy = s.position.y;

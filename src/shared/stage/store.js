@@ -10,6 +10,7 @@
   import { TimelineMax } from 'gsap';
 
   import Projects from '../projects.json';
+  import AboutConfig from '../../pages/about/config.json';
 
 
 
@@ -35,6 +36,10 @@
         default: true,
         current: 0,
       };
+
+      Projects.forEach(p => { this.addCover(p.id, p.cover.url); });
+      this.addCover('about', AboutConfig.cover);
+
 
       // States
       this.is = {
@@ -115,6 +120,19 @@
 
       this.covers.current = _.findIndex(this.covers.items, o => { return o.name == val; });
       this.covers.items[this.covers.current].active = true;
+
+    }
+
+    addCover (id, url) {
+
+      let i = _.findIndex(this.covers.items, o => { return o.name === id });
+      if(i >= 0){ console.log('already'); return false; }
+
+      this.covers.items.push({
+        name: id,
+        url: url, 
+        active: false,
+      });
 
     }
 

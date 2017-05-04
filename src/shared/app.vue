@@ -72,14 +72,14 @@
     
     component.methods.focus = function () {
 
-      this.$favicon.href="./assets/favicon/here.ico";
+      this.$favicon.href = "./assets/favicon/here.ico";
       document.title = this.title;
 
     };
     
     component.methods.blur = function () {
 
-      this.$favicon.href="./assets/favicon/leaving.ico";
+      this.$favicon.href = "./assets/favicon/leaving.ico";
       document.title = 'Don\'t leave pleaseeeee'; 
 
     };

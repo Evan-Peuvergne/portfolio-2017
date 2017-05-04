@@ -49,6 +49,8 @@
 
       this.model = new Paper.CompoundPath(Config.shape);
 
+      // StageStore.addCover()
+
     };
     
     component.mounted = function () {
@@ -109,6 +111,9 @@
         step: .01
       });
 
+      StageStore.covers.default = false;
+      StageStore.cover = 'about';
+
       TweenMax.staggerFromTo(this.contents, 1, 
         { y: 150, opacity: 0 },
         { y: 0, opacity: 1, ease: ease.elashard, }, .1);
@@ -116,6 +121,8 @@
       TweenMax.staggerFromTo(this.networks, 1, 
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, ease: ease.elashard, delay: .3 }, .075);
+
+      TweenMax.to([StageStore.model, StageStore.tracker], .75, StageStore.getShadow({ color: '4F5473', opacity: 0.4, }));
 
     };
 

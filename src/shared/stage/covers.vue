@@ -46,13 +46,6 @@
 
     };
 
-    component.mounted = function () {
-
-      // this.$refs.covers.forEach(c => { this.covers.push(SVG.adopt(c)); });
-      // this.covers[0].style('display', 'block');
-
-    };
-
 
     // Draw
     

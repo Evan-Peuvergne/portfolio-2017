@@ -62,11 +62,7 @@
       this.model = StageStore.model;
       this.tracker = StageStore.tracker;
 
-      Projects.forEach(p => {
-        StageStore.covers.items.push({
-          name: p.id, url: p.cover.url, active: false,
-        });
-      });
+      // Projects.forEach(p => { StageStore.addCover(p.id, p.cover.url); });
 
       this.models = [];
 
@@ -132,7 +128,7 @@
       StageStore.parallaxing = true;
       StageStore.distording = true;
 
-      let morphs = Morphing.generate(this.model, this.models[0], { 
+      let morphs = Morphing.generate(this.model, this.models[this.current], { 
        start: 0, 
       });
 
