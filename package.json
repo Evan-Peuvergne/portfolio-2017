@@ -47,8 +47,6 @@
     "stylus-loader": "^2.5.0",
     "svg.filter.js": "^2.0.2",
     "svg.js": "^2.4.0",
-    "two": "^1.0.1",
-    "two.js": "^0.6.0",
     "vue": "^2.2.1",
     "vue-events": "^3.0.1",
     "vue-hot-reload-api": "^2.0.11",

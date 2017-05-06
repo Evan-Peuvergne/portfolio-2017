@@ -49,8 +49,6 @@
 
       this.model = new Paper.CompoundPath(Config.shape);
 
-      // StageStore.addCover()
-
     };
     
     component.mounted = function () {
@@ -61,6 +59,8 @@
       this.draw();
 
       this.$events.on('loaded', this.enter);
+
+      $(window).on('resize', this.resize);
 
     };
 
@@ -89,7 +89,11 @@
 
     component.methods.resize = function (e) {
 
-      
+      this.draw(); 
+
+      StageStore.model.children = _.cloneDeep(this.model.children);
+
+      // StageStore.model = _.cloneDeep(this.model.children);
 
     };
 
@@ -135,6 +139,8 @@
       TweenMax.staggerFromTo(this.networks, .85, 
         { y: 0, opacity: 1 },
         { y: 100, opacity: 0, ease: ease.elashard, delay: .1 }, .075);
+
+      $(window).off('resize', this.resize);
 
     };
 

@@ -82,15 +82,6 @@
     };
 
 
-    // Transition
-    
-    component.methods.go = function (i) {
-
-      
-
-    };
-
-
     // Utils
 
     component.methods.getStyles = function (config) {
@@ -136,6 +127,8 @@
             feComposite(in="SourceGraphic" in2="goo" operator="over")
 
         g.stage-covers(mask="url(#mask)")
+          covers
+        //- foreignObject(x="0" y="0" width="100%" height="100%" mask="url(#mask)")
           covers
 
   </template>

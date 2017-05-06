@@ -62,8 +62,6 @@
       this.model = StageStore.model;
       this.tracker = StageStore.tracker;
 
-      // Projects.forEach(p => { StageStore.addCover(p.id, p.cover.url); });
-
       this.models = [];
 
       this.timeline = new TimelineMax();

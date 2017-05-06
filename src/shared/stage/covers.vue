@@ -28,8 +28,11 @@
     component.props = {};
 
     component.data = function () {
-
       return {
+        dimensions: {
+          width: sw,
+          height: sh
+        },
         covers: StageStore.covers,
       };
     };
@@ -40,24 +43,19 @@
 
     // Hooks
     
-    component.created = function () {
+    component.mounted = function () {
 
-      
+      $(window).on('resize', this.resize);
 
     };
 
 
     // Draw
-    
-    component.methods.draw = function () {
-
-         
-
-    };
 
     component.methods.resize = function () {
 
-      
+      this.dimensions.width = sw;
+      this.dimensions.height = sh;
 
     };
 
@@ -70,23 +68,27 @@
 
 
   <template lang="jade">
-    
+
     //- Root
-    g.covers
+    g.covers(x="0" y="0" width="100%" height="100%")
       
       //- Covers
       template(v-for="c in covers.items")
-        image.cover(v-bind:xlink:href="c.url" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-show="c.active" ref="covers")
+        image.cover(v-bind:xlink:href="c.url" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-bind:class="{ active: c.active }" ref="covers")
       
       //- Default
-      image.cover-default(xlink:href="assets/images/projects/jaiye_cover.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-show="covers.default" ref="default")
+      image.cover.cover-default(xlink:href="assets/images/projects/jaiye_cover.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-bind:class="{ active: covers.default }" ref="default")
 
   </template>
 
 
   <style lang="stylus" scoped>
     
-    
+    .cover
+      opacity 0
+
+      &.active
+        opacity 1
 
   </style>
   
