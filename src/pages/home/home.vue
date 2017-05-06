@@ -187,8 +187,6 @@
     
     component.methods.keydown = function (e) {
 
-      console.log('coucou');
-
       switch(e.keyCode) {
         case 37: this.previous(); break;
         case 39 : this.next(); break;
@@ -277,7 +275,7 @@
       titles(v-bind:current="current" v-bind:mouse="mouse" ref="titles")
 
       //- Navigation
-      navigation(v-bind:mouse="mouse" ref="mouse")
+      navigation(v-bind:mouse="mouse" v-bind:current="current" ref="navigation")
 
   </template>
 
@@ -299,6 +297,14 @@
         left 50%
         width 50%
         height 50%
+
+      .navigation
+        position absolute
+        z-index 1600
+        top 0
+        left 0
+        width 100%
+        height 100%
 
   </style>
   

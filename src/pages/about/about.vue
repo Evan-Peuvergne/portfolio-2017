@@ -93,8 +93,6 @@
 
       StageStore.model.children = _.cloneDeep(this.model.children);
 
-      // StageStore.model = _.cloneDeep(this.model.children);
-
     };
 
 
