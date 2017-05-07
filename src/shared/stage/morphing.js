@@ -86,39 +86,6 @@
 
 
   // Run
-  
-  Morphing.voldrun = function (timeline, shape, morphs, config = {}) {
-
-    let standard = { duration: .75, step: .005 };
-    config = _.extend({}, standard, config);
-
-    timeline.clear();
-
-    shape.children = [];
-    morphs.forEach(m => { shape.children.push(m.from); });
-
-    morphs.forEach((m, j) => {
-
-      for(var i=0; i<m.from.segments.length; i++){
-
-        let c = (i+m.start)%m.from.segments.length;
-        let s = m.from.segments[c];
-        let t = m.to.segments[i];
-
-        timeline.to(s.point, config.duration, 
-          { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: m.offset*config.step }, 
-          i*config.step);
-        timeline.to(s.handleIn, config.duration, 
-          { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, 
-          i*config.step);
-        timeline.to(s.handleOut, config.duration, 
-          { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, 
-          i*config.step);
-
-      }
-    });
-
-  };
 
   Morphing.run = function (timeline, shape, morphs, config) {
 
@@ -138,13 +105,13 @@
         let t = m.to.segments[i];
 
         timeline.to(s.point, config.duration, 
-          { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: 0 }, 
+          { ox: t.point.ox, oy: t.point.oy, ease: ease.elasoft, delay: 0 }, 
           i*config.step);
         timeline.to(s.handleIn, config.duration, 
-          { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, 
+          { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elasoft, delay: 0 }, 
           i*config.step);
         timeline.to(s.handleOut, config.duration, 
-          { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, 
+          { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elasoft, delay: 0 }, 
           i*config.step);
 
       }
