@@ -1,5 +1,5 @@
 <svg width="27px" height="22px" viewBox="0 0 27 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g id="icon" stroke="#323232" stroke-width="5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+    <g id="icon" stroke="#fefefe" stroke-width="5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
         <g id="Next" transform="translate(13.500000, 11.000000) rotate(-180.000000) translate(-13.500000, -11.000000) translate(3.000000, 3.000000)">
             <path d="M0,8 L20.0108696,8" id="Path-2"></path>
             <polyline id="Path-3" points="13.0869565 16 21 8 13.0869565 0"></polyline>

@@ -71,6 +71,7 @@
     component.mounted = function () {
 
       this.titles = this.$refs.titles;
+      this.navigation = this.$refs.navigation;
 
       Projects.forEach(p => {
         this.models.push(new Paper.CompoundPath(p.letter.path));
@@ -85,6 +86,8 @@
       new Ticker().tick('home.animation', this.animate);
 
       this.$events.on('loaded', this.enter);
+      this.$events.on('home.previous', this.previous);
+      this.$events.on('home.next', this.next);
 
     };
 
@@ -144,6 +147,7 @@
       TweenMax.to([this.model, this.tracker], .6, StageStore.getShadow(Projects[this.current].shadow));
 
       this.$refs.titles.enter();
+      this.$refs.navigation.enter();
 
     };
 
@@ -164,6 +168,7 @@
       timeline.to(this.shades[this.current], .6, { opacity: 0, ease: ease.default, }, 0);
 
       this.titles.leave();
+      this.navigation.leave();
 
     };
 
