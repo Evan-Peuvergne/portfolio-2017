@@ -57,6 +57,8 @@
     
     component.created = function () {
 
+      this.is = { loaded: false, };
+
       this.parallax = { x: 0, y: 0 };
 
       this.model = StageStore.model;
@@ -85,7 +87,11 @@
 
       new Ticker().tick('home.animation', this.animate);
 
-      this.$events.on('loaded', this.enter);
+      this.$events.on('loaded', () => { 
+        this.is.loaded = true;
+        this.enter(); 
+      });
+
       this.$events.on('home.previous', this.previous);
       this.$events.on('home.next', this.next);
 
@@ -210,6 +216,8 @@
     };
 
     component.methods.resize = function (e) {
+
+      if(!this.is.loaded){ return false; }
 
       this.draw();
 

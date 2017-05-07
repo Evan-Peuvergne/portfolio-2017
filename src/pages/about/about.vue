@@ -47,6 +47,8 @@
     
     component.created = function () {
 
+      this.is = { loaded: false };
+
       this.model = new Paper.CompoundPath(Config.shape);
 
     };
@@ -58,7 +60,10 @@
 
       this.draw();
 
-      this.$events.on('loaded', this.enter);
+      this.$events.on('loaded', () => {
+        this.is.loaded = true;
+        this.enter();
+      });
 
       $(window).on('resize', this.resize);
 
@@ -88,6 +93,8 @@
     };
 
     component.methods.resize = function (e) {
+
+      if(!this.is.loaded){ return false; }
 
       this.draw(); 
 
