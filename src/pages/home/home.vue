@@ -168,6 +168,10 @@
           $(window).off('mousemove', this.mousemove);
           $(window).off('resize', this.resize);
 
+          this.$events.off('loaded');
+          this.$events.off('home.previous');
+          this.$events.off('home.next');
+
         } 
       });
 
