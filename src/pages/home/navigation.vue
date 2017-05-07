@@ -92,8 +92,8 @@
 
       ['previous', 'next'].forEach((a, i) => {
 
-        this.areas[a].point = new Paper.Point((sw - (sw-600)*.5) * i, 0);
-        this.areas[a].size = new Paper.Size((sw - 600)*.5, sh);
+        this.areas[a].point = new Paper.Point((sw - (sw-600)*.5) * i, 300*.5);
+        this.areas[a].size = new Paper.Size((sw - 600)*.5, sh - 225);
 
         this.parallax[a].x = (a == 'previous') ? this.areas[a].rightCenter.x : this.areas[a].leftCenter.x;
         this.parallax[a].y = sh*.5;
@@ -242,7 +242,7 @@
       top 50%
       width 1em
       opacity 1
-      transition opacity 0.2s ease
+      transition opacity 0.5s ease
       visibility hidden
 
       &.navigation-previous
@@ -261,7 +261,7 @@
       position absolute
       z-index 2000
       opacity 0
-      transition opacity 0.3s ease
+      transition opacity 0.5s ease
       cursor pointer
 
       img
