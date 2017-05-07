@@ -174,16 +174,18 @@
         onComplete: function () {
           
           $(window).off('resize', this.resize);
+          $(window).off('click', this.click);
+
           new Ticker().remove('navigation.animate');
 
         }
       });
 
-      t.fromTo(this.$refs.previous, .6, 
+      t.fromTo(this.$refs.arrowPrevious, .6, 
         { x: 0, opacity: 1 },
         { x: -100, opacity: 0, ease: ease.elasoft }, 0);
 
-      t.fromTo(this.$refs.next, .6, 
+      t.fromTo(this.$refs.arrowNext, .6, 
         { x: 0, opacity: 1 },
         { x: 100, opacity: 0, ease: ease.elashard }, .1);
 

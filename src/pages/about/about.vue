@@ -169,10 +169,10 @@
 
       //- Networks
       ul.about-networks(ref="networks")
-        li <a href="#">Email</a>
-        li <a href="#">Linkedin</a>
-        li <a href="#">Twitter</a>
-        li <a href="#">Behance</a>
+        li <a href="mailto:evanpeuvergne@gmail.com">Email</a>
+        li <a href="https://www.linkedin.com/in/evanpeuvergne/" target="_blank">Linkedin</a>
+        li <a href="https://twitter.com/vavouweb" target="_blank">Twitter</a>
+        li <a href="https://www.behance.net/vavouweb" target="_blank">Behance</a>
 
 
   </template>
