@@ -54,12 +54,6 @@
     
     component.created = function () {
 
-      
-
-    };
-    
-    component.mounted = function () {
-
       this.areas = {
         previous: new Paper.Rectangle(),
         next: new Paper.Rectangle()
@@ -69,6 +63,16 @@
         previous: { x: 0, y: 0, },
         next: { x: 0, y: 0 }
       };
+
+    };
+    
+    component.mounted = function () {
+
+      this.arrows = {
+        previous: this.$refs.arrowPrevious,
+        next: this.$refs.arrowNext
+      };
+      this.access = this.$refs.access;
 
       this.draw();
 
@@ -154,15 +158,15 @@
 
       console.log(this.$refs.arrow);
 
-      t.fromTo(this.$refs.arrowPrevious, .6, 
+      t.fromTo(this.arrows.previous, .6, 
         { visibility: 'visible', x: -100, opacity: 0 },
         { x: 0, opacity: 1, ease: ease.elashard }, .5);
 
-      t.fromTo(this.$refs.arrowNext, .6, 
+      t.fromTo(this.arrows.next, .6, 
         { visibility: 'visible', x: 100, opacity: 0 },
         { x: 0, opacity: 1, ease: ease.elashard }, .7);
 
-      t.fromTo(this.$refs.access, .6, 
+      t.fromTo(this.access, .6, 
         { visibility: 'visible', y: 100, opacity: 0 },
         { y: 0, opacity: 1, ease: ease.elashard }, .8);
 
@@ -181,15 +185,15 @@
         }
       });
 
-      t.fromTo(this.$refs.arrowPrevious, .6, 
+      t.fromTo(this.arrows.previous, .6, 
         { x: 0, opacity: 1 },
         { x: -100, opacity: 0, ease: ease.elasoft }, 0);
 
-      t.fromTo(this.$refs.arrowNext, .6, 
+      t.fromTo(this.arrows.next, .6, 
         { x: 0, opacity: 1 },
         { x: 100, opacity: 0, ease: ease.elashard }, .1);
 
-      t.fromTo(this.$refs.access, .6, 
+      t.fromTo(this.access, .6, 
         { y: 0, opacity: 1 },
         { y: 100, opacity: 0, ease: ease.elashard }, .2);
 
