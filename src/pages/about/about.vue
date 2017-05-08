@@ -34,7 +34,6 @@
     component.data = function () {
       return {
         title: 'Evan Peuvergne | About',
-        // animations: Animations
       }
     };
 
