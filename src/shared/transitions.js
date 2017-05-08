@@ -17,10 +17,15 @@
 	// Router
 	
 	Transitions.beforeRouteEnter = function (to, from, next) {
-
-		console.log(to);
+		
 		next(vm => {
-			if(vm.$parent.is.loaded){ vm.enter(from, to); }
+			if(vm.$parent.is.loaded){ 
+
+				let settings = vm.getTransitionSettings("entering", from.name);
+
+				vm.enter(settings, to, from); 
+
+			}
 		});
 
 	};
@@ -31,6 +36,23 @@
 		next();
 
 	}
+
+
+	// Utils
+	
+	Transitions.methods.getTransitionSettings = function (direction, other) {
+
+		if(!this.animations){ return {}; }
+		else if(!this.animations[direction] && this.animations.default){ return this.animations.default; }
+
+		var settings = this.animations[direction].default;
+
+		let dest = this.animations[direction][other];
+		if(dest){ settings = _.merge(settings, dest); }
+
+		return settings;
+
+	};
 
 
 

@@ -22,6 +22,7 @@
     import Transitions from '../../shared/transitions.js';
 
     import Projects from '../../shared/projects.json';
+    import Animations from './animations.json';
 
 
     
@@ -58,6 +59,7 @@
     component.created = function () {
 
       this.is = { loaded: false, };
+      this.animations = Animations;
 
       this.parallax = { x: 0, y: 0 };
 
@@ -89,7 +91,7 @@
 
       this.$events.on('loaded', () => { 
         this.is.loaded = true;
-        this.enter(); 
+        this.enter(this.getTransitionSettings('entering', 'initial')); 
       });
 
       this.$events.on('home.previous', this.previous);
@@ -129,22 +131,17 @@
 
     // Transitions
     
-    component.methods.enter = function (from, to) {
+    component.methods.enter = function (settings) {
 
       StageStore.sourcing = true;
       StageStore.parallaxing = true;
       StageStore.distording = true;
 
-      console.log(from);
-
       let morphs = Morphing.generate(this.model, this.models[this.current], { 
-       start: 20, 
+       start: settings.anchor, 
       });
 
-      Morphing.run(this.timeline, this.model, morphs, {
-        duration: .75,
-        step: .01
-      });
+      Morphing.run(this.timeline, this.model, morphs, settings.morphing);
 
       TweenMax.to(this.shades[this.current], .6, { opacity: 0.02, ease: ease.default });
 

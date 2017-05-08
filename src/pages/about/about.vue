@@ -10,7 +10,6 @@
 
     import Paper from 'paper';
     import { TimelineMax } from 'gsap';
-    import ColorPropsPlugin from '../../vendors/libs/ColorPropsPlugin.js';
     import Ticker from '../../vendors/helpers/ticker.js';
 
     import StageStore from '../../shared/stage/store.js';
@@ -19,6 +18,7 @@
     import Transitions from '../../shared/transitions.js';
 
     import Config from './config.json';
+    import Animations from './animations.json'
 
 
     
@@ -34,6 +34,7 @@
     component.data = function () {
       return {
         title: 'Evan Peuvergne | About',
+        // animations: Animations
       }
     };
 
@@ -49,6 +50,7 @@
     component.created = function () {
 
       this.is = { loaded: false };
+      this.animations = Animations;
 
       this.model = new Paper.CompoundPath(Config.shape);
 
@@ -63,7 +65,7 @@
 
       this.$events.on('loaded', () => {
         this.is.loaded = true;
-        this.enter();
+        this.enter(this.getTransitionSettings('entering', 'initial'));
       });
 
       $(window).on('resize', this.resize);
@@ -106,7 +108,7 @@
 
     // Transitions
     
-    component.methods.enter = function () {
+    component.methods.enter = function (settings) {
 
       StageStore.sourcing = true;
       StageStore.mousing = true;
@@ -116,21 +118,18 @@
       StageStore.covers.default = false;
       StageStore.cover = 'about';
 
-      let morphs = Morphing.generate(StageStore.model, this.model, { start: 0 });
+      let morphs = Morphing.generate(StageStore.model, this.model, { start: settings.anchor });
       
       let timeline = new TimelineMax();
-      Morphing.run(timeline, StageStore.model, morphs, {
-        duration: 1,
-        step: .01
-      });
+      Morphing.run(timeline, StageStore.model, morphs, settings.morphing);
 
       TweenMax.staggerFromTo(this.contents, 1, 
         { y: 150, opacity: 0 },
-        { y: 0, opacity: 1, ease: ease.elashard, }, .1);
+        { y: 0, opacity: 1, ease: ease.elashard, delay: .4 }, .075);
 
       TweenMax.staggerFromTo(this.networks, 1, 
         { y: 100, opacity: 0 },
-        { y: 0, opacity: 1, ease: ease.elashard, delay: .3 }, .075);
+        { y: 0, opacity: 1, ease: ease.elashard, delay: .6 }, .075);
 
       TweenMax.to([StageStore.model, StageStore.tracker], .65, StageStore.getShadow({ color: '#C7B4AA', opacity: .4, }));
 
