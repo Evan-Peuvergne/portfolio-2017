@@ -129,14 +129,16 @@
 
     // Transitions
     
-    component.methods.enter = function () {
+    component.methods.enter = function (from, to) {
 
       StageStore.sourcing = true;
       StageStore.parallaxing = true;
       StageStore.distording = true;
 
+      console.log(from);
+
       let morphs = Morphing.generate(this.model, this.models[this.current], { 
-       start: 0, 
+       start: 20, 
       });
 
       Morphing.run(this.timeline, this.model, morphs, {

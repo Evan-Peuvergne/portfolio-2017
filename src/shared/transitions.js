@@ -18,15 +18,16 @@
 	
 	Transitions.beforeRouteEnter = function (to, from, next) {
 
+		console.log(to);
 		next(vm => {
-			if(vm.$parent.is.loaded){ vm.enter(); }
+			if(vm.$parent.is.loaded){ vm.enter(from, to); }
 		});
 
 	};
 
 	Transitions.beforeRouteLeave = function (to, from, next) {
 
-		if(this.$parent.is.loaded){ this.leave(); }
+		if(this.$parent.is.loaded){ this.leave(from, to); }
 		next();
 
 	}

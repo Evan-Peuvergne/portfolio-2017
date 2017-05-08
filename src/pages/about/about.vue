@@ -10,6 +10,7 @@
 
     import Paper from 'paper';
     import { TimelineMax } from 'gsap';
+    import ColorPropsPlugin from '../../vendors/libs/ColorPropsPlugin.js';
     import Ticker from '../../vendors/helpers/ticker.js';
 
     import StageStore from '../../shared/stage/store.js';
@@ -112,16 +113,16 @@
       StageStore.parallaxing = false;
       StageStore.distording = true;
 
+      StageStore.covers.default = false;
+      StageStore.cover = 'about';
+
       let morphs = Morphing.generate(StageStore.model, this.model, { start: 0 });
       
       let timeline = new TimelineMax();
       Morphing.run(timeline, StageStore.model, morphs, {
-        duration: .75,
+        duration: 1,
         step: .01
       });
-
-      StageStore.covers.default = false;
-      StageStore.cover = 'about';
 
       TweenMax.staggerFromTo(this.contents, 1, 
         { y: 150, opacity: 0 },
@@ -131,7 +132,7 @@
         { y: 100, opacity: 0 },
         { y: 0, opacity: 1, ease: ease.elashard, delay: .3 }, .075);
 
-      TweenMax.to([StageStore.model, StageStore.tracker], .75, StageStore.getShadow({ color: '4F5473', opacity: 0.4, }));
+      TweenMax.to([StageStore.model, StageStore.tracker], .65, StageStore.getShadow({ color: '#C7B4AA', opacity: .4, }));
 
     };
 

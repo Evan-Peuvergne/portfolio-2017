@@ -74,7 +74,7 @@
       
       //- Covers
       template(v-for="c in covers.items")
-        image.cover(v-bind:xlink:href="c.url" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-bind:class="{ active: c.active }" ref="covers")
+        image.cover(v-bind:xlink:href="c.url" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" v-bind:class="{ active: c.active }" ref="covers")
       
       //- Default
       image.cover.cover-default(xlink:href="assets/images/projects/jaiye_cover.png" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMinYMin slice" v-bind:class="{ active: covers.default }" ref="default")

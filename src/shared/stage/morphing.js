@@ -89,7 +89,11 @@
   
   Morphing.voldrun = function (timeline, shape, morphs, config = {}) {
 
-    let standard = { duration: .75, step: .005 };
+    let standard = { 
+      duration: .75, 
+      step: .005,
+      easing: ease.elasoft,
+    };
     config = _.extend({}, standard, config);
 
     timeline.clear();
@@ -106,13 +110,13 @@
         let t = m.to.segments[i];
 
         timeline.to(s.point, config.duration, 
-          { ox: t.point.ox, oy: t.point.oy, ease: ease.elastic, delay: m.offset*config.step }, 
+          { ox: t.point.ox, oy: t.point.oy, ease: config.ease, delay: m.offset*config.step }, 
           i*config.step);
         timeline.to(s.handleIn, config.duration, 
-          { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: ease.elastic, delay: 0 }, 
+          { ox: t.handleIn.ox, oy: t.handleIn.oy, ease: config.ease, delay: 0 }, 
           i*config.step);
         timeline.to(s.handleOut, config.duration, 
-          { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: ease.elastic, delay: 0 }, 
+          { ox: t.handleOut.ox, oy: t.handleOut.oy, ease: config.ease, delay: 0 }, 
           i*config.step);
 
       }
