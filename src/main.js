@@ -9,7 +9,7 @@
   import Router from 'vue-router';
   import Events from 'vue-events';
 
-  import App from './shared/app.vue';
+  import App from './shared/app/app.vue';
 
   import { routes } from './routes.js';
 

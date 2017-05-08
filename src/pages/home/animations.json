@@ -1,0 +1,18 @@
+{  
+  "entering": {
+    "default": {
+      "anchor": 0,
+      "morphing": {
+        "duration": 0.75,
+        "step": 0.01
+      }
+    },
+    "about": {
+      "anchor": 15,
+      "morphing": {
+        "duration": 1,
+        "step": 0.01
+      }
+    }
+  }
+}

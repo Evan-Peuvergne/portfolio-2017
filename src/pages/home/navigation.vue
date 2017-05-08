@@ -156,8 +156,6 @@
 
       let t = new TimelineMax();
 
-      console.log(this.$refs.arrow);
-
       t.fromTo(this.arrows.previous, .6, 
         { visibility: 'visible', x: -100, opacity: 0 },
         { x: 0, opacity: 1, ease: ease.elashard }, .5);
