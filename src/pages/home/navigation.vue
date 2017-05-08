@@ -225,7 +225,7 @@
         img(src="assets/icons/next_w.svg")
 
       //- Access
-      a.navigation-access(v-bind:href="url" target="_blank" ref="access") Click <strong v-bind:style="{ color: color }">here</strong> to discover project
+      a.navigation-access(v-bind:href="url" target="_blank" ref="access") Click <strong v-bind:style="{ color: color }">here</strong> to launch project
 
   </template>
 
