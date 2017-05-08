@@ -40,10 +40,7 @@
         title: 'Evan Peuvergne | Projects',
         current: 0,
         prev: 0,
-        mouse: { 
-          abs: { x: sw*.5, y: sh*.5 },
-          orth: { x: .5, y: .5 }
-        },
+        mouse: StageStore.mouse
       }
     };
 
@@ -84,7 +81,6 @@
       this.draw();
 
       $(window).on('keydown', this.keydown);
-      $(window).on('mousemove', this.mousemove);
       $(window).on('resize', this.resize);
 
       new Ticker().tick('home.animation', this.animate);
@@ -136,6 +132,10 @@
       StageStore.sourcing = true;
       StageStore.parallaxing = true;
       StageStore.distording = true;
+      
+      StageStore.covers.default = false;
+      StageStore.covers.items[this.current].active = true;
+      StageStore.cover = Projects[this.current].id;
 
       let morphs = Morphing.generate(this.model, this.models[this.current], { 
        start: settings.anchor, 
@@ -144,10 +144,6 @@
       Morphing.run(this.timeline, this.model, morphs, settings.morphing);
 
       TweenMax.to(this.shades[this.current], .6, { opacity: 0.02, ease: ease.default });
-
-      StageStore.covers.default = false;
-      StageStore.covers.items[this.current].active = true;
-      StageStore.cover = Projects[this.current].id;
 
       TweenMax.to([this.model, this.tracker], .6, StageStore.getShadow(Projects[this.current].shadow));
 
@@ -164,7 +160,6 @@
           new Ticker().remove('home.animation');
 
           $(window).off('keydown', this.keydown);
-          $(window).off('mousemove', this.mousemove);
           $(window).off('resize', this.resize);
 
           this.$events.off('loaded');
@@ -186,8 +181,8 @@
     
     component.methods.animate = function (f) {
 
-      this.parallax.x += (this.mouse.orth.x*shade.p.x - this.parallax.x) * .15;
-      this.parallax.y += (this.mouse.orth.y*shade.p.y - this.parallax.y) * .15;
+      this.parallax.x += (StageStore.mouse.orth.x*shade.p.x - this.parallax.x) * .15;
+      this.parallax.y += (StageStore.mouse.orth.y*shade.p.y - this.parallax.y) * .15;
 
       this.shades.forEach(s => {
         s.position.x = s.x + this.parallax.x;
@@ -205,16 +200,6 @@
         case 37: this.previous(); break;
         case 39 : this.next(); break;
       }
-
-    };
-
-    component.methods.mousemove = function (e) {
-
-      this.mouse.abs.x = e.clientX;
-      this.mouse.abs.y = e.clientY;
-
-      this.mouse.orth.x = e.clientX/sw - .5;
-      this.mouse.orth.y = e.clientY/sh - .5;
 
     };
 

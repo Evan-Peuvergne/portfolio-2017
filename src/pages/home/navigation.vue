@@ -21,8 +21,6 @@
 
     var component = { name: 'navigation', methods: {} };
 
-    var size = .2;
-
 
     // Properties
     

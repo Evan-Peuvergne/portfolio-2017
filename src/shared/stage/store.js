@@ -78,7 +78,7 @@
       this.is.mousing = val; 
 
       if(val){ $(window).on('mousemove', this.mousemove.bind(this)); }
-      else{ $(window).off('mousemove', this.mousemove.bind(this)); }
+      else{ console.log('coucou'); $(window).off('mousemove', this.mousemove.bind(this)); }
 
     }
 

@@ -88,19 +88,19 @@
 	
 	Shades.methods.changeShade = function (prev, next) {
 
-		this.timeline.fromTo(prev, .4, 
-			{ y: prev.oy, },
-			{ y: prev.oy - 200, ease: ease.default }, 0);
+		// this.timeline.fromTo(prev, .4, 
+			// { y: prev.oy, },
+			// { y: prev.oy - 200, ease: ease.default }, 0);
 		this.timeline.fromTo(prev, .3, 
 			{ opacity: .02 },
-			{ opacity: 0, ease: ease.default }, .1);
+			{ opacity: 0, ease: ease.default }, 0);
 
-		this.timeline.fromTo(next, .7, 
-			{ y: next.oy + 200, },
-			{ y: next.oy, ease: ease.elastic }, .1);
-		this.timeline.fromTo(next, .5, 
+		// this.timeline.fromTo(next, .7, 
+			// { y: next.oy + 200, },
+			// { y: next.oy, ease: ease.elastic }, .1);
+		this.timeline.fromTo(next, .6, 
 			{ opacity: 0, },
-			{ opacity: 0.02, ease: ease.default }, .2);
+			{ opacity: 0.02, ease: ease.default }, 0);
 
 	};
 
