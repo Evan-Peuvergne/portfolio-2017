@@ -218,6 +218,8 @@
     
     component.methods.go = function (i) {
 
+      if(!this.is.loaded){ return false; }
+
       this.prev = this.current;
       this.current = i;
 
