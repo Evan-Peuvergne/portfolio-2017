@@ -13,7 +13,7 @@
     "home": {
       "anchor": 25,
       "morphing": {
-        "duration": 0.8,
+        "duration": 0.75,
         "step": 0.01
       }
     }
