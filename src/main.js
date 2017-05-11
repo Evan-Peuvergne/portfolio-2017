@@ -6,8 +6,10 @@
   import { TimelineMax } from 'gsap';
 
   import Vue from 'vue';
+  
   import Router from 'vue-router';
   import Events from 'vue-events';
+  import Analytics from 'vue-analytics';
 
   import App from './shared/app/app.vue';
 
@@ -72,6 +74,13 @@
   var routing = new Router({
     routes: routes,
     mode: 'history',
+  });
+
+  // Analytics
+  
+  Vue.use(Analytics, {
+    id: 'UA-39186990-5',
+    router: routing,
   });
 
 
