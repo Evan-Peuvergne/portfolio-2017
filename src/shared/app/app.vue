@@ -11,8 +11,11 @@
 
     import Loader from '../loader/loader.vue';
     import Stage from '../stage/stage.vue';
+    import Mobile from '../mobile/mobile.vue';
 
     import Logo from '../../modules/components/logo.vue';
+
+    import AppStore from './store.js';
 
 
 
@@ -23,7 +26,7 @@
 
     component.data = function () {
       return {
-        is: { loaded: false },
+        is: AppStore.is
       };
     };
 
@@ -35,7 +38,7 @@
       }
     };
 
-    component.components = { Loader, Stage, Logo };
+    component.components = { Mobile, Loader, Stage, Logo };
 
 
     
@@ -119,6 +122,9 @@
     //- Root
     .app
 
+      //- Mobile
+      mobile
+
       //- Navigation
       nav.app-nav
 
@@ -148,6 +154,15 @@
   <style lang="stylus" src="../shared.styl"></style>
   
   <style lang="stylus" scoped>
+
+    .mobile
+      position fixed
+      z-index 2000
+      top 0
+      left 0
+      right 0
+      bottom 0
+
     
     nav-offset = 3em
 

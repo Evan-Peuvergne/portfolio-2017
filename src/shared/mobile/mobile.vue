@@ -63,6 +63,8 @@
   
   <style lang="stylus" scoped>
     
-    
+    .mobile
+      display none
+      background-color #fefefe
 
   </style>

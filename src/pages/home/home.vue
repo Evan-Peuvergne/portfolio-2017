@@ -23,6 +23,7 @@
 
     import Projects from '../../shared/projects.json';
     import Animations from './animations.json';
+    import AppStore from '../../shared/app/store.js';
 
 
     
@@ -40,7 +41,9 @@
         title: 'Evan Peuvergne | Projects',
         current: 0,
         prev: 0,
-        mouse: StageStore.mouse
+        mouse: StageStore.mouse,
+        app: AppStore.is,
+        animations: Animations,
       }
     };
 
@@ -54,9 +57,6 @@
     // Init
     
     component.created = function () {
-
-      this.is = { loaded: false, };
-      this.animations = Animations;
 
       this.parallax = { x: 0, y: 0 };
 
@@ -86,7 +86,6 @@
       new Ticker().tick('home.animation', this.animate);
 
       this.$events.on('loaded', () => { 
-        this.is.loaded = true;
         this.enter(this.getTransitionSettings('entering', 'initial')); 
       });
 
@@ -205,7 +204,7 @@
 
     component.methods.resize = function (e) {
 
-      if(!this.is.loaded){ return false; }
+      if(!this.app.loaded){ return false; }
 
       this.draw();
 
@@ -218,7 +217,7 @@
     
     component.methods.go = function (i) {
 
-      if(!this.is.loaded){ return false; }
+      if(!this.app.loaded){ return false; }
 
       this.prev = this.current;
       this.current = i;

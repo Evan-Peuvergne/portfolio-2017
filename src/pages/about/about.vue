@@ -18,7 +18,8 @@
     import Transitions from '../../shared/transitions.js';
 
     import Config from './config.json';
-    import Animations from './animations.json'
+    import Animations from './animations.json';
+    import AppStore from '../../shared/app/store.js';
 
 
     
@@ -34,6 +35,8 @@
     component.data = function () {
       return {
         title: 'Evan Peuvergne | About',
+        app: AppStore.is,
+        animations: Animations,
       }
     };
 
@@ -48,9 +51,6 @@
     
     component.created = function () {
 
-      this.is = { loaded: false };
-      this.animations = Animations;
-
       this.model = new Paper.CompoundPath(Config.shape);
 
     };
@@ -63,7 +63,6 @@
       this.draw();
 
       this.$events.on('loaded', () => {
-        this.is.loaded = true;
         this.enter(this.getTransitionSettings('entering', 'initial'));
       });
 
@@ -96,7 +95,7 @@
 
     component.methods.resize = function (e) {
 
-      if(!this.is.loaded){ return false; }
+      if(!this.app.loaded){ return false; }
 
       this.draw(); 
 
