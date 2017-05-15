@@ -125,7 +125,7 @@
           this.parallax[k].x += (this.mouse.abs.x - this.parallax[k].x) * .175;
           this.parallax[k].y += (this.mouse.abs.y - this.parallax[k].y) * .175;
 
-          TweenMax.set(this.$refs[k], 
+          TweenMax.set(this.arrows[k], 
             { x: this.parallax[k].x, y: this.parallax[k].y });
 
         }

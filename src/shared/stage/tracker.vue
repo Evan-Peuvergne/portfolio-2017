@@ -79,9 +79,6 @@
 
       this.tracker.children[0] = shape;
 
-
-      StageStore.tracking = true;
-
       new Ticker().tick('tracker.animation', this.animate);
 
     };

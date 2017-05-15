@@ -64,6 +64,8 @@
         }
       };
 
+      $(window).on('mousemove', this.mousemove.bind(this));
+
     };
 
 
@@ -77,8 +79,8 @@
 
       this.is.mousing = val; 
 
-      if(val){ $(window).on('mousemove', this.mousemove.bind(this)); }
-      else{ console.log('coucou'); $(window).off('mousemove', this.mousemove.bind(this)); }
+      // if(val){ $(window).on('mousemove', this.mousemove.bind(this)); }
+      // else{ console.log('coucou'); $(window).off('mousemove', this.mousemove.bind(this)); }
 
     }
 
@@ -162,22 +164,6 @@
       this.mouse.orth.y = e.clientY/sh - .5;
 
     }
-
-
-    // Distorsion
-    
-    // get distording () {
-
-    //   return this._distording;
-
-    // }
-
-
-    // set distording (val) {
-
-    //   this._distording = val;
-
-    // }
 
   }
 
