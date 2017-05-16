@@ -15,7 +15,11 @@
 
     import Logo from '../../modules/components/logo.vue';
 
+    import Morphing from '../stage/morphing.js';
+
     import AppStore from './store.js';
+    import StageStore from '../stage/store.js';
+    import Easter from './easter.json';
 
 
 
@@ -58,10 +62,17 @@
       $(window).on('focus', this.focus);
       $(window).on('blur', this.blur);
 
+      this.string = 'none';
+      $(window).on('keydown', this.keydown);
+
+      this.easter = new Paper.CompoundPath(Easter.shape);
+
       this.$events.on('loaded', () => { 
         this.enter();
-        this.is.loaded = true 
+        this.is.loaded = true;
       });
+
+      this.draw();
 
     };
 
@@ -69,6 +80,31 @@
 
 
     /* Methods */
+
+
+    // Draw
+    
+    component.methods.draw = function () {
+
+      this.fitter = new Paper.Rectangle({
+        point: [0, sh*.25],
+        size: [sw, sh*.6]
+      });
+
+      this.easter.fitBounds(this.fitter);
+
+      this.easter.position.x = sw*.5 - this.easter.bounds.width*.5 + 25;
+      this.easter.position.y = sh*.5 + 25;
+      
+      this.easter.children.forEach(c => { 
+        c.segments.forEach(s => {
+          [s.point, s.handleIn, s.handleOut].forEach(p => {
+            p.ox = p.x; p.oy = p.y;
+          });
+        }); 
+      });
+
+    };
 
 
     // Events
@@ -84,6 +120,25 @@
 
       this.$favicon.href = "./assets/favicon/leaving.ico";
       document.title = 'Don\'t leave pleaseeeee'; 
+
+    };
+
+    component.methods.keydown = function (e) {
+
+      let letter = String.fromCharCode(e.keyCode);
+      this.string = this.string.substr(1);
+      this.string += letter;
+      this.string = this.string.toLowerCase();
+
+      if(_.indexOf(Easter.keywords, this.string) >= 0){
+
+        let morphs = Morphing.generate(StageStore.model, this.easter, { start: 0 });
+        
+        Morphing.run(new TimelineMax(), StageStore.model, morphs, {
+          duration: 0.75, step: 0.01,
+        });
+
+      }
 
     };
 
