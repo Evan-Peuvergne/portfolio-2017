@@ -70,6 +70,11 @@
         previous: this.$refs.arrowPrevious,
         next: this.$refs.arrowNext
       };
+      this.symbols = {
+        previous: this.$refs.previous,
+        next: this.$refs.next,
+      };
+
       this.access = this.$refs.access;
 
       this.draw();
@@ -125,7 +130,7 @@
           this.parallax[k].x += (this.mouse.abs.x - this.parallax[k].x) * .175;
           this.parallax[k].y += (this.mouse.abs.y - this.parallax[k].y) * .175;
 
-          TweenMax.set(this.arrows[k], 
+          TweenMax.set(this.symbols[k], 
             { x: this.parallax[k].x, y: this.parallax[k].y });
 
         }
